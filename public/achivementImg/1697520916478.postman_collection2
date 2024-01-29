@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "e7765776-aa9f-4bf8-855e-79a59acde4e5",
+		"name": "Mpp_disha",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "21514504"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Sign_up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Shubham\",\r\n    \"email\":\"shubhamv@gmail.com\",\r\n    \"employee_id\":\"050025735\",\r\n    \"mobile_no\":\"7000494411\",\r\n    \"password\":\"123456\",\r\n    \"confirm_password\":\"123456\",\r\n    \"fcm_token\":\"fhjgjkhkjjjhfjhhjgjh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/sign_up"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mobile_no\":\"7000494496\",\r\n    \"password\":\"123456\",\r\n    \"fcm_token\":\"fdugihjhgydfijlkui0789i\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/login"
+					},
+					"response": []
+				},
+				{
+					"name": "select role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTA5NmFkN2I1Yjc3NDkxYzc3NjRkNWEiLCJpZCI6IjY1MDk2YWQ3YjViNzc0OTFjNzc2NGQ1YSIsIm1vYmlsZSI6Ijc0NzAzNTE1NDgiLCJlbWFpbCI6InNodWJoYW12QGdtYWlsLmNvbSIsImVtcGxveWVlX2lkIjoiMTIzNDU2NyIsImlhdCI6MTY5NTExNjEzMSwiZXhwIjoxNzI2NjUyMTMxfQ.7__SgdvwVYDZ-1tjdp0kZHZfufFPeviDGIIDGOwi8QY"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\":\"Student\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/select-role"
+					},
+					"response": []
+				},
+				{
+					"name": "student registration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTEyODcyZTg5ODA5M2FmY2YwMGQ0MjEiLCJtb2JpbGUiOiI3MDAwNDk0NDExIiwiZW1haWwiOiJzaHViaGFtdkBnbWFpbC5jb20iLCJlbXBsb3llZV9pZCI6IjA1MDAyNTczNSIsImlhdCI6MTY5NTcxMzA3MCwiZXhwIjoxNzI3MjQ5MDcwfQ.j_SH3XvjjOXGFw9BDf15zTwmk_-6W0Z2Zg0fFxBn9l4"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_name\":\"shubhamv\",\r\n    \"dob\":\"13/01/2001\",\r\n    \"gender\":\"male\",\r\n    \"category\":\"obc\",\r\n    \"father_name\":\"kripal singh\",\r\n    \"father_occupation\":\"teacher\",\r\n    \"mother_name\":\"shobha devi\",\r\n    \"mother_occupation\":\"House wife\",\r\n    \"name\":\"sunil\",\r\n    \"designation\":\"ACP\",\r\n    \"posting_unit\":\"1\",\r\n    \"relation\":\"Mama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/student-registration"
+					},
+					"response": []
+				},
+				{
+					"name": "education qualification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTExMjhkYzVmMmM4NjVmZTdkZGUwMWYiLCJpZCI6IjY1MTEyOGRjNWYyYzg2NWZlN2RkZTAxZiIsIm1vYmlsZSI6IjcwMDA0OTQ0OTYiLCJlbWFpbCI6InNodWJoYW1AZ21haWwuY29tIiwiZW1wbG95ZWVfaWQiOiIwNDAwMTM3NDIiLCJpYXQiOjE2OTU2NDAxODgsImV4cCI6MTcyNzE3NjE4OH0.Ijp_aTDp_K_fDXpz-Xwa8Hak-QSA63AvEoFzaY1rbx8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "education_type",
+									"value": "ug_diploma",
+									"type": "text"
+								},
+								{
+									"key": "class_name",
+									"value": "mp board",
+									"type": "text"
+								},
+								{
+									"key": "school_name",
+									"value": "SVM",
+									"type": "text"
+								},
+								{
+									"key": "education_medium",
+									"value": "hindi",
+									"type": "text"
+								},
+								{
+									"key": "passing_year",
+									"value": "2017",
+									"type": "text"
+								},
+								{
+									"key": "education_mode",
+									"value": "Regular",
+									"type": "text"
+								},
+								{
+									"key": "achivement",
+									"type": "file",
+									"src": "/C:/Users/DELL/OneDrive/Pictures/20230824.jpg"
+								},
+								{
+									"key": "student_id",
+									"value": "6512683b80ec529be24302f1",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{Base_url}}/api/user/education-qualification"
+					},
+					"response": []
+				},
+				{
+					"name": "add job seeker",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTExMjhkYzVmMmM4NjVmZTdkZGUwMWYiLCJpZCI6IjY1MTEyOGRjNWYyYzg2NWZlN2RkZTAxZiIsIm1vYmlsZSI6IjcwMDA0OTQ0OTYiLCJlbWFpbCI6InNodWJoYW1AZ21haWwuY29tIiwiZW1wbG95ZWVfaWQiOiIwNDAwMTM3NDIiLCJpYXQiOjE2OTU2NDAxODgsImV4cCI6MTcyNzE3NjE4OH0.Ijp_aTDp_K_fDXpz-Xwa8Hak-QSA63AvEoFzaY1rbx8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_id\":\"6512683b80ec529be24302f1\",\r\n    \"job_role\":\"gove.\",\r\n    \"class_name\":\"\",\r\n    \"school_name\":\"\",\r\n    \"passing_year\":\"\",\r\n    \"parcentage\":\"\",\r\n    \"school_name_10th\":\"SVMR\",\r\n    \"board_10th\":\"MP board\",\r\n    \"passing_year_10th\":\"2014-15\",\r\n    \"parcentage_10th\":\"70\",\r\n    \"school_name_12th\":\"Nutan\",\r\n    \"board_12th\":\"MP board\",\r\n    \"subject_12th\":\"Maths\",\r\n    \"passing_year_12th\":\"2016-17\",\r\n    \"parcentage_12th\":\"71\",\r\n    \"institute_ug\":\"\",\r\n    \"course_ug\":\"\",\r\n    \"passing_year_ug\":\"\",\r\n    \"parcentage_ug\":\"\",\r\n    \"institute_pg\":\"\",\r\n    \"course_pg\":\"\",\r\n    \"passing_year_pg\":\"\",\r\n    \"parcentage_pg\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/jobs-seeker"
+					},
+					"response": []
+				},
+				{
+					"name": "add hobbys",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTExMjhkYzVmMmM4NjVmZTdkZGUwMWYiLCJpZCI6IjY1MTEyOGRjNWYyYzg2NWZlN2RkZTAxZiIsIm1vYmlsZSI6IjcwMDA0OTQ0OTYiLCJlbWFpbCI6InNodWJoYW1AZ21haWwuY29tIiwiZW1wbG95ZWVfaWQiOiIwNDAwMTM3NDIiLCJpYXQiOjE2OTU2NDAxODgsImV4cCI6MTcyNzE3NjE4OH0.Ijp_aTDp_K_fDXpz-Xwa8Hak-QSA63AvEoFzaY1rbx8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_id\":\"6512683b80ec529be24302f1\",\r\n    \"hobbys\":[\"Writing\", \"yoga\", \"fashion\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/select-hobbys"
+					},
+					"response": []
+				},
+				{
+					"name": "schedule meet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTExMjhkYzVmMmM4NjVmZTdkZGUwMWYiLCJpZCI6IjY1MTEyOGRjNWYyYzg2NWZlN2RkZTAxZiIsIm1vYmlsZSI6IjcwMDA0OTQ0OTYiLCJlbWFpbCI6InNodWJoYW1AZ21haWwuY29tIiwiZW1wbG95ZWVfaWQiOiIwNDAwMTM3NDIiLCJpYXQiOjE2OTU2NDAxODgsImV4cCI6MTcyNzE3NjE4OH0.Ijp_aTDp_K_fDXpz-Xwa8Hak-QSA63AvEoFzaY1rbx8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_id\":\"65128751898093afcf00d423\",\r\n    \"title\":[\"asa\",\"cxcxc\"],\r\n    \"description\":\"Tbd\",\r\n    \"schedule_date\":\"27/09/2023\",\r\n    \"schedule_from_time\":\"02:00 pm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Base_url}}/api/user/schedule-career-advice"
+					},
+					"response": []
+				},
+				{
+					"name": "schedule view",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add institute",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"institute_name\":\"Lovely Professional University (LPU)\",\r\n    \"type\":\"PRIVATE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{Base_url}}/api/user/add-institute"
+			},
+			"response": []
+		},
+		{
+			"name": "add discipline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"institute_id\":\"650c0e0c4da40bcdbedbf89d\",\r\n    \"discipline_name\":\"JOURALISM\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{Base_url}}/api/user/add-discipline"
+			},
+			"response": []
+		},
+		{
+			"name": "add courses",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"institute_id\":\"650c0e0c4da40bcdbedbf89d\",\r\n    \"discipline_id\":\"650c30084da40bcdbedbf965\",\r\n    \"program_lavel\":\"Ph.D.\",\r\n    \"course_name\":\"Ph.D. (Hotel Management)\",\r\n    \"course_url\":\"https://www.lpu.in/programmes/full-time-phd-in-hotel-management\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{Base_url}}/api/user/add-courses"
+			},
+			"response": []
+		},
+		{
+			"name": "uplode employeeID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "excel_file",
+							"type": "file",
+							"src": "/C:/Users/DELL/Downloads/Unique Code.xlsx"
+						}
+					]
+				},
+				"url": "{{Base_url}}/api/user/upload-employeeId"
+			},
+			"response": []
+		}
+	]
+}

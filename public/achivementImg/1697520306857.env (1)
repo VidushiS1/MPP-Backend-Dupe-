@@ -1,0 +1,4 @@
+Port=4000
+MONGODB_URL='mongodb+srv://shubhamvishwakarma:shubham@cluster0.cyod5gh.mongodb.net/?retryWrites=true&w=majority'
+SECRET_KEY="Madhyapardeshpolicedisha",
+EXPIRE_TIME="1d",
