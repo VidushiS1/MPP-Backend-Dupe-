@@ -1749,7 +1749,7 @@ module.exports.discipline_edit = async (req, res) => {
 
 module.exports.discipline_delete = async (req, res) => {
     try {
-        const old_discipline_name = req.query.old_discipline_name;
+        const old_discipline_name = req.query.discipline_name;
         if (old_discipline_name) {
             const desciplineData = await Desciplines.find({ discipline_name: old_discipline_name });
             if (desciplineData) {
