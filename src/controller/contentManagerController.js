@@ -1433,9 +1433,11 @@ module.exports.institute_view = async (req, res) => {
             const instituteData = await Institutes.findOne({ _id: institute_id });
             if (instituteData) {
                 const course = await Courses.findOne({ institute_id: instituteData._id });
-                instituteData.place = course.place
-                instituteData.institute_type = course.institute_type
-                instituteData.institute_url = course.institute_url
+                if (course) {
+                    instituteData.place = course.place
+                    instituteData.institute_type = course.institute_type
+                    instituteData.institute_url = course.institute_url
+                }
                 res.status(200).json({ status: true, message: "Institute view", data: instituteData });
             }
             else {
@@ -1445,8 +1447,6 @@ module.exports.institute_view = async (req, res) => {
         else {
             res.status(400).json({ message: "Institute Id is required." });
         }
-
-
         // const institute_id = req.query.institute_id;
         // if (institute_id) {
         //     const instituteData = await Institutes.aggregate([
@@ -1568,7 +1568,7 @@ module.exports.institute_delete = async (req, res) => {
 
 module.exports.cities_list = async (req, res) => {
     try {
-        const citiesData = await Cities.find().sort({ name: 1 });
+        const citiesData = await Cities.find().sort({ city: 1 });
         if (citiesData.length) {
             res.status(200).json({ status: true, message: "Cities list", data: citiesData });
         }
@@ -1798,32 +1798,42 @@ module.exports.add_courses = async (req, res) => {
                 'string.empty': 'program_lavel cannot be an empty field',
                 'any.required': 'program_lavel is required field'
             }),
-            place: Joi.string().required().messages({
-                'string.empty': 'place cannot be an empty field',
-                'any.required': 'place is required field'
-            }),
-            institute_type: Joi.string().required().messages({
-                'string.empty': 'institute_type cannot be an empty field',
-                'any.required': 'institute_type is required field'
-            }),
-            institute_url: Joi.string().required().messages({
-                'string.empty': 'institute_url cannot be an empty field',
-                'any.required': 'institute_url is required field'
-            }),
+            // place: Joi.string().required().messages({
+            //     'string.empty': 'place cannot be an empty field',
+            //     'any.required': 'place is required field'
+            // }),
+            // institute_type: Joi.string().required().messages({
+            //     'string.empty': 'institute_type cannot be an empty field',
+            //     'any.required': 'institute_type is required field'
+            // }),
+            // institute_url: Joi.string().required().messages({
+            //     'string.empty': 'institute_url cannot be an empty field',
+            //     'any.required': 'institute_url is required field'
+            // }),
             course_url: Joi.string().required().messages({
                 'string.empty': 'course_url cannot be an empty field',
                 'any.required': 'course_url is required field'
             })
         });
         checkValidation.joiValidation(schema, req.body);
-        const { institute_id, discipline_id, subject_name, course_name, program_lavel, place, institute_type, institute_url, course_url } = req.body;
-        const data = { institute_id, discipline_id, subject_name, course_name, program_lavel, place, institute_type, institute_url, course_url }
-        const addData = await Courses.create(data);
-        if (addData) {
-            res.status(200).json({ status: true, message: 'Courses Added successfully', data: addData });
+        const { institute_id, discipline_id, subject_name, course_name, program_lavel, course_url } = req.body;
+        const data = { institute_id, discipline_id, subject_name, course_name, program_lavel, course_url }
+        const institute_list = await Institutes.findOne({ _id: institute_id });
+        if (institute_list) {
+            console.log('institute_list', institute_list)
+            data.place = institute_list.place;
+            data.institute_type = institute_list.institute_type;
+            data.institute_url = institute_list.institute_url;
+            const addData = await Courses.create(data);
+            if (addData) {
+                res.status(200).json({ status: true, message: 'Courses Added successfully', data: addData });
+            }
+            else {
+                res.status(400).json({ status: false, message: "Please try again" });
+            }
         }
         else {
-            res.status(400).json({ status: false, message: "Please try again" });
+
         }
     } catch (error) {
         console.log('add_courses Error', error);
