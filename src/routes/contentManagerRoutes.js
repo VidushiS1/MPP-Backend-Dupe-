@@ -82,9 +82,13 @@ app.put('/discipline-edit', decodedToken, contentManagerController.discipline_ed
 app.delete('/discipline-delete', decodedToken, contentManagerController.discipline_delete);
 
 
-app.post('/add-courses', decodedToken, contentManagerController.add_courses);
-app.get('/courses-list', decodedToken, contentManagerController.courses_list);
-app.get('/courses-view', decodedToken, contentManagerController.courses_view);
-app.put('/courses-edit', decodedToken, contentManagerController.courses_edit)
-app.delete('/courses-delete', decodedToken, contentManagerController.courses_delete);
+app.post('/add-subject', decodedToken, contentManagerController.add_subject);
+app.get('/subject-list', decodedToken, contentManagerController.subject_list);
+app.get('/subject-view', decodedToken, contentManagerController.subject_view);
+app.put('/subject-edit', decodedToken, contentManagerController.subject_edit)
+app.delete('/subject-delete', decodedToken, contentManagerController.subject_delete);
+
+app.put('/course-edit', decodedToken, contentManagerController.course_edit);
+app.delete('/course-delete', decodedToken, contentManagerController.course_delete);
+
 module.exports = app; 

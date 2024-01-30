@@ -1774,7 +1774,7 @@ module.exports.discipline_delete = async (req, res) => {
 
 
 
-module.exports.add_courses = async (req, res) => {
+module.exports.add_subject = async (req, res) => {
     try {
         const schema = Joi.object({
             institute_id: Joi.string().required().messages({
@@ -1843,19 +1843,20 @@ module.exports.add_courses = async (req, res) => {
 
         }
     } catch (error) {
-        console.log('add_courses Error', error);
+        console.log('add_subject Error', error);
         res.status(500).json(error);
     }
 }
 
 
 
-module.exports.courses_list = async (req, res) => {
+module.exports.subject_list = async (req, res) => {
     try {
         // const courseList = await Courses.aggregate([
         //     {
         //         $addFields: {
         //             instituteObjectId: { $toObjectId: "$institute_id" },
+        //             disciplineObjectId: { $toObjectId: "$discipline_id" }
         //         }
         //     },
         //     {
@@ -1870,9 +1871,19 @@ module.exports.courses_list = async (req, res) => {
         //         $unwind: '$institute'
         //     },
         //     {
+        //         $lookup: {
+        //             from: 'desciplines',
+        //             localField: 'disciplineObjectId',
+        //             foreignField: '_id',
+        //             as: 'discipline'
+        //         }
+        //     },
+        //     {
+        //         $unwind: '$discipline'
+        //     },
+        //     {
         //         $project: {
         //             _id: 1,
-        //             discipline_id: 1,
         //             institute_id: 1,
         //             subject_name: 1,
         //             course_name: 1,
@@ -1882,94 +1893,50 @@ module.exports.courses_list = async (req, res) => {
         //             institute_url: 1,
         //             course_url: 1,
         //             institute_name: "$institute.institute_name",
+        //             discipline_name: "$discipline.discipline_name",
         //             createdAt: 1
         //         }
         //     }
         // ]);
         // if (courseList.length) {
-        //     const promiss = courseList.map(async (row) => {
-        //         let disciplineData = await Desciplines.find({ _id: row.discipline_id });
-        //         if (disciplineData.length) {
-        //             return disciplineData.map((item) => {
-        //                 row.discipline_name = item.discipline_name;
-        //                 return row
-        //             });
-        //         }
-        //         else {
-        //             row.discipline_name = null;
-        //         }
-        //     });
-        //     const newArr = await Promise.all(promiss);
-        //     res.status(200).json({ status: true, message: "Courses list", data: newArr });
-        // }
-        // else {
+        //     res.status(200).json({ status: true, message: "Courses list", data: courseList });
+        // } else {
         //     res.status(404).json({ status: false, message: "Data not found." });
         // }
-        const courseList = await Courses.aggregate([
-            {
-                $addFields: {
-                    instituteObjectId: { $toObjectId: "$institute_id" },
-                    disciplineObjectId: { $toObjectId: "$discipline_id" }
+
+        const couresData = await Courses.find().sort({ subject_name: 1 });
+        if (couresData.length) {
+            let subjects = [];
+            let subjectSet = new Set();
+            let subjectCounts = {};
+            couresData.map((row) => {
+                let subject = row.subject_name;
+                if (!subjectSet.has(subject)) {
+                    subjects.push({ subject: subject, courses: 1 });
+                    subjectSet.add(subject);
+                    subjectCounts[subject] = 1;
+                } else {
+                    subjects.find(d => d.subject === subject).courses++;
+                    subjectCounts[subject]++;
                 }
-            },
-            {
-                $lookup: {
-                    from: 'institutes',
-                    localField: 'instituteObjectId',
-                    foreignField: '_id',
-                    as: 'institute'
-                }
-            },
-            {
-                $unwind: '$institute'
-            },
-            {
-                $lookup: {
-                    from: 'desciplines',
-                    localField: 'disciplineObjectId',
-                    foreignField: '_id',
-                    as: 'discipline'
-                }
-            },
-            {
-                $unwind: '$discipline'
-            },
-            {
-                $project: {
-                    _id: 1,
-                    institute_id: 1,
-                    subject_name: 1,
-                    course_name: 1,
-                    program_lavel: 1,
-                    place: 1,
-                    institute_type: 1,
-                    institute_url: 1,
-                    course_url: 1,
-                    institute_name: "$institute.institute_name",
-                    discipline_name: "$discipline.discipline_name",
-                    createdAt: 1
-                }
-            }
-        ]);
-        if (courseList.length) {
-            res.status(200).json({ status: true, message: "Courses list", data: courseList });
-        } else {
+            });
+            res.status(200).json({ status: true, message: "Courses list", data: subjects });
+        }
+        else {
             res.status(404).json({ status: false, message: "Data not found." });
         }
-
     } catch (error) {
-        console.log('courses_list Error', error);
+        console.log('subject_list Error', error);
         res.status(500).json(error);
     }
 }
 
 
 
-module.exports.courses_view = async (req, res) => {
+module.exports.subject_view = async (req, res) => {
     try {
-        const coures_id = req.query.coures_id;
-        if (coures_id) {
-            // const couresData = await Courses.findOne({ _id: coures_id });
+        const subject_name = req.query.subject_name;
+        if (subject_name) {
             const couresData = await Courses.aggregate([
                 {
                     $addFields: {
@@ -1979,7 +1946,7 @@ module.exports.courses_view = async (req, res) => {
                 },
                 {
                     $match: {
-                        _id: new mongoose.Types.ObjectId(coures_id),
+                        subject_name: subject_name,
                     }
                 },
                 {
@@ -2008,6 +1975,7 @@ module.exports.courses_view = async (req, res) => {
                     $project: {
                         _id: 1,
                         institute_id: 1,
+                        discipline_id: 1,
                         subject_name: 1,
                         course_name: 1,
                         program_lavel: 1,
@@ -2032,7 +2000,7 @@ module.exports.courses_view = async (req, res) => {
             res.status(400).json({ message: "Course Id is required." });
         }
     } catch (error) {
-        console.log('courses_view Error', error);
+        console.log('subject_view Error', error);
         res.status(500).json(error);
     }
 }
@@ -2040,37 +2008,37 @@ module.exports.courses_view = async (req, res) => {
 
 
 
-module.exports.courses_edit = async (req, res) => {
+module.exports.subject_edit = async (req, res) => {
     try {
-        const coures_id = req.body.coures_id;
-        if (coures_id) {
+        const subject_name = req.body.old_subject_name;
+        if (subject_name) {
             const setData = req.body;
-            const couresData = await Courses.findOne({ _id: coures_id });
+            const couresData = await Courses.findOne({ subject_name: subject_name });
             if (couresData) {
-                await Courses.updateOne({ _id: coures_id }, setData)
-                res.status(200).json({ status: true, message: "Course updated successfuly" });
+                await Courses.updateOne({ subject_name: subject_name }, setData)
+                res.status(200).json({ status: true, message: "Subject updated successfuly" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
             }
         } else {
-            res.status(400).json({ message: "Course Id is required." });
+            res.status(400).json({ message: "Subject Id is required." });
         }
     } catch (error) {
-        console.log('courses_edit Error', error);
+        console.log('subject_edit Error', error);
         res.status(500).json(error);
     }
 }
 
 
 
-module.exports.courses_delete = async (req, res) => {
+module.exports.subject_delete = async (req, res) => {
     try {
-        const coures_id = req.query.coures_id;
-        if (coures_id) {
-            const desciplineData = await Courses.findOne({ _id: coures_id });
+        const subject_name = req.query.subject_name;
+        if (subject_name) {
+            const desciplineData = await Courses.findOne({ subject_name: subject_name });
             if (desciplineData) {
-                await Courses.deleteOne({ _id: coures_id });
+                await Courses.deleteOne({ subject_name: subject_name });
                 res.status(200).json({ status: true, message: "Course delete successfully" });
             }
             else {
@@ -2081,7 +2049,56 @@ module.exports.courses_delete = async (req, res) => {
             res.status(400).json({ message: "Course Id is required." });
         }
     } catch (error) {
-        console.log('courses_delete Error', error);
+        console.log('subject_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.course_edit = async (req, res) => {
+    try {
+        const course_id = req.body.course_id;
+        if (course_id) {
+            const setData = req.body;
+            const couresData = await Courses.findOne({ _id: course_id });
+            if (couresData) {
+                await Courses.updateOne({ _id: course_id }, setData)
+                res.status(200).json({ status: true, message: "Course updated successfuly" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        } else {
+            res.status(400).json({ message: "Course Id is required." });
+        }
+    } catch (error) {
+        console.log('course_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.course_delete = async (req, res) => {
+    try {
+        const course_id = req.query.course_id;
+        if (course_id) {
+            const desciplineData = await Courses.findOne({ _id: course_id });
+            if (desciplineData) {
+                await Courses.deleteOne({ _id: course_id });
+                res.status(200).json({ status: true, message: "Course delete successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Course Id is required." });
+        }
+    } catch (error) {
+        console.log('course_delete Error', error);
         res.status(500).json(error);
     }
 }
