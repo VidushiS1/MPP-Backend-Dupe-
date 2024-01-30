@@ -1359,16 +1359,15 @@ module.exports.institute_list = async (req, res) => {
             const promiss = instituteList.map(async (row) => {
                 let course = await Courses.findOne({ institute_id: row._id });
                 if (course) {
-                    // console.log('course', course);
                     row.place = course.place
                     row.institute_type = course.institute_type
                     row.institute_url = course.institute_url
                     return row;
-                    console.log('row._id', row._id);
-                    console.log('updates', updates);
+                }
+                else if (row.place && row.institute_type) {
+                    return row;
                 }
                 else {
-                    console.log('row._id', row.institute_name)
                     row.place = null
                     row.institute_type = null
                     row.institute_url = null
@@ -1820,10 +1819,18 @@ module.exports.add_courses = async (req, res) => {
         const data = { institute_id, discipline_id, subject_name, course_name, program_lavel, course_url }
         const institute_list = await Institutes.findOne({ _id: institute_id });
         if (institute_list) {
-            console.log('institute_list', institute_list)
-            data.place = institute_list.place;
-            data.institute_type = institute_list.institute_type;
-            data.institute_url = institute_list.institute_url;
+            if (institute_list.place && institute_list.institute_type) {
+                console.log('institute_list', institute_list)
+                data.place = institute_list.place;
+                data.institute_type = institute_list.institute_type;
+                data.institute_url = institute_list.institute_url;
+            }
+            else {
+                let courses_list = await Courses.findOne({ institute_id: institute_id });
+                data.place = courses_list.place;
+                data.institute_type = courses_list.institute_type;
+                data.institute_url = courses_list.institute_url;
+            }
             const addData = await Courses.create(data);
             if (addData) {
                 res.status(200).json({ status: true, message: 'Courses Added successfully', data: addData });
