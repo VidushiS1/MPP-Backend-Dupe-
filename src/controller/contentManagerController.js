@@ -1764,10 +1764,37 @@ module.exports.discipline_delete = async (req, res) => {
             }
         }
         else {
-            res.status(400).json({ message: "Desciplines Id is required." });
+            res.status(400).json({ message: "Desciplines name is required." });
         }
     } catch (error) {
         console.log('discipline_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+module.exports.discipline_institute_delete = async (req, res) => {
+    try {
+        const discipline_name = req.body.discipline_name;
+        const institute_id = req.body.institute_id;
+        if (discipline_name && institute_id) {
+            const desciplineData = await Desciplines.find({ discipline_name: discipline_name, institute_id: institute_id });
+            if (desciplineData) {
+                desciplineData.forEach(async (row) => {
+                    await Desciplines.deleteMany({ discipline_name: discipline_name, institute_id: institute_id });
+                    await Courses.deleteMany({ discipline_id: row.discipline_id, institute_id: institute_id });
+                })
+                res.status(200).json({ status: true, message: "Institute delete successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Desciplines name and institute Id is required." });
+        }
+    } catch (error) {
+        console.log('discipline_institute_delete Error', error);
         res.status(500).json(error);
     }
 }
