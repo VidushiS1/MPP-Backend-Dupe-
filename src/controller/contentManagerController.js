@@ -2178,3 +2178,30 @@ module.exports.course_delete = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+
+
+module.exports.course_level = async (req, res) => {
+    try {
+        // const course_name = req.query.course_name;
+        // if (!course_name) {
+        //     res.status(400).json({ message: "Please Select A Course" });
+        // }
+        // else {
+        const levelData = await Courses.find();
+        let program_lavels = [];
+        let program_lavelSet = new Set();
+        levelData.map((row) => {
+            let program_lavel = row.program_lavel;
+            if (!program_lavelSet.has(program_lavel)) {
+                program_lavels.push({ program_lavel: program_lavel });
+                program_lavelSet.add(program_lavel);
+            }
+        });
+        res.status(200).json({ status: true, message: "course type", data: program_lavels });
+        // }
+    } catch (error) {
+        console.log('course_level Error', error);
+        res.status(500).json(error);
+    }
+}
