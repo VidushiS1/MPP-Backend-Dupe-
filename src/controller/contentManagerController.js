@@ -2107,6 +2107,27 @@ module.exports.course_edit = async (req, res) => {
 }
 
 
+module.exports.course_view = async (req, res) => {
+    try {
+        const course_id = req.query.course_id;
+        if (!course_id) {
+            res.status(400).json({ message: "Course Id is required." });
+        }
+        else {
+            const couresData = await Courses.findOne({ _id: course_id });
+            if (couresData) {
+                res.status(200).json({ status: true, message: "Course view", data: couresData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('course_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
 
 module.exports.course_delete = async (req, res) => {
     try {

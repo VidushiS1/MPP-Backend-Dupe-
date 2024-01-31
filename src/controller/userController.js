@@ -1561,14 +1561,18 @@ module.exports.filtered_result = async (req, res) => {
         if (req.body.city) {
             filter.place = req.body.city;
         }
-        console.log('filter', filter)
         const course = await Courses.find(filter).lean();
         if (course.length) {
             const promiss = course.map(async (row) => {
                 let instituteData = await Institutes.findOne({ _id: row.institute_id });
-                row.institute_name = instituteData.institute_name;
-                console.log('row', instituteData.institute_name)
-                return row;
+                if (instituteData) {
+                    row.institute_name = instituteData.institute_name;
+                    // console.log('row', instituteData.institute_name)
+                    return row;
+                }
+                else {
+                    console.log('row.institute_id', row.institute_id)
+                }
             })
             const newData = await Promise.all(promiss);
             res.status(200).json({ status: true, message: "Institute filter Data", data: newData });

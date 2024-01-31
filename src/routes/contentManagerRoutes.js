@@ -91,6 +91,7 @@ app.put('/subject-edit', decodedToken, contentManagerController.subject_edit)
 app.delete('/subject-delete', decodedToken, contentManagerController.subject_delete);
 
 app.put('/course-edit', decodedToken, contentManagerController.course_edit);
+app.get('/course-view', decodedToken, contentManagerController.course_view);
 app.delete('/course-delete', decodedToken, contentManagerController.course_delete);
 
 module.exports = app; 
