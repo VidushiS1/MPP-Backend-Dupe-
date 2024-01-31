@@ -90,6 +90,8 @@ app.get('/subject-view', decodedToken, contentManagerController.subject_view);
 app.put('/subject-edit', decodedToken, contentManagerController.subject_edit)
 app.delete('/subject-delete', decodedToken, contentManagerController.subject_delete);
 
+
+app.get('/course-list', decodedToken, contentManagerController.course_list);
 app.put('/course-edit', decodedToken, contentManagerController.course_edit);
 app.get('/course-view', decodedToken, contentManagerController.course_view);
 app.delete('/course-delete', decodedToken, contentManagerController.course_delete);

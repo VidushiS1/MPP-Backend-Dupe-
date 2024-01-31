@@ -1947,7 +1947,7 @@ module.exports.subject_list = async (req, res) => {
                     subjectCounts[subject]++;
                 }
             });
-            res.status(200).json({ status: true, message: "Courses list", data: subjects });
+            res.status(200).json({ status: true, message: "Subject list", data: subjects });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -2082,6 +2082,34 @@ module.exports.subject_delete = async (req, res) => {
 }
 
 
+module.exports.course_list = async (req, res) => {
+    try {
+        const couresData = await Courses.find().sort({ subject_name: 1 });
+        if (couresData.length) {
+            let courses = [];
+            let courseSet = new Set();
+            let courseCounts = {};
+            couresData.map((row) => {
+                let course = row.course_name;
+                if (!courseSet.has(course)) {
+                    courses.push({ course: course, courses: 1 });
+                    courseSet.add(course);
+                    courseCounts[course] = 1;
+                } else {
+                    courses.find(d => d.course === course).courses++;
+                    courseCounts[course]++;
+                }
+            });
+            res.status(200).json({ status: true, message: "Courses list", data: courses });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('course_list Error', error);
+        res.status(500).json(error);
+    }
+}
 
 
 module.exports.course_edit = async (req, res) => {
