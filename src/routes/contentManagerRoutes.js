@@ -81,7 +81,7 @@ app.get('/discipline-view', decodedToken, contentManagerController.discipline_vi
 app.put('/discipline-edit', decodedToken, contentManagerController.discipline_edit)
 app.delete('/discipline-delete', decodedToken, contentManagerController.discipline_delete);
 app.post('/discipline-institute-delete', decodedToken, contentManagerController.discipline_institute_delete);
-
+// app.get('/discipline-subject-view',decodedToken, contentManagerController.discipline_subject_view);
 
 
 app.post('/add-subject', decodedToken, contentManagerController.add_subject);

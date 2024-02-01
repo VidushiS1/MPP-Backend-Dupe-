@@ -1354,68 +1354,145 @@ module.exports.add_institute = async (req, res) => {
 
 module.exports.institute_list = async (req, res) => {
     try {
-        const instituteList = await Institutes.find().sort({ institute_name: 1 });
+        // const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
+        // if (instituteList.length) {
+        //     const promiss = instituteList.map(async (row) => {
+        //         let course1 = await Courses.find({ institute_id: row._id });
+        //         let disciplineslist = await Desciplines.find({ institute_id: row._id });
+        //         let disciplines = [];
+        //         let disciplineSet = new Set();
+        //         let disciplineCounts = {};
+        //         disciplineslist.forEach((row) => {
+        //             let discipline = row.discipline_name;
+        //             let filterCondition = !disciplineSet.has(discipline);
+        //             if (filterCondition) {
+        //                 disciplines.push({ discipline: discipline, institutes: 1 });
+        //                 disciplineSet.add(discipline);
+        //                 disciplineCounts[discipline] = 1;
+        //             } else {
+        //                 disciplines.find(d => d.discipline === discipline).institutes++;
+        //                 disciplineCounts[discipline]++;
+        //             }
+        //         });
+        //         let subjects = [];
+        //         let subjectSet = new Set();
+        //         let subjectCounts = {};
+        //         course1.forEach((row) => {
+        //             let subject = row.subject_name;
+        //             let filterCondition = !subjectSet.has(subject);
+        //             if (filterCondition) {
+        //                 subjects.push({ subject: subject, institutes: 1 });
+        //                 disciplineSet.add(subject);
+        //                 subjectCounts[subject] = 1;
+        //             } else {
+        //                 subjects.find(d => d.subject === subject).institutes++;
+        //                 subjectCounts[subject]++;
+        //             }
+        //         });
+        //         let courses = [];
+        //         let courseSet = new Set();
+        //         let courseCounts = {};
+        //         course1.forEach((row) => {
+        //             let course = row.course_name;
+        //             let filterCondition = !subjectSet.has(course);
+        //             if (!courseSet.has(course)) {
+        //                 courses.push({ course: course, courses: 1 });
+        //                 courseSet.add(course);
+        //                 courseCounts[course] = 1;
+        //             } else {
+        //                 courses.find(d => d.course === course).courses++;
+        //                 courseCounts[course]++;
+        //             }
+        //         });
+        //         console.log('disciplines', disciplines);
+        //         row.courses = courses.length;
+        //         row.subjects = subjects.length;
+        //         row.disciplines = disciplines.length;
+        //         let course = await Courses.findOne({ institute_id: row._id });
+        //         if (row.place && row.institute_type) {
+        //             return row;
+        //         }
+        //         else if (course) {
+        //             row.place = course.place
+        //             row.institute_type = course.institute_type
+        //             row.institute_url = course.institute_url
+        //             return row;
+        //         }
+        //         else {
+        //             row.place = null
+        //             row.institute_type = null
+        //             row.institute_url = null
+        //             return row;
+        //         }
+        //     })
+        //     const newArr = await Promise.all(promiss)
+        //     res.status(200).json({ status: true, message: "Institutes list", data: newArr });
+        // }
+        // else {
+        //     res.status(404).json({ status: false, message: "Data not found." });
+        // }
+
+        const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
+
         if (instituteList.length) {
             const promiss = instituteList.map(async (row) => {
-                let course = await Courses.findOne({ institute_id: row._id });
-                if (course) {
-                    row.place = course.place
-                    row.institute_type = course.institute_type
-                    row.institute_url = course.institute_url
+                const [disciplineslist, course1] = await Promise.all([
+                    Desciplines.find({ institute_id: row._id }).lean(),
+                    Courses.find({ institute_id: row._id }).lean()
+                ]);
+
+                const { items: disciplines, counts: disciplineCounts } = processItems(disciplineslist, "discipline_name");
+                const { items: subjects, counts: subjectCounts } = processItems(course1, "subject_name");
+                const { items: courses, counts: courseCounts } = processItems(course1, "course_name");
+
+                row.courses = courses.length;
+                row.subjects = subjects.length;
+                row.disciplines = disciplines.length;
+
+                const course = await Courses.findOne({ institute_id: row._id }).lean();
+
+                if (row.place && row.institute_type) {
+                    return row;
+                } else if (course) {
+                    row.place = course.place;
+                    row.institute_type = course.institute_type;
+                    row.institute_url = course.institute_url;
+                    return row;
+                } else {
+                    row.place = null;
+                    row.institute_type = null;
+                    row.institute_url = null;
                     return row;
                 }
-                else if (row.place && row.institute_type) {
-                    return row;
-                }
-                else {
-                    row.place = null
-                    row.institute_type = null
-                    row.institute_url = null
-                    return row;
-                }
-            })
-            const newArr = await Promise.all(promiss)
+            });
+
+            const newArr = await Promise.all(promiss);
             res.status(200).json({ status: true, message: "Institutes list", data: newArr });
-        }
-        else {
+        } else {
             res.status(404).json({ status: false, message: "Data not found." });
         }
 
-        // const instituteList = await Institutes.aggregate([
-        //     {
-        //         $addFields: {
-        //             idObjectId: { $toObjectId: "$_id" }
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "courses",
-        //             localField: "idObjectId",
-        //             foreignField: "institute_id",
-        //             as: "courseInfo"
-        //         }
-        //     },
-        //     {
-        //         $unwind: {
-        //             path: "$courseInfo",
-        //             preserveNullAndEmptyArrays: true
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             institute_name: 1,
-        //             place: "$courseInfo.place",
-        //             institute_type: "$courseInfo.institute_type",
-        //             institute_url: "$courseInfo.institute_url"
-        //         }
-        //     },
-        //     // {
-        //     //   $sort: { institute_name: 1 }
-        //     // }
-        // ]);
+        function processItems(itemList, itemNameKey) {
+            const items = [];
+            const itemSet = new Set();
+            const itemCounts = {};
 
-        // console.log('instituteList', instituteList)
-        // res.status(200).json({ status: true, message: "Institutes list", data: instituteList });
+            itemList.forEach((item) => {
+                const itemName = item[itemNameKey];
+                const filterCondition = !itemSet.has(itemName);
+
+                if (filterCondition) {
+                    items.push({ [itemNameKey]: itemName, institutes: 1 });
+                    itemSet.add(itemName);
+                    itemCounts[itemName] = 1;
+                } else {
+                    items.find(d => d[itemNameKey] === itemName).institutes++;
+                    itemCounts[itemName]++;
+                }
+            });
+
+            return { items, counts: itemCounts };
+        }
 
     } catch (error) {
         console.log('institute_list Error', error);
@@ -1429,23 +1506,63 @@ module.exports.institute_view = async (req, res) => {
     try {
         const institute_id = req.query.institute_id;
         if (institute_id) {
-            const instituteData = await Institutes.findOne({ _id: institute_id });
+            const instituteData = await Institutes.findOne({ _id: institute_id }).lean();
             if (instituteData) {
                 const course = await Courses.findOne({ institute_id: instituteData._id });
+
                 if (course) {
-                    instituteData.place = course.place
-                    instituteData.institute_type = course.institute_type
-                    instituteData.institute_url = course.institute_url
+                    instituteData.place = course.place;
+                    instituteData.institute_type = course.institute_type;
+                    instituteData.institute_url = course.institute_url;
+
+                    const disciplineList = await Desciplines.find({ institute_id: institute_id });
+
+                    if (disciplineList.length) {
+                        let disciplines = [];
+                        let disciplineSet = new Set();
+                        let disciplineCounts = {};
+
+                        for (const row of disciplineList) {
+                            const discipline = row.discipline_name;
+                            const coursesData = await Courses.find({ discipline_id: row._id });
+                            let subjects = [];
+                            let subjectSet = new Set();
+                            let subjectCounts = {};
+
+                            for (const courseRow of coursesData) {
+                                const subject = courseRow.subject_name;
+                                if (!subjectSet.has(subject)) {
+                                    subjects.push({ subject: subject, courses: 1 });
+                                    subjectSet.add(subject);
+                                    subjectCounts[subject] = 1;
+                                } else {
+                                    subjects.find(d => d.subject === subject).courses++;
+                                    subjectCounts[subject]++;
+                                }
+                            }
+
+                            if (!disciplineSet.has(discipline)) {
+                                disciplines.push({ discipline: discipline, subjectsLength: subjects.length });
+                                disciplineSet.add(discipline);
+                                disciplineCounts[discipline] = 1;
+                            } else {
+                                disciplines.find(d => d.discipline === discipline).subjectsLength = subjects.length;
+                                disciplineCounts[discipline]++;
+                            }
+                        }
+                        instituteData.disciplines = disciplines;
+                    }
                 }
                 res.status(200).json({ status: true, message: "Institute view", data: instituteData });
-            }
-            else {
-                res.status(404).json({ status: false, message: "Data not found." });
+            } else {
+                res.status(404).json({ status: false, message: "Institute not found." });
             }
         }
         else {
             res.status(400).json({ message: "Institute Id is required." });
         }
+
+
         // const institute_id = req.query.institute_id;
         // if (institute_id) {
         //     const instituteData = await Institutes.aggregate([
@@ -1799,7 +1916,41 @@ module.exports.discipline_institute_delete = async (req, res) => {
     }
 }
 
+// module.exports.discipline_subject_view = async (req, res) => {
+//     try {
+//         const discipline_name = req.query.discipline_name;
+//         if (discipline_name) {
+//             const disciplineData = await Desciplines.find({ discipline_name: discipline_name });
+//             if (disciplineData) {
+//                 disciplineData.map(async (item) => {
+//                     let subject = await Courses.find({ discipline_id: item._id });
+//                     let subjects = [];
+//                     let subjectSet = new Set();
+//                     let subjectCounts = {};
+//                     subject.map((row) => {
+//                         let subject = row.subject_name;
+//                         if (!subjectSet.has(subject)) {
+//                             subjects.push({ subject: subject, courses: 1 });
+//                             subjectSet.add(subject);
+//                             subjectCounts[subject] = 1;
+//                         } else {
+//                             subjects.find(d => d.subject === subject).courses++;
+//                             subjectCounts[subject]++;
+//                         }
+//                     });
+//                     console.log('subjects', subjects);
+//                 })
+//             }
+//         } else {
+//             res.status(400).json({ message: "Discipline name is required." });
+//         }
+//     } catch (error) {
+//         console.log('discipline_subject_view Error', error);
+//         res.status(500).json({ status: false, message: "Internal server error." });
+//     }
 
+
+// }
 
 module.exports.add_subject = async (req, res) => {
     try {
