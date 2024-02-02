@@ -2016,7 +2016,7 @@ module.exports.add_subject = async (req, res) => {
         if (institute_list) {
             let disciplineData = await Desciplines.findOne({ institute_id: institute_id, discipline_name: discipline_id });
             console.log('disciplineData', disciplineData)
-            return false
+            data.discipline_id = disciplineData.id;
             if (institute_list.place && institute_list.institute_type) {
                 data.place = institute_list.place;
                 data.institute_type = institute_list.institute_type;
@@ -2028,6 +2028,7 @@ module.exports.add_subject = async (req, res) => {
                 data.institute_type = courses_list.institute_type;
                 data.institute_url = courses_list.institute_url;
             }
+            console.log('data', data)
             const addData = await Courses.create(data);
             if (addData) {
                 res.status(200).json({ status: true, message: 'Courses Added successfully', data: addData });
