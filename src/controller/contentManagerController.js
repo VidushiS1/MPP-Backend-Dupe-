@@ -1890,6 +1890,7 @@ module.exports.discipline_delete = async (req, res) => {
 }
 
 
+
 module.exports.discipline_institute_delete = async (req, res) => {
     try {
         const discipline_name = req.body.discipline_name;
@@ -1916,41 +1917,58 @@ module.exports.discipline_institute_delete = async (req, res) => {
     }
 }
 
-// module.exports.discipline_subject_view = async (req, res) => {
-//     try {
-//         const discipline_name = req.query.discipline_name;
-//         if (discipline_name) {
-//             const disciplineData = await Desciplines.find({ discipline_name: discipline_name });
-//             if (disciplineData) {
-//                 disciplineData.map(async (item) => {
-//                     let subject = await Courses.find({ discipline_id: item._id });
-//                     let subjects = [];
-//                     let subjectSet = new Set();
-//                     let subjectCounts = {};
-//                     subject.map((row) => {
-//                         let subject = row.subject_name;
-//                         if (!subjectSet.has(subject)) {
-//                             subjects.push({ subject: subject, courses: 1 });
-//                             subjectSet.add(subject);
-//                             subjectCounts[subject] = 1;
-//                         } else {
-//                             subjects.find(d => d.subject === subject).courses++;
-//                             subjectCounts[subject]++;
-//                         }
-//                     });
-//                     console.log('subjects', subjects);
-//                 })
-//             }
-//         } else {
-//             res.status(400).json({ message: "Discipline name is required." });
-//         }
-//     } catch (error) {
-//         console.log('discipline_subject_view Error', error);
-//         res.status(500).json({ status: false, message: "Internal server error." });
-//     }
 
 
-// }
+module.exports.discipline_subject_view = async (req, res) => {
+    try {
+        const discipline_name = req.query.discipline_name;
+        if (discipline_name) {
+            const disciplineData = await Desciplines.find({ discipline_name: discipline_name });
+
+            if (disciplineData && disciplineData.length > 0) {
+                let subjectData = [];
+
+                for (const item of disciplineData) {
+                    const coursesData = await Courses.find({ discipline_id: item._id });
+                    subjectData = subjectData.concat(coursesData);
+                }
+
+                let subjects = [];
+                let subjectSet = new Set();
+                let subjectCounts = {};
+
+                subjectData.forEach((row) => {
+                    let subject = row.subject_name;
+                    if (!subjectSet.has(subject)) {
+                        subjects.push({ subject: subject, courses: 1 });
+                        subjectSet.add(subject);
+                        subjectCounts[subject] = 1;
+                    } else {
+                        subjects.find(d => d.subject === subject).courses++;
+                        subjectCounts[subject]++;
+                    }
+                });
+
+                let newArr = {
+                    discipline_name: discipline_name,
+                    subjects: subjects
+                };
+                res.status(200).json({ status: true, message: "Descipline subject view", data: newArr });
+            } else {
+                res.status(404).json({ message: "Descipline not found" });
+            }
+        } else {
+            res.status(400).json({ message: "Discipline name is required." });
+        }
+    } catch (error) {
+        console.log('discipline_subject_view Error', error);
+        res.status(500).json({ status: false, message: "Internal server error." });
+    }
+
+
+}
+
+
 
 module.exports.add_subject = async (req, res) => {
     try {
