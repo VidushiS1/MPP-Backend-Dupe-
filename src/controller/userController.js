@@ -168,6 +168,7 @@ module.exports.login = async (req, res) => {
                     process.env.SECRET_KEY,
                     { expiresIn: "365d" }
                 )
+                await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token });
                 res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, education_qualification, hobys, token: token });
             }
             else {
@@ -503,6 +504,7 @@ module.exports.below_10th_qualification = async (req, res) => {
         }
         const addEducation = await Education.create(below10th);
         if (addEducation) {
+            await Students.updateOne({ _id: student_id }, { criteria: 'below_10th' });
             res.status(200).json({ status: true, message: "Education details has been added successfully." });
         }
         else {
@@ -556,6 +558,7 @@ module.exports.class_10th_qualification = async (req, res) => {
             }
             const addEducation = await Education.create(data10th);
             if (addEducation) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'class_10th' });
                 res.status(200).json({ status: true, message: "Education details has been added successfully." });
             }
             else {
@@ -635,6 +638,7 @@ module.exports.class_12th_qualification = async (req, res) => {
             }
             const addEducation = await Education.create(data12th);
             if (addEducation) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'class_12th' });
                 res.status(200).json({ status: true, message: "Education details has been added successfully." });
             }
             else {
@@ -737,6 +741,7 @@ module.exports.ug_diploma_qualification = async (req, res) => {
             }
             const addEducation = await Education.create(dataUgDp);
             if (addEducation) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'ug_diploma' });
                 res.status(200).json({ status: true, message: "Education details has been added successfully." });
             }
             else {
@@ -839,6 +844,7 @@ module.exports.ug_qualification = async (req, res) => {
             }
             const addEducation = await Education.create(dataUgDp);
             if (addEducation) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'Ug' });
                 res.status(200).json({ status: true, message: "Education details has been added successfully." });
             }
             else {
@@ -964,6 +970,7 @@ module.exports.pg_qualification = async (req, res) => {
             }
             const addEducation = await Education.create(dataUgDp);
             if (addEducation) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'Pg' });
                 res.status(200).json({ status: true, message: "Education details has been added successfully." });
             }
             else {
@@ -1093,6 +1100,7 @@ module.exports.jobs_seeker = async (req, res) => {
         else {
             const addjobseeker = await Jobseeker.create(setData);
             if (addjobseeker) {
+                await Students.updateOne({ _id: student_id }, { criteria: 'job_seeker' });
                 res.status(201).json({ status: true, message: "Job Seeker details has been added successfully." });
             }
             else {

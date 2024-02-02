@@ -3,6 +3,7 @@ const sha1 = require("sha1");
 const jwt = require('jsonwebtoken');
 
 const checkValidation = require('../helper/joiValidation');
+const fcmNotification = require('../helper/sendNotification');
 
 const ContentManager = require('../module/content_manager');
 const User = require('../module/userModule');
@@ -22,6 +23,8 @@ const Institutes = require('../module/institute');
 const Desciplines = require('../module/descipline');
 const Courses = require('../module/courses');
 const Cities = require('../module/cities');
+const Notifications = require('../module/notifications');
+const Students = require('../module/student');
 
 module.exports.login = async (req, res) => {
     try {
@@ -1152,8 +1155,6 @@ module.exports.carrer_advise_agenda_edit = async (req, res) => {
 
 
 
-
-
 module.exports.carrer_advise_agenda_list = async (req, res) => {
     try {
         const agendaData = await careerAgenda.find();
@@ -1964,8 +1965,6 @@ module.exports.discipline_subject_view = async (req, res) => {
         console.log('discipline_subject_view Error', error);
         res.status(500).json({ status: false, message: "Internal server error." });
     }
-
-
 }
 
 
@@ -2015,8 +2014,10 @@ module.exports.add_subject = async (req, res) => {
         const data = { institute_id, discipline_id, subject_name, course_name, program_lavel, course_url }
         const institute_list = await Institutes.findOne({ _id: institute_id });
         if (institute_list) {
+            let disciplineData = await Desciplines.findOne({ institute_id: institute_id, discipline_name: discipline_id });
+            console.log('disciplineData', disciplineData)
+            return false
             if (institute_list.place && institute_list.institute_type) {
-                console.log('institute_list', institute_list)
                 data.place = institute_list.place;
                 data.institute_type = institute_list.institute_type;
                 data.institute_url = institute_list.institute_url;
@@ -2251,6 +2252,44 @@ module.exports.subject_delete = async (req, res) => {
 }
 
 
+
+module.exports.discipline_list_instituteId = async (req, res) => {
+    try {
+        const institute_id = req.query.institute_id;
+        if (!institute_id) {
+            res.status(400).json({ message: "Institute Id is required." });
+        }
+        else {
+            const desciplineList = await Desciplines.find({ institute_id: institute_id });
+            console.log('desciplineList', desciplineList);
+            if (desciplineList) {
+                let disciplines = [];
+                let disciplineSet = new Set();
+                let disciplineCounts = {};
+                desciplineList.map((row) => {
+                    let discipline = row.discipline_name;
+                    if (!disciplineSet.has(discipline)) {
+                        disciplines.push({ discipline: discipline, institutes: 1 });
+                        disciplineSet.add(discipline);
+                        disciplineCounts[discipline] = 1;
+                    } else {
+                        disciplines.find(d => d.discipline === discipline).institutes++;
+                        disciplineCounts[discipline]++;
+                    }
+                });
+                res.status(200).json({ status: true, message: "Discipline list", data: disciplines });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('discipline_list_instituteId Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
 module.exports.course_list = async (req, res) => {
     try {
         const couresData = await Courses.find().sort({ subject_name: 1 });
@@ -2371,6 +2410,60 @@ module.exports.course_level = async (req, res) => {
         // }
     } catch (error) {
         console.log('course_level Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.add_notification = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            criteria: Joi.string().required().messages({
+                'string.empty': 'criteria cannot be an empty field',
+                'any.required': 'criteria is required field'
+            }),
+            title: Joi.string().min(1).max(60).required().messages({
+                'string.empty': 'title cannot be an empty field',
+                'any.required': 'title is required field',
+                'string.min': '"agenda" length must be at least 1 character long',
+                'string.max': '"agenda" length must be less than or equal to 60 characters long'
+            }),
+            description: Joi.string().min(1).max(300).required().messages({
+                'string.empty': 'description cannot be an empty field',
+                'any.required': 'description is required field',
+                'string.min': '"agenda" length must be at least 1 character long',
+                'string.max': '"agenda" length must be less than or equal to 300 characters long'
+            })
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const { criteria, title, description } = req.body;
+        const data = { criteria, title, description }
+        const studentData = await Students.find({ criteria: criteria });
+        let userIds = [];
+        studentData.forEach((student) => {
+            userIds.push(student.userId);
+        })
+        const userData = await User.find({ _id: { $in: userIds } });
+        await Notifications.create(data);
+        try {
+            let promise = userData.map(async (row) => {
+                await fcmNotification.sendNotification(row.fcm_token, title, description);
+                // await Notifications.create(data);
+            });
+            await Promise.all(promise).then(async () => {
+                res.status(201).json({ status: true, message: "Notification send successfully" });
+            }).catch((err) => {
+                console.log('err', err);
+                res.status(201).json({ status: true, message: "Notification send successfully" });
+            })
+        } catch (error) {
+            console.log('error', error);
+            res.status(201).json({ status: true, message: "Notification send successfully" });
+        }
+    } catch (error) {
+        console.log('add_notification Error', error);
         res.status(500).json(error);
     }
 }

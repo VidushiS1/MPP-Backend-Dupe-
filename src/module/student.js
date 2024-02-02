@@ -1,7 +1,11 @@
 const mongoose = require('../helper/dbconnection');
 
 const studentSchema = new mongoose.Schema({
-    userId :{
+    userId: {
+        type: String,
+        require: true,
+    },
+    criteria: {
         type: String,
         require: true,
     },

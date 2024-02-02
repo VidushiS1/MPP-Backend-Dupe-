@@ -81,7 +81,7 @@ app.get('/discipline-view', decodedToken, contentManagerController.discipline_vi
 app.put('/discipline-edit', decodedToken, contentManagerController.discipline_edit)
 app.delete('/discipline-delete', decodedToken, contentManagerController.discipline_delete);
 app.post('/discipline-institute-delete', decodedToken, contentManagerController.discipline_institute_delete);
-app.get('/discipline-subject-view',decodedToken, contentManagerController.discipline_subject_view);
+app.get('/discipline-subject-view', decodedToken, contentManagerController.discipline_subject_view);
 
 
 app.post('/add-subject', decodedToken, contentManagerController.add_subject);
@@ -89,7 +89,7 @@ app.get('/subject-list', decodedToken, contentManagerController.subject_list);
 app.get('/subject-view', decodedToken, contentManagerController.subject_view);
 app.put('/subject-edit', decodedToken, contentManagerController.subject_edit)
 app.delete('/subject-delete', decodedToken, contentManagerController.subject_delete);
-
+app.get('/discipline-list-instituteId', decodedToken, contentManagerController.discipline_list_instituteId)
 
 app.get('/course-list', decodedToken, contentManagerController.course_list);
 app.put('/course-edit', decodedToken, contentManagerController.course_edit);
@@ -97,4 +97,7 @@ app.get('/course-view', decodedToken, contentManagerController.course_view);
 app.delete('/course-delete', decodedToken, contentManagerController.course_delete);
 
 app.get('/course-level', decodedToken, contentManagerController.course_level);
+
+
+app.post('/add-notification', decodedToken, contentManagerController.add_notification);
 module.exports = app; 

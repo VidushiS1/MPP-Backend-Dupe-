@@ -45,6 +45,11 @@ const UserSchema = new mongoose.Schema({
         require: false,
         default: null
     },
+    fcm_token: {
+        type: String,
+        require: false,
+        default: null
+    }
 }, { timestamps: true });
 
 const User = mongoose.model('users', UserSchema);
