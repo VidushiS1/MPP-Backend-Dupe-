@@ -68,4 +68,7 @@ app.post('/reset-password', userController.reset_password);
 app.get('/broadcast-list', jwtToken.decodedToken, userController.broadcast_list);
 
 app.get('/career-advise-agenda-list', jwtToken.decodedToken, userController.carrer_advise_agenda_list);
+
+app.get('/notification-list', jwtToken.decodedToken, userController.notification_list);
+app.get('/notification-view', jwtToken.decodedToken, userController.notification_view);
 module.exports = app; 

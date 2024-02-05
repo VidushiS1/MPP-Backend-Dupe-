@@ -100,5 +100,8 @@ app.get('/course-level', decodedToken, contentManagerController.course_level);
 
 
 app.post('/add-notification', decodedToken, contentManagerController.add_notification);
+app.get('/notification-list', decodedToken, contentManagerController.notification_list);
+app.get('/notification-view', decodedToken, contentManagerController.notification_view);
+// app.post('/add-notification', decodedToken, contentManagerController.add_notification);
 
 module.exports = app; 

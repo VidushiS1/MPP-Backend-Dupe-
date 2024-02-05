@@ -31,6 +31,8 @@ const mongoose = require("mongoose");
 const Time_slot = require('../module/time_slot');
 const Broudcast = require('../module/broad_cast');
 const careerAgenda = require('../module/carreer_agenda');
+const StudentNotifications = require('../module/student_notification');
+
 
 
 module.exports.sign_up = async (req, res) => {
@@ -73,6 +75,8 @@ module.exports.sign_up = async (req, res) => {
         const { name, email, employee_id, mobile_no, language } = req.body;
         const userData = { name, email, employee_id, mobile_no, language };
         userData.password = sha1(req.body.password);
+        userData.fcm_token = req.body.fcm_token
+
         const employeeId = "653243453";
         // const checkEmployee = await Employees.find({ employee_id: userData.employee_id });
         if (employeeId === employee_id) {
@@ -2163,6 +2167,46 @@ module.exports.carrer_advise_agenda_list = async (req, res) => {
         }
     } catch (error) {
         console.log('carrer_advise_agenda_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.notification_list = async (req, res) => {
+    try {
+        const notificationData = await StudentNotifications.find({ userId: req.userId });
+        if (notificationData) {
+            res.status(200).json({ status: true, message: "Notification list", data: notificationData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('notification_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.notification_view = async (req, res) => {
+    try {
+        const notificationId = req.query.notificationId;
+        if (!notificationId) {
+            res.status(400).json({ message: "Notification Id is required." });
+        }
+        else {
+            const notificationData = await StudentNotifications.findOne({ _id: notificationId });
+            if (notificationData) {
+                res.status(200).json({ status: true, message: "Notification view", data: notificationData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('notification_view Error', error);
         res.status(500).json(error);
     }
 }

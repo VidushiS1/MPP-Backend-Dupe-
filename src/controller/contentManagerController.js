@@ -26,7 +26,7 @@ const Cities = require('../module/cities');
 const Notifications = require('../module/notifications');
 const Students = require('../module/student');
 const Education = require('../module/education');
-const StudentNotifications = require('../module/student_notification')
+const StudentNotifications = require('../module/student_notification');
 
 module.exports.login = async (req, res) => {
     try {
@@ -149,9 +149,6 @@ module.exports.user_view = async (req, res) => {
         //     console.error(error);
         //     res.status(500).json({ status: false, message: "Internal Server Error" });
         // }
-
-
-
         const userId = req.query.userId;
         if (userId) {
             const userList = await User.findOne({ _id: userId });
@@ -2412,7 +2409,6 @@ module.exports.course_level = async (req, res) => {
 
 
 
-
 module.exports.add_notification = async (req, res) => {
     try {
         const schema = Joi.object({
@@ -2460,6 +2456,47 @@ module.exports.add_notification = async (req, res) => {
         }
     } catch (error) {
         console.log('add_notification Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.notification_list = async (req, res) => {
+    try {
+        const notificationData = await Notifications.find();
+        if (notificationData.length) {
+            res.status(200).json({ status: true, message: "Notification list", data: notificationData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('notification_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.notification_view = async (req, res) => {
+    try {
+        const notificationId = req.query.notificationId;
+        if (!notificationId) {
+            res.status(400).json({ message: "Notification Id is required." });
+        }
+        else {
+            const notificationData = await Notifications.findOne({ _id: notificationId });
+            if (notificationData) {
+                res.status(200).json({ status: true, message: "Notification view", data: notificationData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('notification_view Error', error);
         res.status(500).json(error);
     }
 }
