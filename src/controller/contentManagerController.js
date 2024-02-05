@@ -25,6 +25,7 @@ const Courses = require('../module/courses');
 const Cities = require('../module/cities');
 const Notifications = require('../module/notifications');
 const Students = require('../module/student');
+const Education = require('../module/education');
 
 module.exports.login = async (req, res) => {
     try {
@@ -91,13 +92,79 @@ module.exports.user_list = async (req, res) => {
 
 
 
-module.exports.user_view = async (req, res) => {
+module.exports.user_view = async (req, res) => {a
     try {
+        // const userId = req.query.userId;
+
+        // if (!userId) {
+        //     return res.status(400).json({ status: false, message: "User Id is required" });
+        // }
+
+        // try {
+        //     const result = await Students.aggregate([
+        //         {
+        //             $addFields: {
+        //                 userObjectId: { $toObjectId: "$userId" }
+        //             }
+        //         },
+        //         {
+        //             $match: { userId: userId }
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "users", // Replace "users" with the actual name of your User collection
+        //                 localField: "userObjectId",
+        //                 foreignField: "_id",
+        //                 as: "user"
+        //             }
+        //         },
+        //         {
+        //             $unwind: "$user"
+        //         },
+        //         {
+        //             $lookup: {
+        //                 from: "qualifications", // Replace "educations" with the actual name of your Education collection
+        //                 localField: "_id",
+        //                 foreignField: "student_id",
+        //                 as: "qualification"
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 _id: 0, // Exclude _id field
+        //                 "user.mobile_no": 1,
+        //                 studentData: "$$ROOT",
+        //                 qualification: { $arrayElemAt: ["$qualification", 0] } // Assuming there is only one qualification per student
+        //             }
+        //         }
+        //     ]);
+
+        //     if (result.length > 0) {
+        //         res.status(200).json({ status: true, message: "User view", data: result[0] });
+        //     } else {
+        //         res.status(404).json({ status: false, message: "User is not available." });
+        //     }
+        // } catch (error) {
+        //     console.error(error);
+        //     res.status(500).json({ status: false, message: "Internal Server Error" });
+        // }
+
+
+
         const userId = req.query.userId;
         if (userId) {
-            const userList = await User.find({ _id: userId });
-            if (userList) {
-                res.status(200).json({ status: true, message: "User view", data: userList });
+            const userList = await User.findOne({ _id: userId });
+            const studentData = await Students.findOne({ userId: userId }).lean();
+            if (studentData) {
+                studentData.mobile_no = userList.mobile_no;
+                studentData.email = userList.email;
+                studentData.employee_id = userList.employee_id;
+                const qualification = await Education.findOne({ student_id: studentData._id });
+                let newArr = {
+                    studentData,
+                    qualification
+                }
+                res.status(200).json({ status: true, message: "User view", data: newArr });
             }
             else {
                 res.status(404).json({ status: false, message: "User is not available." });
