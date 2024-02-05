@@ -66,4 +66,6 @@ app.post('/verify-otp', userController.verify_otp);
 app.post('/reset-password', userController.reset_password);
 
 app.get('/broadcast-list', jwtToken.decodedToken, userController.broadcast_list);
+
+app.get('/career-advise-agenda-list', jwtToken.decodedToken, userController.carrer_advise_agenda_list);
 module.exports = app; 

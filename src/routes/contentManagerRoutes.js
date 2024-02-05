@@ -18,7 +18,7 @@ app.put('/govt-sector-edit', decodedToken, contentManagerController.govt_sector_
 app.delete('/govt-sector-delete', decodedToken, contentManagerController.govt_sector_delete);
 
 app.post('/add-gov-jobs', decodedToken, contentManagerController.add_gov_jobs);
-app.get('/gov-jobs-list', decodedToken, contentManagerController.gov_jobs_list);
+app.post('/gov-jobs-list', decodedToken, contentManagerController.gov_jobs_list);
 app.get('/gov-job-view', decodedToken, contentManagerController.gov_job_view);
 app.put('/govt-job-edit', decodedToken, contentManagerController.govt_job_edit);
 app.delete('/govt-job-delete', decodedToken, contentManagerController.govt_job_delete);
@@ -29,7 +29,7 @@ app.put('/pvt-sector-edit', decodedToken, contentManagerController.pvt_sector_ed
 app.delete('/pvt-sector-delete', decodedToken, contentManagerController.pvt_sector_delete);
 
 app.post('/add-pvt-jobs', decodedToken, contentManagerController.add_pvt_jobs);
-app.get('/pvt-jobs-list', decodedToken, contentManagerController.pvt_jobs_list);
+app.post('/pvt-jobs-list', decodedToken, contentManagerController.pvt_jobs_list);
 app.get('/pvt-job-view', decodedToken, contentManagerController.pvt_job_view);
 app.put('/pvt-job-edit', decodedToken, contentManagerController.pvt_job_edit);
 app.delete('/pvt-job-delete', decodedToken, contentManagerController.pvt_job_delete);

@@ -166,6 +166,11 @@ module.exports.career_advise_list = async (req, res) => {
                     mobile_no: '$user.mobile_no',
                     email: '$user.email',
                 }
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
             }
         ]);
         if (careerAdviseList) {
@@ -288,7 +293,7 @@ module.exports.add_gov_sector = async (req, res) => {
 
 module.exports.gov_sector_list = async (req, res) => {
     try {
-        const entranceStreamData = await GovJobSector.find().sort({ job_sector: 1 });
+        const entranceStreamData = await GovJobSector.find().sort({ createdAt: -1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Sector list", data: entranceStreamData });
         }
@@ -405,9 +410,9 @@ module.exports.add_gov_jobs = async (req, res) => {
 module.exports.gov_jobs_list = async (req, res) => {
     try {
         let filter = {}
-        const sector_id = req.query.sector_id;
+        const sector_id = req.body.sector_id;
         if (sector_id) {
-            filter.sector_id = sector_id;
+            filter.sector_id = { $in: sector_id };
         }
         const jobData = await GovJobS.find(filter).sort({ createdAt: -1 });
         if (jobData.length) {
@@ -533,7 +538,7 @@ module.exports.add_pvt_sector = async (req, res) => {
 
 module.exports.pvt_sector_list = async (req, res) => {
     try {
-        const entranceStreamData = await PvtJobSector.find().sort({ job_sector: 1 });
+        const entranceStreamData = await PvtJobSector.find().sort({ createdAt: -1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Sector list", data: entranceStreamData });
         }
@@ -652,12 +657,13 @@ module.exports.add_pvt_jobs = async (req, res) => {
 module.exports.pvt_jobs_list = async (req, res) => {
     try {
         let filter = {}
-        const sector_id = req.query.sector_id;
+        const sector_id = req.body.sector_id;
         if (sector_id) {
-            filter.sector_id = sector_id;
+            filter.sector_id = { $in: sector_id };
         }
         const entranceExamData = await PvtJobS.find(filter).sort({ createdAt: -1 });
         if (entranceExamData.length) {
+            console.log(entranceExamData.length)
             res.status(200).json({ status: true, message: "Pvt Jobs list", data: entranceExamData });
         }
         else {
@@ -776,7 +782,7 @@ module.exports.add_stream = async (req, res) => {
 
 module.exports.entrance_stream_list = async (req, res) => {
     try {
-        const entranceStreamData = await Entrance_stream.find().sort({ steam_name: 1 });
+        const entranceStreamData = await Entrance_stream.find().sort({ createdAt: -1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Stream list", data: entranceStreamData });
         }
@@ -895,7 +901,7 @@ module.exports.entrance_exam_list = async (req, res) => {
         if (streamId) {
             filter.stream_id = streamId;
         }
-        const entranceExamData = await Entrance_exams.find().sort({ stream_id: -1 });
+        const entranceExamData = await Entrance_exams.find().sort({ createdAt: -1 });
         if (entranceExamData.length) {
             res.status(200).json({ status: true, message: "Entrance exam list", data: entranceExamData });
         }
@@ -1353,218 +1359,75 @@ module.exports.add_institute = async (req, res) => {
 
 
 
-// module.exports.institute_list = async (req, res) => {
-//     try {
-//         // const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
-//         // if (instituteList.length) {
-//         //     const promiss = instituteList.map(async (row) => {
-//         //         let course1 = await Courses.find({ institute_id: row._id });
-//         //         let disciplineslist = await Desciplines.find({ institute_id: row._id });
-//         //         let disciplines = [];
-//         //         let disciplineSet = new Set();
-//         //         let disciplineCounts = {};
-//         //         disciplineslist.forEach((row) => {
-//         //             let discipline = row.discipline_name;
-//         //             let filterCondition = !disciplineSet.has(discipline);
-//         //             if (filterCondition) {
-//         //                 disciplines.push({ discipline: discipline, institutes: 1 });
-//         //                 disciplineSet.add(discipline);
-//         //                 disciplineCounts[discipline] = 1;
-//         //             } else {
-//         //                 disciplines.find(d => d.discipline === discipline).institutes++;
-//         //                 disciplineCounts[discipline]++;
-//         //             }
-//         //         });
-//         //         let subjects = [];
-//         //         let subjectSet = new Set();
-//         //         let subjectCounts = {};
-//         //         course1.forEach((row) => {
-//         //             let subject = row.subject_name;
-//         //             let filterCondition = !subjectSet.has(subject);
-//         //             if (filterCondition) {
-//         //                 subjects.push({ subject: subject, institutes: 1 });
-//         //                 disciplineSet.add(subject);
-//         //                 subjectCounts[subject] = 1;
-//         //             } else {
-//         //                 subjects.find(d => d.subject === subject).institutes++;
-//         //                 subjectCounts[subject]++;
-//         //             }
-//         //         });
-//         //         let courses = [];
-//         //         let courseSet = new Set();
-//         //         let courseCounts = {};
-//         //         course1.forEach((row) => {
-//         //             let course = row.course_name;
-//         //             let filterCondition = !subjectSet.has(course);
-//         //             if (!courseSet.has(course)) {
-//         //                 courses.push({ course: course, courses: 1 });
-//         //                 courseSet.add(course);
-//         //                 courseCounts[course] = 1;
-//         //             } else {
-//         //                 courses.find(d => d.course === course).courses++;
-//         //                 courseCounts[course]++;
-//         //             }
-//         //         });
-//         //         console.log('disciplines', disciplines);
-//         //         row.courses = courses.length;
-//         //         row.subjects = subjects.length;
-//         //         row.disciplines = disciplines.length;
-//         //         let course = await Courses.findOne({ institute_id: row._id });
-//         //         if (row.place && row.institute_type) {
-//         //             return row;
-//         //         }
-//         //         else if (course) {
-//         //             row.place = course.place
-//         //             row.institute_type = course.institute_type
-//         //             row.institute_url = course.institute_url
-//         //             return row;
-//         //         }
-//         //         else {
-//         //             row.place = null
-//         //             row.institute_type = null
-//         //             row.institute_url = null
-//         //             return row;
-//         //         }
-//         //     })
-//         //     const newArr = await Promise.all(promiss)
-//         //     res.status(200).json({ status: true, message: "Institutes list", data: newArr });
-//         // }
-//         // else {
-//         //     res.status(404).json({ status: false, message: "Data not found." });
-//         // }
-
-//         const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
-
-//         if (instituteList.length) {
-//             const promiss = instituteList.map(async (row) => {
-//                 const [disciplineslist, course1] = await Promise.all([
-//                     Desciplines.find({ institute_id: row._id }).lean(),
-//                     Courses.find({ institute_id: row._id }).lean()
-//                 ]);
-
-//                 const { items: disciplines, counts: disciplineCounts } = processItems(disciplineslist, "discipline_name");
-//                 const { items: subjects, counts: subjectCounts } = processItems(course1, "subject_name");
-//                 const { items: courses, counts: courseCounts } = processItems(course1, "course_name");
-
-//                 row.courses = courses.length;
-//                 row.subjects = subjects.length;
-//                 row.disciplines = disciplines.length;
-
-//                 const course = await Courses.findOne({ institute_id: row._id }).lean();
-
-//                 if (row.place && row.institute_type) {
-//                     return row;
-//                 } else if (course) {
-//                     row.place = course.place;
-//                     row.institute_type = course.institute_type;
-//                     row.institute_url = course.institute_url;
-//                     return row;
-//                 } else {
-//                     row.place = null;
-//                     row.institute_type = null;
-//                     row.institute_url = null;
-//                     return row;
-//                 }
-//             });
-
-//             const newArr = await Promise.all(promiss);
-//             res.status(200).json({ status: true, message: "Institutes list", data: newArr });
-//         } else {
-//             res.status(404).json({ status: false, message: "Data not found." });
-//         }
-
-//         function processItems(itemList, itemNameKey) {
-//             const items = [];
-//             const itemSet = new Set();
-//             const itemCounts = {};
-
-//             itemList.forEach((item) => {
-//                 const itemName = item[itemNameKey];
-//                 const filterCondition = !itemSet.has(itemName);
-
-//                 if (filterCondition) {
-//                     items.push({ [itemNameKey]: itemName, institutes: 1 });
-//                     itemSet.add(itemName);
-//                     itemCounts[itemName] = 1;
-//                 } else {
-//                     items.find(d => d[itemNameKey] === itemName).institutes++;
-//                     itemCounts[itemName]++;
-//                 }
-//             });
-
-//             return { items, counts: itemCounts };
-//         }
-
-//     } catch (error) {
-//         console.log('institute_list Error', error);
-//         res.status(500).json(error);
-//     }
-// }
-
-const fetchInstitutesData = async (instituteList) => {
-    return Promise.all(instituteList.map(async (row) => {
-        const [disciplineslist, course1] = await Promise.all([
-            Desciplines.find({ institute_id: row._id }).lean(),
-            Courses.find({ institute_id: row._id }).lean()
-        ]);
-
-        const disciplines = processItems(disciplineslist, "discipline_name");
-        const subjects = processItems(course1, "subject_name");
-        const courses = processItems(course1, "course_name");
-
-        row.courses = courses.length;
-        row.subjects = subjects.length;
-        row.disciplines = disciplines.length;
-
-        const course = await Courses.findOne({ institute_id: row._id }).lean();
-
-        if (row.place && row.institute_type) {
-            return row;
-        } else if (course) {
-            return { ...row, place: course.place, institute_type: course.institute_type, institute_url: course.institute_url };
-        } else {
-            return { ...row, place: null, institute_type: null, institute_url: null };
-        }
-    }));
-};
-
-const processItems = (itemList, itemNameKey) => {
-    const items = [];
-    const itemSet = new Set();
-    const itemCounts = {};
-
-    itemList.forEach((item) => {
-        const itemName = item[itemNameKey];
-        const filterCondition = !itemSet.has(itemName);
-
-        if (filterCondition) {
-            items.push({ [itemNameKey]: itemName, institutes: 1 });
-            itemSet.add(itemName);
-            itemCounts[itemName] = 1;
-        } else {
-            items.find(d => d[itemNameKey] === itemName).institutes++;
-            itemCounts[itemName]++;
-        }
-    });
-
-    return items;
-};
-
 module.exports.institute_list = async (req, res) => {
     try {
-        const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
+        const instituteList = await Institutes.find().sort({ institute_name: 1 }).sort({ createdAt: -1 }).lean();
 
         if (instituteList.length) {
-            const newArr = await fetchInstitutesData(instituteList);
+            const promiss = instituteList.map(async (row) => {
+                const [disciplineslist, course1] = await Promise.all([
+                    Desciplines.find({ institute_id: row._id }).lean(),
+                    Courses.find({ institute_id: row._id }).lean()
+                ]);
+                const { items: disciplines, counts: disciplineCounts } = processItems(disciplineslist, "discipline_name");
+                const { items: subjects, counts: subjectCounts } = processItems(course1, "subject_name");
+                const { items: courses, counts: courseCounts } = processItems(course1, "course_name");
+
+                row.courses = courses.length;
+                row.subjects = subjects.length;
+                row.disciplines = disciplines.length;
+
+                const course = await Courses.findOne({ institute_id: row._id }).lean();
+
+                if (row.place && row.institute_type) {
+                    return row;
+                } else if (course) {
+                    row.place = course.place;
+                    row.institute_type = course.institute_type;
+                    row.institute_url = course.institute_url;
+                    return row;
+                } else {
+                    row.place = null;
+                    row.institute_type = null;
+                    row.institute_url = null;
+                    return row;
+                }
+            });
+
+            const newArr = await Promise.all(promiss);
             res.status(200).json({ status: true, message: "Institutes list", data: newArr });
         } else {
             res.status(404).json({ status: false, message: "Data not found." });
         }
+
+        function processItems(itemList, itemNameKey) {
+            const items = [];
+            const itemSet = new Set();
+            const itemCounts = {};
+
+            itemList.forEach((item) => {
+                const itemName = item[itemNameKey];
+                const filterCondition = !itemSet.has(itemName);
+
+                if (filterCondition) {
+                    items.push({ [itemNameKey]: itemName, institutes: 1 });
+                    itemSet.add(itemName);
+                    itemCounts[itemName] = 1;
+                } else {
+                    items.find(d => d[itemNameKey] === itemName).institutes++;
+                    itemCounts[itemName]++;
+                }
+            });
+
+            return { items, counts: itemCounts };
+        }
+
     } catch (error) {
         console.log('institute_list Error', error);
         res.status(500).json(error);
     }
-};
+}
+
 
 
 module.exports.institute_view = async (req, res) => {
@@ -1822,7 +1685,7 @@ module.exports.discipline_list = async (req, res) => {
         //         }
         //     }
         // ]);
-        const desciplineList = await Desciplines.find().sort({ discipline_name: 1 });
+        const desciplineList = await Desciplines.find().sort({ createdAt: -1 });
         if (desciplineList.length) {
             let disciplines = [];
             let disciplineSet = new Set();
@@ -2166,7 +2029,7 @@ module.exports.subject_list = async (req, res) => {
         //     res.status(404).json({ status: false, message: "Data not found." });
         // }
 
-        const couresData = await Courses.find().sort({ subject_name: 1 });
+        const couresData = await Courses.find().sort({ createdAt: -1 });
         if (couresData.length) {
             let subjects = [];
             let subjectSet = new Set();
@@ -2357,7 +2220,7 @@ module.exports.discipline_list_instituteId = async (req, res) => {
 
 module.exports.course_list = async (req, res) => {
     try {
-        const couresData = await Courses.find().sort({ subject_name: 1 });
+        const couresData = await Courses.find().sort({ createdAt: -1 });
         if (couresData.length) {
             let courses = [];
             let courseSet = new Set();

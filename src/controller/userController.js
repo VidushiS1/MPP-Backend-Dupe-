@@ -30,6 +30,7 @@ const BankLoan = require('../module/bank_loan');
 const mongoose = require("mongoose");
 const Time_slot = require('../module/time_slot');
 const Broudcast = require('../module/broad_cast');
+const careerAgenda = require('../module/carreer_agenda');
 
 
 module.exports.sign_up = async (req, res) => {
@@ -2144,6 +2145,23 @@ module.exports.broadcast_list = async (req, res) => {
         }
     } catch (error) {
         console.log('broadcast_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.carrer_advise_agenda_list = async (req, res) => {
+    try {
+        const agendaData = await careerAgenda.find().sort({ agenda: 1 });
+        if (agendaData.length) {
+            res.status(200).json({ status: true, message: "Career agenda list", data: agendaData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('carrer_advise_agenda_list Error', error);
         res.status(500).json(error);
     }
 }
