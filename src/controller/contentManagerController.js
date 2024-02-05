@@ -94,7 +94,6 @@ module.exports.user_list = async (req, res) => {
 
 
 module.exports.user_view = async (req, res) => {
-    a
     try {
         // const userId = req.query.userId;
 
