@@ -1,6 +1,6 @@
 const mongoose = require('../helper/dbconnection');
 
-const notificationSchema = new mongoose.Schema({
+const studentNotificationSchema = new mongoose.Schema({
     criteria: {
         type: String,
         require: true,
@@ -13,8 +13,12 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    userId: {
+        type: String,
+        require: true,
+    }
 }, { timestamps: true });
 
-const Notifications = mongoose.model('notifications', notificationSchema);
+const StudentNotifications = mongoose.model('student_notification', studentNotificationSchema);
 
-module.exports = Notifications;
+module.exports = StudentNotifications;

@@ -26,6 +26,7 @@ const Cities = require('../module/cities');
 const Notifications = require('../module/notifications');
 const Students = require('../module/student');
 const Education = require('../module/education');
+const StudentNotifications = require('../module/student_notification')
 
 module.exports.login = async (req, res) => {
     try {
@@ -92,7 +93,8 @@ module.exports.user_list = async (req, res) => {
 
 
 
-module.exports.user_view = async (req, res) => {a
+module.exports.user_view = async (req, res) => {
+    a
     try {
         // const userId = req.query.userId;
 
@@ -2445,7 +2447,7 @@ module.exports.add_notification = async (req, res) => {
         try {
             let promise = userData.map(async (row) => {
                 await fcmNotification.sendNotification(row.fcm_token, title, description);
-                // await Notifications.create(data);
+                await StudentNotifications.create({ criteria, title, description, userId: row._id });
             });
             await Promise.all(promise).then(async () => {
                 res.status(201).json({ status: true, message: "Notification send successfully" });

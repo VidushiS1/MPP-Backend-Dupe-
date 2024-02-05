@@ -100,4 +100,5 @@ app.get('/course-level', decodedToken, contentManagerController.course_level);
 
 
 app.post('/add-notification', decodedToken, contentManagerController.add_notification);
+
 module.exports = app; 

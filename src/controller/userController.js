@@ -138,6 +138,7 @@ module.exports.login = async (req, res) => {
         if (existUser) {
             if (existUser.password === password) {
                 let student_registration = false;
+                let name = existUser.name;
                 let student_id = "null";
                 let education_qualification = false;
                 let hobys = false;
@@ -170,7 +171,7 @@ module.exports.login = async (req, res) => {
                     { expiresIn: "365d" }
                 )
                 await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token });
-                res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, education_qualification, hobys, token: token });
+                res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, name, education_qualification, hobys, token: token });
             }
             else {
                 res.status(400).json({ message: 'Password does not match.' });
