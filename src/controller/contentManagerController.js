@@ -27,6 +27,7 @@ const Notifications = require('../module/notifications');
 const Students = require('../module/student');
 const Education = require('../module/education');
 const StudentNotifications = require('../module/student_notification');
+const Jobseeker = require('../module/job_seeker');
 
 module.exports.login = async (req, res) => {
     try {
@@ -157,7 +158,13 @@ module.exports.user_view = async (req, res) => {
                 studentData.mobile_no = userList.mobile_no;
                 studentData.email = userList.email;
                 studentData.employee_id = userList.employee_id;
-                const qualification = await Education.findOne({ student_id: studentData._id });
+                let qualification = '';
+                if (studentData.criteria == "job_seeker") {
+                    qualification = await Jobseeker.findOne({ student_id: studentData._id });
+                }
+                else {
+                    qualification = await Education.findOne({ student_id: studentData._id });
+                }
                 let newArr = {
                     studentData,
                     qualification
@@ -2465,6 +2472,10 @@ module.exports.add_notification = async (req, res) => {
 
 module.exports.notification_list = async (req, res) => {
     try {
+        const fifteenDaysAgo = new Date();
+        fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+        console.log('fifteenDaysAgo', fifteenDaysAgo);
+        // const result = await Notifications.deleteMany({ createdAt: { $lt: fifteenDaysAgo } });
         const notificationData = await Notifications.find();
         if (notificationData.length) {
             res.status(200).json({ status: true, message: "Notification list", data: notificationData });
