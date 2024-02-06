@@ -483,7 +483,7 @@ module.exports.gov_jobs_list = async (req, res) => {
     try {
         let filter = {}
         const sector_id = req.body.sector_id;
-        if (sector_id) {
+        if (sector_id.length) {
             filter.sector_id = { $in: sector_id };
         }
         const jobData = await GovJobS.find(filter).sort({ createdAt: -1 });
@@ -730,7 +730,7 @@ module.exports.pvt_jobs_list = async (req, res) => {
     try {
         let filter = {}
         const sector_id = req.body.sector_id;
-        if (sector_id) {
+        if (sector_id.length) {
             filter.sector_id = { $in: sector_id };
         }
         const entranceExamData = await PvtJobS.find(filter).sort({ createdAt: -1 });
