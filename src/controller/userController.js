@@ -140,45 +140,50 @@ module.exports.login = async (req, res) => {
         const password = sha1(req.body.password);
         const existUser = await User.findOne({ mobile_no: req.body.mobile_no });
         if (existUser) {
-            if (existUser.password === password) {
-                let student_registration = false;
-                let name = existUser.name;
-                let student_id = "null";
-                let education_qualification = false;
-                let hobys = false;
-                const checkStudent = await Students.findOne({ userId: existUser._id });
-                if (checkStudent) {
-                    student_id = checkStudent._id;
-                    student_registration = true;
-                    if (checkStudent.hobbys.length) {
-                        hobys = true
-                    }
-                    const checkQualification = await Education.findOne({ student_id: checkStudent._id });
-                    if (checkQualification) {
-                        education_qualification = true;
-                    } else {
-                        const checkQualification = await Jobseeker.findOne({ student_id: checkStudent._id });
-                        if (checkQualification) {
-                            education_qualification = true;
-                        }
-                    }
-                }
-                const token = jwt.sign(
-                    {
-                        userId: existUser._id,
-                        id: existUser.id,
-                        mobile: existUser.mobile_no,
-                        email: existUser.email,
-                        employee_id: existUser.employee_id
-                    },
-                    process.env.SECRET_KEY,
-                    { expiresIn: "365d" }
-                )
-                await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token });
-                res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, name, education_qualification, hobys, token: token });
+            if (existUser.is_block == true) {
+                res.status(400).json({ message: 'Account is block.' });
             }
             else {
-                res.status(400).json({ message: 'Password does not match.' });
+                if (existUser.password === password) {
+                    let student_registration = false;
+                    let name = existUser.name;
+                    let student_id = "null";
+                    let education_qualification = false;
+                    let hobys = false;
+                    const checkStudent = await Students.findOne({ userId: existUser._id });
+                    if (checkStudent) {
+                        student_id = checkStudent._id;
+                        student_registration = true;
+                        if (checkStudent.hobbys.length) {
+                            hobys = true
+                        }
+                        const checkQualification = await Education.findOne({ student_id: checkStudent._id });
+                        if (checkQualification) {
+                            education_qualification = true;
+                        } else {
+                            const checkQualification = await Jobseeker.findOne({ student_id: checkStudent._id });
+                            if (checkQualification) {
+                                education_qualification = true;
+                            }
+                        }
+                    }
+                    const token = jwt.sign(
+                        {
+                            userId: existUser._id,
+                            id: existUser.id,
+                            mobile: existUser.mobile_no,
+                            email: existUser.email,
+                            employee_id: existUser.employee_id
+                        },
+                        process.env.SECRET_KEY,
+                        { expiresIn: "365d" }
+                    )
+                    await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token });
+                    res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, name, education_qualification, hobys, token: token });
+                }
+                else {
+                    res.status(400).json({ message: 'Password does not match.' });
+                }
             }
         }
         else {
@@ -2190,7 +2195,7 @@ module.exports.notification_list = async (req, res) => {
 
 
 
-module.exports.notification_view = async (req, res) => {
+module.exports.notification_delete = async (req, res) => {
     try {
         const notificationId = req.query.notificationId;
         if (!notificationId) {
@@ -2199,14 +2204,15 @@ module.exports.notification_view = async (req, res) => {
         else {
             const notificationData = await StudentNotifications.findOne({ _id: notificationId });
             if (notificationData) {
-                res.status(200).json({ status: true, message: "Notification view", data: notificationData });
+                await StudentNotifications.deleteOne({ _id: notificationId });
+                res.status(200).json({ status: true, message: "Notification delete successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
             }
         }
     } catch (error) {
-        console.log('notification_view Error', error);
+        console.log('notification_delete Error', error);
         res.status(500).json(error);
     }
 }

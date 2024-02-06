@@ -49,7 +49,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: false,
         default: null
-    }
+    },
+    is_block: {
+        type: Boolean,
+        default: false
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('users', UserSchema);

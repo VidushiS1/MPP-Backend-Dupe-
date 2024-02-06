@@ -2511,3 +2511,28 @@ module.exports.notification_view = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+
+
+
+module.exports.block_student = async (req, res) => {
+    try {
+        const userId = req.query.userId;
+        if (!userId) {
+            res.status(400).json({ message: "User Id is required." });
+        }
+        else {
+            const userData = await User.findOne({ _id: userId });
+            if (userData) {
+                await User.updateOne({ _id: userId }, { is_block: true })
+                res.status(200).json({ status: true, message: "Student block successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Student not found." });
+            }
+        }
+    } catch (error) {
+        console.log('block_student Error', error);
+        res.status(500).json(error);
+    }
+}
