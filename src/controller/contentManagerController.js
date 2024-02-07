@@ -92,7 +92,7 @@ module.exports.login = async (req, res) => {
 
 module.exports.user_list = async (req, res) => {
     try {
-        const userList = await User.find().sort({ createdAt: 1 });
+        const userList = await User.find({}, { password: 0 }).sort({ createdAt: 1 });
         if (userList) {
             res.status(200).json({ status: true, message: "User list", data: userList });
         }
@@ -171,6 +171,7 @@ module.exports.user_view = async (req, res) => {
                 studentData.mobile_no = userList.mobile_no;
                 studentData.email = userList.email;
                 studentData.employee_id = userList.employee_id;
+                studentData.is_block = userList.is_block;
                 let qualification = '';
                 if (studentData.criteria == "job_seeker") {
                     qualification = await Jobseeker.findOne({ student_id: studentData._id });
@@ -2530,15 +2531,21 @@ module.exports.notification_view = async (req, res) => {
 
 module.exports.block_student = async (req, res) => {
     try {
-        const userId = req.query.userId;
+        const userId = req.body.userId;
+        const status = req.body.status;
         if (!userId) {
             res.status(400).json({ message: "User Id is required." });
         }
         else {
             const userData = await User.findOne({ _id: userId });
             if (userData) {
-                await User.updateOne({ _id: userId }, { is_block: true })
-                res.status(200).json({ status: true, message: "Student block successfully." });
+                await User.updateOne({ _id: userId }, { is_block: status });
+                if (status === 'true') {
+                    res.status(200).json({ status: true, message: "Student block successfully." });
+                }
+                else {
+                    res.status(200).json({ status: true, message: "Student unblock successfully." });
+                }
             }
             else {
                 res.status(404).json({ status: false, message: "Student not found." });
@@ -2546,29 +2553,6 @@ module.exports.block_student = async (req, res) => {
         }
     } catch (error) {
         console.log('block_student Error', error);
-        res.status(500).json(error);
-    }
-}
-
-
-module.exports.unBlock_student = async (req, res) => {
-    try {
-        const userId = req.query.userId;
-        if (!userId) {
-            res.status(400).json({ message: "User Id is required." });
-        }
-        else {
-            const userData = await User.findOne({ _id: userId });
-            if (userData) {
-                await User.updateOne({ _id: userId }, { is_block: false })
-                res.status(200).json({ status: true, message: "Student UnBlock successfully." });
-            }
-            else {
-                res.status(404).json({ status: false, message: "Student not found." });
-            }
-        }
-    } catch (error) {
-        console.log('unBlock_student Error', error);
         res.status(500).json(error);
     }
 }
