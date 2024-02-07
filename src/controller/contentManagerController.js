@@ -71,7 +71,7 @@ module.exports.login = async (req, res) => {
                         name: manager.name,
                     },
                     process.env.SECRET_KEY,
-                    { expiresIn: "1d" }
+                    { expiresIn: "30d" }
                 )
                 res.status(200).json({ status: true, message: 'login successfully.', token: token });
             }
@@ -987,8 +987,9 @@ module.exports.entrance_exam_list = async (req, res) => {
         if (streamId) {
             filter.stream_id = streamId;
         }
-        const entranceExamData = await Entrance_exams.find().sort({ createdAt: -1 });
+        const entranceExamData = await Entrance_exams.find(filter).sort({ createdAt: -1 });
         if (entranceExamData.length) {
+            console.log('entranceExamData', entranceExamData.length);
             res.status(200).json({ status: true, message: "Entrance exam list", data: entranceExamData });
         }
         else {
