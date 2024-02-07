@@ -2541,7 +2541,7 @@ module.exports.block_student = async (req, res) => {
             const userData = await User.findOne({ _id: userId });
             if (userData) {
                 await User.updateOne({ _id: userId }, { is_block: status });
-                if (status === 'true') {
+                if (status === true) {
                     res.status(200).json({ status: true, message: "Student block successfully." });
                 }
                 else {
@@ -2561,83 +2561,83 @@ module.exports.block_student = async (req, res) => {
 
 
 
-// module.exports.generate_auth_url = async (req, res) => {
-//     try {
-//         // Set the desired time
-//         const startTime = moment.tz('2024-02-07T18:05:00', 'Asia/Kolkata');
-//         const endTime = moment.tz('2024-02-07T19:05:00', 'Asia/Kolkata');
-//         const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-//         const code = req.body.code;
-//         oAuth2Client.getToken(code, (err, token) => {
-//             if (err) return console.error('Error retrieving access token', err);
-//             else {
-//                 console.log('token', token)
-//                 oAuth2Client.setCredentials(token);
-//                 const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+module.exports.generate_auth_url = async (req, res) => {
+    try {
+        // Set the desired time
+        const startTime = moment.tz('2024-02-07T18:05:00', 'Asia/Kolkata');
+        const endTime = moment.tz('2024-02-07T19:05:00', 'Asia/Kolkata');
+        const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+        const code = req.body.code;
+        oAuth2Client.getToken(code, (err, token) => {
+            if (err) return console.error('Error retrieving access token', err);
+            else {
+                console.log('token', token)
+                oAuth2Client.setCredentials(token);
+                const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
-//                 // calendar.events.insert({
-//                 //     calendarId: 'primary',
-//                 //     resource: {
-//                 //         summary: 'Meeting Title',
-//                 //         description: 'Meeting Description',
-//                 //         start: { dateTime: '2024-02-07T09:00:00', timeZone: 'asia/kolkata' },
-//                 //         end: { dateTime: '2024-02-07T10:00:00', timeZone: 'asia/kolkata' },
-//                 //         conferenceData: {
-//                 //             createRequest: {
-//                 //                 requestId: 'YOUR_UNIQUE_REQUEST_ID',
-//                 //             },
-//                 //         },
-//                 //     },
-//                 // }, (err, res) => {
-//                 //     if (err) return console.error('Error creating event:', err);
+                // calendar.events.insert({
+                //     calendarId: 'primary',
+                //     resource: {
+                //         summary: 'Meeting Title',
+                //         description: 'Meeting Description',
+                //         start: { dateTime: '2024-02-07T09:00:00', timeZone: 'asia/kolkata' },
+                //         end: { dateTime: '2024-02-07T10:00:00', timeZone: 'asia/kolkata' },
+                //         conferenceData: {
+                //             createRequest: {
+                //                 requestId: 'YOUR_UNIQUE_REQUEST_ID',
+                //             },
+                //         },
+                //     },
+                // }, (err, res) => {
+                //     if (err) return console.error('Error creating event:', err);
 
-//                 //     const meetingLink = res.data.hangoutLink;
-//                 //     console.log('Meeting Link:', meetingLink);
-//                 // });
+                //     const meetingLink = res.data.hangoutLink;
+                //     console.log('Meeting Link:', meetingLink);
+                // });
 
-//                 calendar.events.insert({
-//                     calendarId: 'primary',
-//                     resource: {
-//                         summary: 'Meeting Title',
-//                         description: 'Meeting Description',
-//                         start: {
-//                             dateTime: '2024-02-06T18:15:00',
-//                             timeZone: "Asia/Kolkata"
-//                         },
-//                         end: {
-//                             dateTime: '2024-02-06T19:15:00',
-//                             timeZone: "Asia/Kolkata"
-//                         },
-//                         conferenceData: {
-//                             createRequest: {
-//                                 requestId: requestId,
-//                             },
-//                         },
-//                     },
-//                 }, (err, config) => {
-//                     if (err) return console.error('Error creating event:', err);
-//                     if (config.data.conferenceData && config.data.conferenceData.entryPoints && config.data.conferenceData.entryPoints.length > 0) {
-//                         const meetingLink = config.data.conferenceData.entryPoints[0].uri;
-//                         console.log('Meeting Link:', meetingLink);
-//                         // res.status(200).json({ data: response.data })
+                calendar.events.insert({
+                    calendarId: 'primary',
+                    resource: {
+                        summary: 'Meeting Title',
+                        description: 'Meeting Description',
+                        start: {
+                            dateTime: '2024-02-06T18:15:00',
+                            timeZone: "Asia/Kolkata"
+                        },
+                        end: {
+                            dateTime: '2024-02-06T19:15:00',
+                            timeZone: "Asia/Kolkata"
+                        },
+                        conferenceData: {
+                            createRequest: {
+                                requestId: requestId,
+                            },
+                        },
+                    },
+                }, (err, config) => {
+                    if (err) return console.error('Error creating event:', err);
+                    if (config.data.conferenceData && config.data.conferenceData.entryPoints && config.data.conferenceData.entryPoints.length > 0) {
+                        const meetingLink = config.data.conferenceData.entryPoints[0].uri;
+                        console.log('Meeting Link:', meetingLink);
+                        // res.status(200).json({ data: response.data })
 
-//                     } else {
-//                         console.error('Error: Conference data not found', res);
-//                         // res.status(200).json({ data: response.data })
+                    } else {
+                        console.error('Error: Conference data not found', res);
+                        // res.status(200).json({ data: response.data })
 
-//                     }
-//                 });
+                    }
+                });
 
-//             }
-//         });
-
-
+            }
+        });
 
 
 
 
-//     } catch (error) {
-//         console.log('generate_auth_url Error', error);
-//         res.status(500).json(error);
-//     }
-// }
+
+
+    } catch (error) {
+        console.log('generate_auth_url Error', error);
+        res.status(500).json(error);
+    }
+}
