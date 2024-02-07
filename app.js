@@ -71,8 +71,21 @@ app.use('/api', mainRoute);
 
 
 
-// const { google } = require('googleapis');
-// const { OAuth2Client } = require('google-auth-library');
+
+
+// Generate the authentication URL
+
+// console.log('authUrl', authUrl);
+// return false
+
+
+
+
+// console.log('rl', rl);
+// return false
+// let code = "4/0AfJohXn3i0bza14d3GC9AqN0NF2bJpJnzLQ8s4lEd3uzRq1ouj-MK4AWC4eb6PcPBs-LMw"
+const { google } = require('googleapis');
+const { OAuth2Client } = require('google-auth-library');
 
 // const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
 // const CLIENT_SECRET = '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';
@@ -80,62 +93,12 @@ app.use('/api', mainRoute);
 
 // const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
-// // Generate the authentication URL
+
 // const authUrl = oAuth2Client.generateAuthUrl({
 //     access_type: 'offline',
 //     scope: ['https://www.googleapis.com/auth/calendar.events'],
 // });
-
 // console.log('Authorize this app by visiting this URL:', authUrl);
-// const readline = require('readline');
-
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-// });
-
-// // console.log('rl', rl);
-// // return false
-// // let code = "4/0AfJohXn3i0bza14d3GC9AqN0NF2bJpJnzLQ8s4lEd3uzRq1ouj-MK4AWC4eb6PcPBs-LMw"
-
-// rl.question('Enter the code from the authorization page here: ', (code) => {
-//     rl.close();
-
-//     oAuth2Client.getToken(code, (err, token) => {
-//         if (err) return console.error('Error retrieving access token', err);
-//         console.log('token', token)
-//         // oAuth2Client.setCredentials(token);
-//         oAuth2Client.setCredentials(
-//             {
-//                 access_token: token
-//             }
-//         );
-//         // Continue with creating a Google Meet URL or scheduling an event
-//     });
-// });
-
-
-// const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
-
-// calendar.events.insert({
-//     calendarId: 'primary',
-//     resource: {
-//         summary: 'Meeting Title',
-//         description: 'Meeting Description',
-//         start: { dateTime: '2024-02-06T09:00:00', timeZone: 'asia/kolkata' },
-//         end: { dateTime: '2024-02-06T10:00:00', timeZone: 'asia/kolkata' },
-//         conferenceData: {
-//             createRequest: {
-//                 requestId: 'YOUR_UNIQUE_REQUEST_ID',
-//             },
-//         },
-//     },
-// }, (err, res) => {
-//     if (err) return console.error('Error creating event:', err);
-
-//     const meetingLink = res.data.hangoutLink;
-//     console.log('Meeting Link:', meetingLink);
-// });
 
 const port = process.env.Port || 4000
 

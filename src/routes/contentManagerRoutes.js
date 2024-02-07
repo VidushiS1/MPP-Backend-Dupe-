@@ -104,6 +104,9 @@ app.get('/notification-list', decodedToken, contentManagerController.notificatio
 app.get('/notification-view', decodedToken, contentManagerController.notification_view);
 
 
-app.put('/block-student', decodedToken, contentManagerController.block_student);
+app.get('/block-student', decodedToken, contentManagerController.block_student);
+app.get('/unBlock-student', decodedToken, contentManagerController.unBlock_student);
+
+// app.post('/genrate-auth-url',decodedToken, contentManagerController.generate_auth_url);
 
 module.exports = app; 

@@ -1,6 +1,9 @@
 const Joi = require('joi');
 const sha1 = require("sha1");
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
+const requestId = uuidv4();
+const moment = require('moment-timezone');
 
 const checkValidation = require('../helper/joiValidation');
 const fcmNotification = require('../helper/sendNotification');
@@ -28,6 +31,16 @@ const Students = require('../module/student');
 const Education = require('../module/education');
 const StudentNotifications = require('../module/student_notification');
 const Jobseeker = require('../module/job_seeker');
+
+
+
+const { google } = require('googleapis');
+const { OAuth2Client } = require('google-auth-library');
+
+const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'http://localhost:4000/';
+
 
 module.exports.login = async (req, res) => {
     try {
@@ -2536,3 +2549,109 @@ module.exports.block_student = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+
+module.exports.unBlock_student = async (req, res) => {
+    try {
+        const userId = req.query.userId;
+        if (!userId) {
+            res.status(400).json({ message: "User Id is required." });
+        }
+        else {
+            const userData = await User.findOne({ _id: userId });
+            if (userData) {
+                await User.updateOne({ _id: userId }, { is_block: false })
+                res.status(200).json({ status: true, message: "Student UnBlock successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Student not found." });
+            }
+        }
+    } catch (error) {
+        console.log('unBlock_student Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+// module.exports.generate_auth_url = async (req, res) => {
+//     try {
+//         // Set the desired time
+//         const startTime = moment.tz('2024-02-07T18:05:00', 'Asia/Kolkata');
+//         const endTime = moment.tz('2024-02-07T19:05:00', 'Asia/Kolkata');
+//         const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+//         const code = req.body.code;
+//         oAuth2Client.getToken(code, (err, token) => {
+//             if (err) return console.error('Error retrieving access token', err);
+//             else {
+//                 console.log('token', token)
+//                 oAuth2Client.setCredentials(token);
+//                 const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+//                 // calendar.events.insert({
+//                 //     calendarId: 'primary',
+//                 //     resource: {
+//                 //         summary: 'Meeting Title',
+//                 //         description: 'Meeting Description',
+//                 //         start: { dateTime: '2024-02-07T09:00:00', timeZone: 'asia/kolkata' },
+//                 //         end: { dateTime: '2024-02-07T10:00:00', timeZone: 'asia/kolkata' },
+//                 //         conferenceData: {
+//                 //             createRequest: {
+//                 //                 requestId: 'YOUR_UNIQUE_REQUEST_ID',
+//                 //             },
+//                 //         },
+//                 //     },
+//                 // }, (err, res) => {
+//                 //     if (err) return console.error('Error creating event:', err);
+
+//                 //     const meetingLink = res.data.hangoutLink;
+//                 //     console.log('Meeting Link:', meetingLink);
+//                 // });
+
+//                 calendar.events.insert({
+//                     calendarId: 'primary',
+//                     resource: {
+//                         summary: 'Meeting Title',
+//                         description: 'Meeting Description',
+//                         start: {
+//                             dateTime: '2024-02-06T18:15:00',
+//                             timeZone: "Asia/Kolkata"
+//                         },
+//                         end: {
+//                             dateTime: '2024-02-06T19:15:00',
+//                             timeZone: "Asia/Kolkata"
+//                         },
+//                         conferenceData: {
+//                             createRequest: {
+//                                 requestId: requestId,
+//                             },
+//                         },
+//                     },
+//                 }, (err, config) => {
+//                     if (err) return console.error('Error creating event:', err);
+//                     if (config.data.conferenceData && config.data.conferenceData.entryPoints && config.data.conferenceData.entryPoints.length > 0) {
+//                         const meetingLink = config.data.conferenceData.entryPoints[0].uri;
+//                         console.log('Meeting Link:', meetingLink);
+//                         // res.status(200).json({ data: response.data })
+
+//                     } else {
+//                         console.error('Error: Conference data not found', res);
+//                         // res.status(200).json({ data: response.data })
+
+//                     }
+//                 });
+
+//             }
+//         });
+
+
+
+
+
+
+//     } catch (error) {
+//         console.log('generate_auth_url Error', error);
+//         res.status(500).json(error);
+//     }
+// }
