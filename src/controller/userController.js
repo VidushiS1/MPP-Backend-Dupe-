@@ -32,7 +32,8 @@ const Time_slot = require('../module/time_slot');
 const Broudcast = require('../module/broad_cast');
 const careerAgenda = require('../module/carreer_agenda');
 const StudentNotifications = require('../module/student_notification');
-
+const CastCategory = require('../module/cast_category');
+const Scholership = require('../module/scholarship');
 
 
 module.exports.sign_up = async (req, res) => {
@@ -2213,6 +2214,83 @@ module.exports.notification_delete = async (req, res) => {
         }
     } catch (error) {
         console.log('notification_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.cast_category_list = async (req, res) => {
+    try {
+        const categoryData = await CastCategory.find().sort({ createdAt: -1 });
+        if (categoryData.length) {
+            res.status(200).json({ status: true, message: "Category list", data: categoryData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('cast_category_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_list = async (req, res) => {
+    try {
+        let filter = {}
+        const mp_police = req.body.mp_police;
+        const level = req.body.level;
+        const catId = req.body.catId;
+        if (mp_police) {
+            filter.mp_police = mp_police;
+        }
+        if (level) {
+            filter.level = level;
+        }
+        if (catId) {
+            filter.cast_category_id = catId;
+        }
+        console.log(filter)
+        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
+        if (scholarshipData.length) {
+            res.status(200).json({ status: true, message: "Scholership exam list", data: scholarshipData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('scholarship_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_view = async (req, res) => {
+    try {
+        const scholarId = req.query.scholarId;
+        if (!scholarId) {
+            res.status(400).json({ message: "Scholarship Id is required." });
+        }
+        else {
+            const scholarshipData = await Scholership.find({ _id: scholarId }).sort({ createdAt: 1 }).lean();
+            if (scholarshipData.length) {
+                let promiss = scholarshipData.map(async (row) => {
+                    let category = await CastCategory.findOne({ _id: row.cast_category_id });
+                    row.cast_category = category.name;
+                    return row;
+                });
+                const newData = await Promise.all(promiss);
+                res.status(200).json({ status: true, message: "Scholership exam view", data: newData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('scholarship_view Error', error);
         res.status(500).json(error);
     }
 }

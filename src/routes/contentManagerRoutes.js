@@ -119,7 +119,8 @@ app.put('/cast-category-edit', decodedToken, contentManagerController.cast_categ
 app.delete('/cast-category-delete', decodedToken, contentManagerController.cast_category_delete);
 
 app.post('/add-scholarship', decodedToken, contentManagerController.add_scholarship);
-app.get('/scholarship-list', decodedToken, contentManagerController.scholarship_list);
+app.get('/scholarship-list-national', decodedToken, contentManagerController.scholarship_list_national);
+app.get('/scholarship-list-state', decodedToken, contentManagerController.scholarship_list_state);
 app.get('/scholarship-view', decodedToken, contentManagerController.scholarship_view);
 app.put('/scholarship-edit', decodedToken, contentManagerController.scholarship_edit);
 app.delete('/scholarship-delete', decodedToken, contentManagerController.scholarship_delete);

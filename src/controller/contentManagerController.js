@@ -33,7 +33,7 @@ const Students = require('../module/student');
 const Education = require('../module/education');
 const StudentNotifications = require('../module/student_notification');
 const Jobseeker = require('../module/job_seeker');
-const CatsCategory = require('../module/cast_category');
+const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 
 const { google } = require('googleapis');
@@ -2772,12 +2772,18 @@ module.exports.add_cast_category = async (req, res) => {
         checkValidation.joiValidation(schema, req.body);
         const { name } = req.body;
         const data = { name }
-        const addData = await CatsCategory.create(data);
-        if (addData) {
-            res.status(200).json({ status: true, message: 'Category added successfully.' });
+        const getData = await CastCategory.find({ name: name });
+        if (getData.length) {
+            res.status(400).json({ status: false, message: "Category already exist." });
         }
         else {
-            res.status(400).json({ status: false, message: "Please try again" });
+            const addData = await CastCategory.create(data);
+            if (addData) {
+                res.status(200).json({ status: true, message: 'Category added successfully.' });
+            }
+            else {
+                res.status(400).json({ status: false, message: "Please try again" });
+            }
         }
     } catch (error) {
         console.log('add_cast_category Error', error);
@@ -2790,7 +2796,7 @@ module.exports.add_cast_category = async (req, res) => {
 
 module.exports.cast_category_list = async (req, res) => {
     try {
-        const categoryData = await CatsCategory.find().sort({ createdAt: -1 });
+        const categoryData = await CastCategory.find().sort({ createdAt: -1 });
         if (categoryData.length) {
             res.status(200).json({ status: true, message: "Category list", data: categoryData });
         }
@@ -2809,9 +2815,9 @@ module.exports.cast_category_edit = async (req, res) => {
     try {
         const catId = req.body.catId;
         if (catId) {
-            const categoryData = await CatsCategory.findOne({ _id: catId });
+            const categoryData = await CastCategory.findOne({ _id: catId });
             if (categoryData) {
-                await CatsCategory.updateOne({ _id: catId }, { name: req.body.name });
+                await CastCategory.updateOne({ _id: catId }, { name: req.body.name });
                 res.status(200).json({ status: true, message: "Category successfully" });
             }
             else {
@@ -2833,9 +2839,9 @@ module.exports.cast_category_delete = async (req, res) => {
     try {
         const catId = req.query.catId;
         if (catId) {
-            const categoryData = await CatsCategory.findOne({ _id: catId });
+            const categoryData = await CastCategory.findOne({ _id: catId });
             if (categoryData) {
-                await CatsCategory.deleteOne({ _id: catId });
+                await CastCategory.deleteOne({ _id: catId });
                 res.status(200).json({ status: true, message: "Category delete successfully" });
             }
             else {
@@ -2920,22 +2926,48 @@ module.exports.add_scholarship = async (req, res) => {
 
 
 
-module.exports.scholarship_list = async (req, res) => {
+module.exports.scholarship_list_national = async (req, res) => {
     try {
-        let filter = {}
+        let filter = {
+            level: 'National'
+        }
         const catId = req.query.catId;
         if (catId) {
             filter.cast_category_id = catId;
         }
         const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
         if (scholarshipData.length) {
-            res.status(200).json({ status: true, message: "Entrance exam list", data: scholarshipData });
+            res.status(200).json({ status: true, message: "Scholership list", data: scholarshipData });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
         }
     } catch (error) {
-        console.log('scholarship_list Error', error);
+        console.log('scholarship_list_national Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_list_state = async (req, res) => {
+    try {
+        let filter = {
+            level: 'State'
+        }
+        const catId = req.query.catId;
+        if (catId) {
+            filter.cast_category_id = catId;
+        }
+        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
+        if (scholarshipData.length) {
+            res.status(200).json({ status: true, message: "Scholership list", data: scholarshipData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('scholarship_list_state Error', error);
         res.status(500).json(error);
     }
 }
@@ -2952,12 +2984,12 @@ module.exports.scholarship_view = async (req, res) => {
             const scholarshipData = await Scholership.find({ _id: scholarId }).sort({ createdAt: 1 }).lean();
             if (scholarshipData.length) {
                 let promiss = scholarshipData.map(async (row) => {
-                    let category = await CatsCategory.findOne({ _id: row.cast_category_id });
+                    let category = await CastCategory.findOne({ _id: row.cast_category_id });
                     row.cast_category = category.name;
                     return row;
                 });
                 const newData = await Promise.all(promiss);
-                res.status(200).json({ status: true, message: "Entrance exam view", data: newData });
+                res.status(200).json({ status: true, message: "Scholership exam view", data: newData });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });

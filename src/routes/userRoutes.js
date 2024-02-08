@@ -71,4 +71,11 @@ app.get('/career-advise-agenda-list', jwtToken.decodedToken, userController.carr
 
 app.get('/notification-list', jwtToken.decodedToken, userController.notification_list);
 app.get('/notification-delete', jwtToken.decodedToken, userController.notification_delete);
+
+
+app.get('/cast-category-list', jwtToken.decodedToken, userController.cast_category_list);
+app.post('/scholarship-list', jwtToken.decodedToken, userController.scholarship_list);
+app.get('/scholarship-view', jwtToken.decodedToken, userController.scholarship_view);
+
+
 module.exports = app; 
