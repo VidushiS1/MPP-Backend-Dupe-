@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const requestId = uuidv4();
 const moment = require('moment-timezone');
+const { sendMail, sendmultiple } = require('../helper/nodeMailer');
+
 
 const checkValidation = require('../helper/joiValidation');
 const fcmNotification = require('../helper/sendNotification');
@@ -40,14 +42,17 @@ const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'http://localhost:4000/';
+const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
+
 
 
 module.exports.login = async (req, res) => {
     try {
         const schema = Joi.object({
-            mobile_no: Joi.string().required().messages({
-                'string.empty': 'mobile_no cannot be an empty field',
-                'any.required': 'mobile_no is required field'
+            email: Joi.string().required().messages({
+                'string.empty': 'email cannot be an empty field',
+                'any.required': 'email is required field'
             }),
             fcm_token: Joi.string().required().messages({
                 'string.empty': `Fcm_token cannot be an empty field`,
@@ -60,7 +65,7 @@ module.exports.login = async (req, res) => {
         });
         checkValidation.joiValidation(schema, req.body);
         const password = sha1(req.body.password);
-        const manager = await ContentManager.findOne({ mobile_no: req.body.mobile_no });
+        const manager = await ContentManager.findOne({ email: req.body.email });
         if (manager) {
             if (manager.password === password) {
                 const token = jwt.sign(
@@ -80,7 +85,7 @@ module.exports.login = async (req, res) => {
             }
         }
         else {
-            res.status(400).json({ message: "Mobile number does not exist." });
+            res.status(400).json({ message: "Email Id does not exist." });
         }
     } catch (error) {
         console.log('login error', error);
@@ -88,6 +93,108 @@ module.exports.login = async (req, res) => {
     }
 }
 
+
+module.exports.forget_password = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email().required().messages({
+                'string.empty': `Email cannot be an empty field`,
+                'any.required': `Email Is A Required Field`
+            })
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const email = req.body.email;
+        const user = await ContentManager.findOne({ email: email });
+        if (user) {
+            let randomCode = Math.floor(1000 + Math.random() * 9000);
+            await sendMail({
+                to: user.email,
+                subject: "Forget Password Verification Code",
+                html: randomCode
+            });
+            await ContentManager.updateOne({ email: user.email }, { $set: { otp: randomCode } },
+                {
+                    upsert: false,
+                    multi: true
+                });
+            res
+                .status(200)
+                .json({ status: true, message: "Verification code is sent to registered email", data: user.email});
+        }
+        else {
+            res.status(404).json({ status: false, message: 'Email Id does not exist' });
+        }
+    } catch (error) {
+        console.log('forget_password', error);
+        res.status(400).json(error);
+    }
+}
+
+
+
+module.exports.verify_otp = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email().required().messages({
+                'string.empty': `Email cannot be an empty field`,
+                'any.required': `Email Is A Required Field`
+            }),
+            otp: Joi.number().required().messages({
+                'number.empty': `Otp cannot be an empty field`,
+                'any.required': `Otp Is A Required Field`
+            })
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const getUser = await ContentManager.findOne({ email: req.body.email });
+        if (getUser) {
+            if (getUser.otp === req.body.otp) {
+                res.status(200).json({ status: true, message: 'OTP verification successfully', data: getUser.email });
+            }
+            else {
+                res.status(404).json({ status: false, message: 'Invalid OTP' });
+            }
+        }
+        else {
+            res.status(404).json({ status: false, message: 'Email Id does not exist' });
+        }
+    } catch (error) {
+        console.log('verify_otp', error);
+        res.status(400).json(error);
+    }
+}
+
+
+
+module.exports.reset_password = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email().required().messages({
+                'string.empty': `Email cannot be an empty field`,
+                'any.required': `Email Is A Required Field`
+            }),
+            password: Joi.string().required().messages({
+                'string.empty': `Password cannot be an empty field`,
+                'any.required': `Password Is A Required Field`
+            }),
+            confirm_password: Joi.any().equal(Joi.ref('password'))
+                .required()
+                .options({ messages: { 'any.only': 'Confirm Password Does Not Match' } })
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const password = sha1(req.body.password);
+        const getUser = await ContentManager.findOne({ email: req.body.email });
+        if (getUser) {
+            await ContentManager.updateOne({ email: req.body.email }, { $set: { password: password } }, { upsert: false, multi: true });
+            return res.status(200).json({ status: true, message: 'Password reset successfully' });
+        }
+        else {
+            res.status(404).json({ status: false, message: 'Email Id does not exist' });
+        }
+    } catch (error) {
+        console.log('reset_password', error);
+        res.status(400).json(error);
+    }
+}
 
 
 module.exports.user_list = async (req, res) => {
@@ -2560,82 +2667,92 @@ module.exports.block_student = async (req, res) => {
 
 
 
+module.exports.authorization_url = async (req, res) => {
+    try {
+        const authUrl = oAuth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/calendar.events'],
+
+        });
+        if (authUrl) {
+            res.status(200).json({ status: true, message: "Authorization url.", data: authUrl });
+        }
+        else {
+            res.status(400).json({ status: false, message: err.messages, err });
+        }
+    } catch (error) {
+        console.log('authorization_url Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
 
 module.exports.generate_auth_url = async (req, res) => {
     try {
         // Set the desired time
-        const startTime = moment.tz('2024-02-07T18:05:00', 'Asia/Kolkata');
-        const endTime = moment.tz('2024-02-07T19:05:00', 'Asia/Kolkata');
-        const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+        const startTime = moment.tz('2024-02-08T19:05:00', 'Asia/Kolkata');
+        const endTime = moment.tz('2024-02-08T20:05:00', 'Asia/Kolkata');
         const code = req.body.code;
-        oAuth2Client.getToken(code, (err, token) => {
-            if (err) return console.error('Error retrieving access token', err);
-            else {
-                console.log('token', token)
-                oAuth2Client.setCredentials(token);
-                const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
-                // calendar.events.insert({
-                //     calendarId: 'primary',
-                //     resource: {
-                //         summary: 'Meeting Title',
-                //         description: 'Meeting Description',
-                //         start: { dateTime: '2024-02-07T09:00:00', timeZone: 'asia/kolkata' },
-                //         end: { dateTime: '2024-02-07T10:00:00', timeZone: 'asia/kolkata' },
-                //         conferenceData: {
-                //             createRequest: {
-                //                 requestId: 'YOUR_UNIQUE_REQUEST_ID',
-                //             },
-                //         },
-                //     },
-                // }, (err, res) => {
-                //     if (err) return console.error('Error creating event:', err);
 
-                //     const meetingLink = res.data.hangoutLink;
-                //     console.log('Meeting Link:', meetingLink);
-                // });
+        const { tokens } = await oAuth2Client.getToken(code);
+        oAuth2Client.setCredentials(tokens);
 
-                calendar.events.insert({
-                    calendarId: 'primary',
-                    resource: {
-                        summary: 'Meeting Title',
-                        description: 'Meeting Description',
-                        start: {
-                            dateTime: '2024-02-06T18:15:00',
-                            timeZone: "Asia/Kolkata"
-                        },
-                        end: {
-                            dateTime: '2024-02-06T19:15:00',
-                            timeZone: "Asia/Kolkata"
-                        },
-                        conferenceData: {
-                            createRequest: {
-                                requestId: requestId,
-                            },
-                        },
+        // Create Google Calendar API instance
+        const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+        // Create event with Google Meet link
+        const event = await calendar.events.insert({
+            calendarId: 'primary',
+            resource: {
+                summary: 'Meeting Title',
+                description: 'Meeting Description',
+                start: { dateTime: '2024-02-08T13:35:00Z', timeZone: 'UTC' },
+                end: { dateTime: '2024-02-08T14:35:00Z', timeZone: 'UTC' },
+                conferenceData: {
+                    createRequest: {
+                        requestId: 'YOUR_UNIQUE_REQUEST_ID',
                     },
-                }, (err, config) => {
-                    if (err) return console.error('Error creating event:', err);
-                    if (config.data.conferenceData && config.data.conferenceData.entryPoints && config.data.conferenceData.entryPoints.length > 0) {
-                        const meetingLink = config.data.conferenceData.entryPoints[0].uri;
-                        console.log('Meeting Link:', meetingLink);
-                        // res.status(200).json({ data: response.data })
-
-                    } else {
-                        console.error('Error: Conference data not found', res);
-                        // res.status(200).json({ data: response.data })
-
-                    }
-                });
-
-            }
+                },
+            },
         });
 
+        const meetingLink = event.data.hangoutLink;
+        console.log('Meeting Link:', meetingLink);
+        console.log('event.data', event.data);
 
+        // oAuth2Client.getToken(code, (err, token) => {
+        //     if (err) return console.error('Error retrieving access token', err);
+        //     else {
+        //         console.log('token', token)
+        //         oAuth2Client.setCredentials(token);
+        //         const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+        //         calendar.events.insert({
+        //             calendarId: 'primary',
+        //             resource: {
+        //                 summary: 'Meeting Title',
+        //                 description: 'Meeting Description',
+        //                 start: {
+        //                     dateTime: startTime,
+        //                 },
+        //                 end: {
+        //                     dateTime: endTime,
+        //                 },
+        //                 conferenceData: {
+        //                     createRequest: {
+        //                         requestId: requestId,
+        //                     },
+        //                 },
+        //             },
+        //         }, (err, res) => {
+        //             if (err) return console.error('Error creating event:', err);
 
-
-
-
+        //             const meetingLink = res.data;
+        //             console.log('Meeting Link:', meetingLink);
+        //         });
+        //     }
+        // });
     } catch (error) {
         console.log('generate_auth_url Error', error);
         res.status(500).json(error);

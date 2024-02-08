@@ -6,6 +6,10 @@ const { decodedToken } = require('../helper/contentManagerJwt');
 
 app.post('/login', contentManagerController.login);
 
+app.post('/forget-password', contentManagerController.forget_password);
+app.post('/verify-otp', contentManagerController.verify_otp);
+app.post('/reset-password', contentManagerController.reset_password);
+
 app.get('/user-list', decodedToken, contentManagerController.user_list);
 app.get('/user-view', decodedToken, contentManagerController.user_view);
 
@@ -107,7 +111,10 @@ app.get('/notification-view', decodedToken, contentManagerController.notificatio
 app.post('/block-student', decodedToken, contentManagerController.block_student);
 
 
-
+app.get('/authorization-url',decodedToken, contentManagerController.authorization_url);
 app.post('/genrate-auth-url',decodedToken, contentManagerController.generate_auth_url);
+
+
+
 
 module.exports = app; 

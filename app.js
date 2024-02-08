@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -84,8 +85,8 @@ app.use('/api', mainRoute);
 // console.log('rl', rl);
 // return false
 // let code = "4/0AfJohXn3i0bza14d3GC9AqN0NF2bJpJnzLQ8s4lEd3uzRq1ouj-MK4AWC4eb6PcPBs-LMw"
-const { google } = require('googleapis');
-const { OAuth2Client } = require('google-auth-library');
+// const { google } = require('googleapis');
+// const { OAuth2Client } = require('google-auth-library');
 
 // const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
 // const CLIENT_SECRET = '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';
@@ -100,8 +101,90 @@ const { OAuth2Client } = require('google-auth-library');
 // });
 // console.log('Authorize this app by visiting this URL:', authUrl);
 
-const port = process.env.Port || 4000
 
+
+
+const axios = require('axios');
+
+// Zoom API credentials
+const API_KEY = 'S1aesnp3TsGHsJHpVghzYA';
+const API_SECRET = 'HIMyf1uKQbC-zNBPLqMTXg';
+let url = "http://localhost:4000/"
+const { base64Encode } = require('base64-encode-decode');
+
+// app.get('/', async (req, res) => {
+//     const code = req.query.code;
+//     try {
+//         const response = await axios.post('https://zoom.us/oauth/token', null, {
+//             params: {
+//                 code: code,
+//                 grant_type: 'authorization_code',
+//                 redirect_uri: url,
+//             },
+//             headers: {
+//                 Authorization: `Basic base64Encode(${API_KEY}:${API_SECRET})`,
+//                 'Content-Type': 'application/ x - www - form - urlencoded',
+//             }
+//         });
+//         console.log('TOken', response);
+//         res.send(response.data.access_token)
+//     } catch (error) {
+//         console.log('error token', error);
+//     }
+// })
+
+
+// app.get('/', async (req, res) => {
+//     const code = req.query.code;
+//     try {
+//         const response = await axios.post('https://zoom.us/oauth/token', null, {
+//             params: {
+//                 code: code,
+//                 grant_type: 'authorization_code',
+//                 redirect_uri: url,
+//             },
+//             headers: {
+//                 Authorization: `Basic ${base64Encode(`${API_KEY}:${API_SECRET}`)}`,
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+//             }
+//         });
+//         console.log('Token', response.data.access_token);
+//         res.send(response.data.access_token);
+//     } catch (error) {
+//         console.log('Error fetching token:', error);
+//         res.status(error.response || 500).send(error.response);
+//     }
+// });
+
+
+// const ZOOM_API_URL = 'https://api.zoom.us/v2/users/me/meetings';
+
+// async function fetchMeetings() {
+//     try {
+//         const response = await axios.get(ZOOM_API_URL, {
+//             headers: {
+//                 'Authorization': `Bearer ${token}`, // Use the generated JWT token here
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching meetings:', error.response.data);
+//         throw error;
+//     }
+// }
+
+// // Example usage
+// (async () => {
+//     try {
+//         const meetings = await fetchMeetings();
+//         console.log('Meetings:', meetings);
+//     } catch (error) {
+//         console.error('Error:', error);
+//     }
+// })();
+
+const port = process.env.Port || 4000
 app.listen(port, (req, res) => {
     console.log('MPP_Disha Server listing On Port', port);
 });

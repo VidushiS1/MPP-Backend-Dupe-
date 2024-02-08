@@ -2063,7 +2063,7 @@ module.exports.forget_password = async (req, res) => {
                 });
             res
                 .status(200)
-                .json({ status: true, message: "Verification code is sent to registered email", data: user.email, otp: randomCode });
+                .json({ status: true, message: "Verification code is sent to registered email", data: user.email });
         }
         else {
             res.status(404).json({ status: false, message: 'Email Id does not exist' });

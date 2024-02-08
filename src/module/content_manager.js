@@ -4,33 +4,38 @@ const contentManagerSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true,
-        default : null
+        default: null
     },
     email: {
         type: String,
         require: true,
-        default : null
+        default: null
     },
     mobile_no: {
         type: String,
         require: true,
-        default : null
+        default: null
     },
     fcm_token: {
         type: String,
         require: true,
-        default : null
+        default: null
     },
     password: {
         type: String,
         require: true,
-        default : null
+        default: null
     },
     profile: {
         type: String,
         require: false,
         default: null
     },
+    otp: {
+        type: Number,
+        require: false,
+        default: null
+    }
 }, { timestamps: true });
 
 const ContentManager = mongoose.model('content_manager', contentManagerSchema);
