@@ -50,10 +50,8 @@ app.put('/entrance-exam-edit', decodedToken, contentManagerController.entrance_e
 app.delete('/entrance-exam-delete', decodedToken, contentManagerController.entrance_exam_delete);
 
 
-app.post('/add-scholarship-name', decodedToken, contentManagerController.add_scholarship_name);
-
-
-app.post('/add-scholarship', decodedToken, contentManagerController.add_scholarship);
+// app.post('/add-scholarship-name', decodedToken, contentManagerController.add_scholarship_name);
+// app.post('/add-scholarship', decodedToken, contentManagerController.add_scholarship1);
 
 app.get('/get-scholarship-list', decodedToken, contentManagerController.get_scholership_list);
 app.get('/get-scholarship-view', decodedToken, contentManagerController.get_scholarship_view);
@@ -115,6 +113,15 @@ app.get('/authorization-url',decodedToken, contentManagerController.authorizatio
 app.post('/genrate-auth-url',decodedToken, contentManagerController.generate_auth_url);
 
 
+app.post('/add-cast-category',decodedToken, contentManagerController.add_cast_category);
+app.get('/cast-category-list', decodedToken, contentManagerController.cast_category_list);
+app.put('/cast-category-edit', decodedToken, contentManagerController.cast_category_edit);
+app.delete('/cast-category-delete', decodedToken, contentManagerController.cast_category_delete);
 
+app.post('/add-scholarship', decodedToken, contentManagerController.add_scholarship);
+app.get('/scholarship-list', decodedToken, contentManagerController.scholarship_list);
+app.get('/scholarship-view', decodedToken, contentManagerController.scholarship_view);
+app.put('/scholarship-edit', decodedToken, contentManagerController.scholarship_edit);
+app.delete('/scholarship-delete', decodedToken, contentManagerController.scholarship_delete);
 
 module.exports = app; 

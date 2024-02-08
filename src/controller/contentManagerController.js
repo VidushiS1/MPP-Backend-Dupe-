@@ -33,8 +33,8 @@ const Students = require('../module/student');
 const Education = require('../module/education');
 const StudentNotifications = require('../module/student_notification');
 const Jobseeker = require('../module/job_seeker');
-
-
+const CatsCategory = require('../module/cast_category');
+const Scholership = require('../module/scholarship');
 
 const { google } = require('googleapis');
 const { OAuth2Client } = require('google-auth-library');
@@ -119,7 +119,7 @@ module.exports.forget_password = async (req, res) => {
                 });
             res
                 .status(200)
-                .json({ status: true, message: "Verification code is sent to registered email", data: user.email});
+                .json({ status: true, message: "Verification code is sent to registered email", data: user.email });
         }
         else {
             res.status(404).json({ status: false, message: 'Email Id does not exist' });
@@ -1189,92 +1189,92 @@ module.exports.entrance_exam_delete = async (req, res) => {
 
 
 
-module.exports.add_scholarship_name = async (req, res) => {
-    try {
-        const schema = Joi.object({
-            name: Joi.string().required().messages({
-                'string.empty': 'name cannot be an empty field',
-                'any.required': 'name is required field'
-            }),
-        });
-        checkValidation.joiValidation(schema, req.body);
-        const { name } = req.body;
-        const data = { name }
-        const addData = await ScholarshipName.create(data);
-        if (addData) {
-            res.status(200).json({ status: true, message: 'Scholarship name added successfully', data: addData });
-        }
-        else {
-            res.status(400).json({ status: false, message: "Please try again" });
-        }
-    } catch (error) {
-        console.log('add_scholarship_name Error', error);
-        res.status(500).json(error);
-    }
-}
+// module.exports.add_scholarship_name = async (req, res) => {
+//     try {
+//         const schema = Joi.object({
+//             name: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//         });
+//         checkValidation.joiValidation(schema, req.body);
+//         const { name } = req.body;
+//         const data = { name }
+//         const addData = await ScholarshipName.create(data);
+//         if (addData) {
+//             res.status(200).json({ status: true, message: 'Scholarship name added successfully', data: addData });
+//         }
+//         else {
+//             res.status(400).json({ status: false, message: "Please try again" });
+//         }
+//     } catch (error) {
+//         console.log('add_scholarship_name Error', error);
+//         res.status(500).json(error);
+//     }
+// }
 
 
 
 
-module.exports.add_scholarship = async (req, res) => {
-    try {
-        const schema = Joi.object({
-            scholarship_id: Joi.string().required().messages({
-                'string.empty': 'scholarship_id cannot be an empty field',
-                'any.required': 'scholarship_id is required field'
-            }),
-            scheme_name: Joi.string().required().messages({
-                'string.empty': 'scheme_name cannot be an empty field',
-                'any.required': 'scheme_name is required field'
-            }),
-            amount_of_scholership: Joi.string().required().messages({
-                'string.empty': 'amount_of_scholership cannot be an empty field',
-                'any.required': 'amount_of_scholership is required field'
-            }),
-            eligibility: Joi.string().required().messages({
-                'string.empty': 'eligibility cannot be an empty field',
-                'any.required': 'eligibility is required field'
-            }),
-            category: Joi.string().required().messages({
-                'string.empty': 'Category cannot be an empty field',
-                'any.required': 'Category is required field'
-            }),
-            slots: Joi.string().required().messages({
-                'string.empty': 'slots cannot be an empty field',
-                'any.required': 'slots is required field'
-            }),
-            scheme_close_date: Joi.string().required().messages({
-                'string.empty': 'scheme_close_date cannot be an empty field',
-                'any.required': 'scheme_close_date is required field'
-            }),
-            guidelines: Joi.string().required().messages({
-                'string.empty': 'guidelines cannot be an empty field',
-                'any.required': 'guidelines is required field'
-            }),
-            faq: Joi.string().required().messages({
-                'string.empty': 'faq cannot be an empty field',
-                'any.required': 'faq is required field'
-            }),
-            website: Joi.string().required().messages({
-                'string.empty': 'website cannot be an empty field',
-                'any.required': 'website is required field'
-            }),
-        });
-        checkValidation.joiValidation(schema, req.body);
-        const { scholarship_id, scheme_name, amount_of_scholership, eligibility, category, slots, scheme_close_date, guidelines, faq, website } = req.body;
-        const data = { scholarship_id, scheme_name, amount_of_scholership, eligibility, category, slots, scheme_close_date, guidelines, faq, website }
-        const addData = await GovtScholership.create(data);
-        if (addData) {
-            res.status(200).json({ status: true, message: 'Pvt Job Added successfully', data: addData });
-        }
-        else {
-            res.status(400).json({ status: false, message: "Please try again" });
-        }
-    } catch (error) {
-        console.log('add_scholarship Error', error);
-        res.status(500).json(error);
-    }
-}
+// module.exports.add_scholarship1 = async (req, res) => {
+//     try {
+//         const schema = Joi.object({
+//             scholarship_id: Joi.string().required().messages({
+//                 'string.empty': 'scholarship_id cannot be an empty field',
+//                 'any.required': 'scholarship_id is required field'
+//             }),
+//             scheme_name: Joi.string().required().messages({
+//                 'string.empty': 'scheme_name cannot be an empty field',
+//                 'any.required': 'scheme_name is required field'
+//             }),
+//             amount_of_scholership: Joi.string().required().messages({
+//                 'string.empty': 'amount_of_scholership cannot be an empty field',
+//                 'any.required': 'amount_of_scholership is required field'
+//             }),
+//             eligibility: Joi.string().required().messages({
+//                 'string.empty': 'eligibility cannot be an empty field',
+//                 'any.required': 'eligibility is required field'
+//             }),
+//             category: Joi.string().required().messages({
+//                 'string.empty': 'Category cannot be an empty field',
+//                 'any.required': 'Category is required field'
+//             }),
+//             slots: Joi.string().required().messages({
+//                 'string.empty': 'slots cannot be an empty field',
+//                 'any.required': 'slots is required field'
+//             }),
+//             scheme_close_date: Joi.string().required().messages({
+//                 'string.empty': 'scheme_close_date cannot be an empty field',
+//                 'any.required': 'scheme_close_date is required field'
+//             }),
+//             guidelines: Joi.string().required().messages({
+//                 'string.empty': 'guidelines cannot be an empty field',
+//                 'any.required': 'guidelines is required field'
+//             }),
+//             faq: Joi.string().required().messages({
+//                 'string.empty': 'faq cannot be an empty field',
+//                 'any.required': 'faq is required field'
+//             }),
+//             website: Joi.string().required().messages({
+//                 'string.empty': 'website cannot be an empty field',
+//                 'any.required': 'website is required field'
+//             }),
+//         });
+//         checkValidation.joiValidation(schema, req.body);
+//         const { scholarship_id, scheme_name, amount_of_scholership, eligibility, category, slots, scheme_close_date, guidelines, faq, website } = req.body;
+//         const data = { scholarship_id, scheme_name, amount_of_scholership, eligibility, category, slots, scheme_close_date, guidelines, faq, website }
+//         const addData = await GovtScholership.create(data);
+//         if (addData) {
+//             res.status(200).json({ status: true, message: 'Pvt Job Added successfully', data: addData });
+//         }
+//         else {
+//             res.status(400).json({ status: false, message: "Please try again" });
+//         }
+//     } catch (error) {
+//         console.log('add_scholarship Error', error);
+//         res.status(500).json(error);
+//     }
+// }
 
 
 
@@ -2755,6 +2755,265 @@ module.exports.generate_auth_url = async (req, res) => {
         // });
     } catch (error) {
         console.log('generate_auth_url Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.add_cast_category = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().required().messages({
+                'string.empty': 'name cannot be an empty field',
+                'any.required': 'name is required field'
+            }),
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const { name } = req.body;
+        const data = { name }
+        const addData = await CatsCategory.create(data);
+        if (addData) {
+            res.status(200).json({ status: true, message: 'Category added successfully.' });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('add_cast_category Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.cast_category_list = async (req, res) => {
+    try {
+        const categoryData = await CatsCategory.find().sort({ createdAt: -1 });
+        if (categoryData.length) {
+            res.status(200).json({ status: true, message: "Category list", data: categoryData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('cast_category_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.cast_category_edit = async (req, res) => {
+    try {
+        const catId = req.body.catId;
+        if (catId) {
+            const categoryData = await CatsCategory.findOne({ _id: catId });
+            if (categoryData) {
+                await CatsCategory.updateOne({ _id: catId }, { name: req.body.name });
+                res.status(200).json({ status: true, message: "Category successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Category Id is required." });
+        }
+    } catch (error) {
+        console.log('cast_category_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.cast_category_delete = async (req, res) => {
+    try {
+        const catId = req.query.catId;
+        if (catId) {
+            const categoryData = await CatsCategory.findOne({ _id: catId });
+            if (categoryData) {
+                await CatsCategory.deleteOne({ _id: catId });
+                res.status(200).json({ status: true, message: "Category delete successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Category Id is required." });
+        }
+    } catch (error) {
+        console.log('cast_category_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.add_scholarship = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            // mp_police: Joi.string().required().messages({
+            //     'string.empty': 'mp_police cannot be an empty field',
+            //     'any.required': 'mp_police is required field'
+            // }),
+            level: Joi.string().required().messages({
+                'string.empty': 'level cannot be an empty field',
+                'any.required': 'level is required field'
+            }),
+            cast_category_id: Joi.string().required().messages({
+                'string.empty': 'cast_category_id cannot be an empty field',
+                'any.required': 'cast_category_id is required field'
+            }),
+            category: Joi.string().required().messages({
+                'string.empty': 'category cannot be an empty field',
+                'any.required': 'category is required field'
+            }),
+            scheme_name: Joi.string().required().messages({
+                'string.empty': 'scheme_name cannot be an empty field',
+                'any.required': 'scheme_name is required field'
+            }),
+            eligibility: Joi.string().required().messages({
+                'string.empty': 'eligibility cannot be an empty field',
+                'any.required': 'eligibility is required field'
+            }),
+            amount_of_scholership: Joi.string().required().messages({
+                'string.empty': 'amount_of_scholership cannot be an empty field',
+                'any.required': 'amount_of_scholership is required field'
+            }),
+            scheme_closing_date: Joi.string().required().messages({
+                'string.empty': 'scheme_closing_date cannot be an empty field',
+                'any.required': 'scheme_closing_date is required field'
+            }),
+            guidelines: Joi.string().required().messages({
+                'string.empty': 'guidelines cannot be an empty field',
+                'any.required': 'guidelines is required field'
+            }),
+            faq: Joi.string().required().messages({
+                'string.empty': 'faq cannot be an empty field',
+                'any.required': 'faq is required field'
+            }),
+            website: Joi.string().required().messages({
+                'string.empty': 'website cannot be an empty field',
+                'any.required': 'website is required field'
+            })
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const { level, cast_category_id, category, scheme_name, eligibility, amount_of_scholership, scheme_closing_date, guidelines, faq, website } = req.body;
+        const data = { level, cast_category_id, category, scheme_name, eligibility, amount_of_scholership, scheme_closing_date, guidelines, faq, website }
+        data.mp_police = req.body.mp_police
+        const addData = await Scholership.create(data);
+        if (addData) {
+            res.status(200).json({ status: true, message: 'Scholership Added successfully' });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('add_scholarship Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_list = async (req, res) => {
+    try {
+        let filter = {}
+        const catId = req.query.catId;
+        if (catId) {
+            filter.cast_category_id = catId;
+        }
+        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
+        if (scholarshipData.length) {
+            res.status(200).json({ status: true, message: "Entrance exam list", data: scholarshipData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('scholarship_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_view = async (req, res) => {
+    try {
+        const scholarId = req.query.scholarId;
+        if (!scholarId) {
+            res.status(400).json({ message: "Scholarship Id is required." });
+        }
+        else {
+            const scholarshipData = await Scholership.find({ _id: scholarId }).sort({ createdAt: 1 }).lean();
+            if (scholarshipData.length) {
+                let promiss = scholarshipData.map(async (row) => {
+                    let category = await CatsCategory.findOne({ _id: row.cast_category_id });
+                    row.cast_category = category.name;
+                    return row;
+                });
+                const newData = await Promise.all(promiss);
+                res.status(200).json({ status: true, message: "Entrance exam view", data: newData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('scholarship_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_edit = async (req, res) => {
+    try {
+        const scholarId = req.body.scholarId;
+        const setData = req.body;
+        if (scholarId) {
+            const scholarshipData = await Scholership.findOne({ _id: scholarId });
+            if (scholarshipData) {
+                await Scholership.updateOne({ _id: scholarId }, setData);
+                res.status(200).json({ status: true, message: "Scholarship updeted successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Scholarship Id is required." });
+        }
+    } catch (error) {
+        console.log('scholarship_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.scholarship_delete = async (req, res) => {
+    try {
+        const scholarId = req.query.scholarId;
+        if (scholarId) {
+            const scholarshipData = await Scholership.findOne({ _id: scholarId });
+            if (scholarshipData) {
+                await Scholership.deleteOne({ _id: scholarId });
+                res.status(200).json({ status: true, message: "Scholarship delete successfully" });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Scholarship Id is required." });
+        }
+    } catch (error) {
+        console.log('scholarship_delete Error', error);
         res.status(500).json(error);
     }
 }
