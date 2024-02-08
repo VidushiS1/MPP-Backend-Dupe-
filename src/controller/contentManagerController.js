@@ -2901,9 +2901,9 @@ module.exports.add_scholarship = async (req, res) => {
                 'any.required': 'website is required field'
             })
         });
-        checkValidation.joiValidation(schema, req.body);
         const { level, cast_category_id, category, scheme_name, eligibility, amount_of_scholership, scheme_closing_date, guidelines, faq, website } = req.body;
         const data = { level, cast_category_id, category, scheme_name, eligibility, amount_of_scholership, scheme_closing_date, guidelines, faq, website }
+        checkValidation.joiValidation(schema, data);
         data.mp_police = req.body.mp_police
         const addData = await Scholership.create(data);
         if (addData) {
