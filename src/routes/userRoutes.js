@@ -74,7 +74,7 @@ app.get('/notification-delete', jwtToken.decodedToken, userController.notificati
 
 
 app.get('/cast-category-list', jwtToken.decodedToken, userController.cast_category_list);
-app.post('/scholarship-list', jwtToken.decodedToken, userController.scholarship_list);
+app.get('/scholarship-list', jwtToken.decodedToken, userController.scholarship_list);
 app.get('/scholarship-view', jwtToken.decodedToken, userController.scholarship_view);
 
 

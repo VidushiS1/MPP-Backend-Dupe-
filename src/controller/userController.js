@@ -2240,9 +2240,9 @@ module.exports.cast_category_list = async (req, res) => {
 module.exports.scholarship_list = async (req, res) => {
     try {
         let filter = {}
-        const mp_police = req.body.mp_police;
-        const level = req.body.level;
-        const catId = req.body.catId;
+        const mp_police = req.query.mp_police;
+        const level = req.query.level;
+        const catId = req.query.catId;
         if (mp_police) {
             filter.mp_police = mp_police;
         }

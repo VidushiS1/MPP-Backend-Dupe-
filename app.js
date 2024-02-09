@@ -107,31 +107,14 @@ app.use('/api', mainRoute);
 const axios = require('axios');
 
 // Zoom API credentials
-const API_KEY = 'S1aesnp3TsGHsJHpVghzYA';
-const API_SECRET = 'HIMyf1uKQbC-zNBPLqMTXg';
-let url = "http://localhost:4000/"
-const { base64Encode } = require('base64-encode-decode');
+// const API_KEY = 'S1aesnp3TsGHsJHpVghzYA';
+// const API_SECRET = 'HIMyf1uKQbC-zNBPLqMTXg';
 
-// app.get('/', async (req, res) => {
-//     const code = req.query.code;
-//     try {
-//         const response = await axios.post('https://zoom.us/oauth/token', null, {
-//             params: {
-//                 code: code,
-//                 grant_type: 'authorization_code',
-//                 redirect_uri: url,
-//             },
-//             headers: {
-//                 Authorization: `Basic base64Encode(${API_KEY}:${API_SECRET})`,
-//                 'Content-Type': 'application/ x - www - form - urlencoded',
-//             }
-//         });
-//         console.log('TOken', response);
-//         res.send(response.data.access_token)
-//     } catch (error) {
-//         console.log('error token', error);
-//     }
-// })
+// const API_KEY = '5Rjur0MxSn24O87IC9cBsg';
+// const API_SECRET = 'hutw3BvN7DrRTYDVGh1nQ9y7vAa9TYfu';
+
+// let url = "http://localhost:4000/"
+// const { base64Encode } = require('base64-encode-decode');
 
 
 // app.get('/', async (req, res) => {
@@ -152,9 +135,39 @@ const { base64Encode } = require('base64-encode-decode');
 //         res.send(response.data.access_token);
 //     } catch (error) {
 //         console.log('Error fetching token:', error);
-//         res.status(error.response || 500).send(error.response);
+//         // res.status(error.response || 500).send(error.response);
 //     }
 // });
+
+
+// const qs = require('qs'); // Import the qs library to handle URL-encoded form data
+
+// app.get('/', async (req, res) => {
+//     const code = req.query.code;
+//     console.log('code', code)
+//     try {
+//         const requestBody = qs.stringify({
+//             grant_type: 'authorization_code',
+//             code: code,
+//             redirect_uri: url,
+//         });
+//         console.log('requestBody', requestBody)
+
+//         const response = await axios.post('https://zoom.us/oauth/token', requestBody, {
+//             headers: {
+//                 Authorization: `Basic ${Buffer.from(`${API_KEY}:${API_SECRET}`).toString('base64')}`,
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+//             }
+//         });
+
+//         console.log('Token', response.data.access_token);
+//         res.send(response.data.access_token);
+//     } catch (error) {
+//         console.log('Error fetching token:', error);
+//         res.status(500).send('Error fetching token');
+//     }
+// });
+
 
 
 // const ZOOM_API_URL = 'https://api.zoom.us/v2/users/me/meetings';
