@@ -148,7 +148,7 @@ module.exports.verify_otp = async (req, res) => {
         const getUser = await ContentManager.findOne({ email: req.body.email });
         if (getUser) {
             if (getUser.otp === req.body.otp) {
-                res.status(200).json({ status: true, message: 'OTP verification successfully', data: getUser.email });
+                res.status(200).json({ status: true, message: 'OTP verification successfully.', data: getUser.email });
             }
             else {
                 res.status(404).json({ status: false, message: 'Invalid OTP' });
@@ -185,7 +185,7 @@ module.exports.reset_password = async (req, res) => {
         const getUser = await ContentManager.findOne({ email: req.body.email });
         if (getUser) {
             await ContentManager.updateOne({ email: req.body.email }, { $set: { password: password } }, { upsert: false, multi: true });
-            return res.status(200).json({ status: true, message: 'Password reset successfully' });
+            return res.status(200).json({ status: true, message: 'Password reset successfully.' });
         }
         else {
             res.status(404).json({ status: false, message: 'Email Id does not exist' });
@@ -471,7 +471,7 @@ module.exports.add_gov_sector = async (req, res) => {
         const data = { job_sector }
         const addData = await GovJobSector.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Sector Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Sector added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -508,7 +508,7 @@ module.exports.govt_sector_edit = async (req, res) => {
             const entranceStreamData = await GovJobSector.findOne({ _id: sector_id });
             if (entranceStreamData) {
                 await GovJobSector.updateOne({ _id: sector_id }, { job_sector: req.body.job_sector });
-                res.status(200).json({ status: true, message: "Sector updeted successfully" });
+                res.status(200).json({ status: true, message: "Sector updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -533,7 +533,7 @@ module.exports.govt_sector_delete = async (req, res) => {
             if (entranceStreamData) {
                 await GovJobS.deleteMany({ sector_id: sector_id });
                 await GovJobSector.deleteOne({ _id: sector_id });
-                res.status(200).json({ status: true, message: "Sector deleted successfully" });
+                res.status(200).json({ status: true, message: "Sector deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -587,7 +587,7 @@ module.exports.add_gov_jobs = async (req, res) => {
         const data = { sector_id, job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website }
         const addData = await GovJobS.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Govt. Job Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Govt. Job added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -661,7 +661,7 @@ module.exports.govt_job_edit = async (req, res) => {
             const jobData = await GovJobS.findOne({ _id: jobId });
             if (jobData) {
                 await GovJobS.updateOne({ _id: jobId }, setData);
-                res.status(200).json({ status: true, message: "Govt. updeted successfully" });
+                res.status(200).json({ status: true, message: "Govt. updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -685,7 +685,7 @@ module.exports.govt_job_delete = async (req, res) => {
             const entranceStreamData = await GovJobS.findOne({ _id: jobId });
             if (entranceStreamData) {
                 await GovJobS.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Job deleted successfully" });
+                res.status(200).json({ status: true, message: "Job deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -716,7 +716,7 @@ module.exports.add_pvt_sector = async (req, res) => {
         const data = { job_sector }
         const addData = await PvtJobSector.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Sector Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Sector added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -754,7 +754,7 @@ module.exports.pvt_sector_edit = async (req, res) => {
             const entranceStreamData = await PvtJobSector.findOne({ _id: sector_id });
             if (entranceStreamData) {
                 await PvtJobSector.updateOne({ _id: sector_id }, { job_sector: req.body.job_sector });
-                res.status(200).json({ status: true, message: "Sector updeted successfully" });
+                res.status(200).json({ status: true, message: "Sector updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -780,7 +780,7 @@ module.exports.pvt_sector_delete = async (req, res) => {
             if (entranceStreamData) {
                 await PvtJobS.deleteMany({ sector_id: sector_id });
                 await PvtJobSector.deleteOne({ _id: sector_id });
-                res.status(200).json({ status: true, message: "Sector deleted successfully" });
+                res.status(200).json({ status: true, message: "Sector deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -834,7 +834,7 @@ module.exports.add_pvt_jobs = async (req, res) => {
         const data = { sector_id, job_title, eligibility_qualification, company, salary, location, website }
         const addData = await PvtJobS.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Pvt. Job Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Pvt. Job added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -906,7 +906,7 @@ module.exports.pvt_job_edit = async (req, res) => {
             const jobData = await PvtJobS.findOne({ _id: jobId });
             if (jobData) {
                 await PvtJobS.updateOne({ _id: jobId }, setData);
-                res.status(200).json({ status: true, message: "Pvt. updeted successfully" });
+                res.status(200).json({ status: true, message: "Pvt. updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -930,7 +930,7 @@ module.exports.pvt_job_delete = async (req, res) => {
             const jobData = await PvtJobS.findOne({ _id: jobId });
             if (jobData) {
                 await PvtJobS.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Pvt deleted successfully" });
+                res.status(200).json({ status: true, message: "Pvt deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -960,7 +960,7 @@ module.exports.add_stream = async (req, res) => {
         const data = { steam_name }
         const addData = await Entrance_stream.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Entrance_stream Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Entrance stream added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -997,7 +997,7 @@ module.exports.entrance_stream_edit = async (req, res) => {
             const entranceStreamData = await Entrance_stream.findOne({ _id: stream_id });
             if (entranceStreamData) {
                 await Entrance_stream.updateOne({ _id: stream_id }, { steam_name: req.body.stream_name });
-                res.status(200).json({ status: true, message: "Sector updeted successfully" });
+                res.status(200).json({ status: true, message: "Sector updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1023,7 +1023,7 @@ module.exports.entrance_stream_delete = async (req, res) => {
             if (entranceStreamData) {
                 await Entrance_exams.deleteMany({ stream_id: stream_id });
                 await Entrance_stream.deleteOne({ _id: stream_id });
-                res.status(200).json({ status: true, message: "Stream deleted successfully" });
+                res.status(200).json({ status: true, message: "Stream deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1074,7 +1074,7 @@ module.exports.add_entrance_exam = async (req, res) => {
         const data = { stream_id, exam_name, brief_discription, progran_level, conducting, web_link }
         const addData = await Entrance_exams.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Entrance_exam Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Entrance exam added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -1147,7 +1147,7 @@ module.exports.entrance_exam_edit = async (req, res) => {
             const entranceExamData = await Entrance_exams.findOne({ _id: examId });
             if (entranceExamData) {
                 await Entrance_exams.updateOne({ _id: examId }, setData);
-                res.status(200).json({ status: true, message: "Entrance exam updeted successfully" });
+                res.status(200).json({ status: true, message: "Entrance exam updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1171,7 +1171,7 @@ module.exports.entrance_exam_delete = async (req, res) => {
             const entranceStreamData = await Entrance_exams.findOne({ _id: jobId });
             if (entranceStreamData) {
                 await Entrance_exams.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Entrance exam deleted successfully" });
+                res.status(200).json({ status: true, message: "Entrance exam deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1202,7 +1202,7 @@ module.exports.entrance_exam_delete = async (req, res) => {
 //         const data = { name }
 //         const addData = await ScholarshipName.create(data);
 //         if (addData) {
-//             res.status(200).json({ status: true, message: 'Scholarship name added successfully', data: addData });
+//             res.status(200).json({ status: true, message: 'Scholarship name added successfully.', data: addData });
 //         }
 //         else {
 //             res.status(400).json({ status: false, message: "Please try again" });
@@ -1265,7 +1265,7 @@ module.exports.entrance_exam_delete = async (req, res) => {
 //         const data = { scholarship_id, scheme_name, amount_of_scholership, eligibility, category, slots, scheme_close_date, guidelines, faq, website }
 //         const addData = await GovtScholership.create(data);
 //         if (addData) {
-//             res.status(200).json({ status: true, message: 'Pvt Job Added successfully', data: addData });
+//             res.status(200).json({ status: true, message: 'Pvt Job added successfully.', data: addData });
 //         }
 //         else {
 //             res.status(400).json({ status: false, message: "Please try again" });
@@ -1338,7 +1338,7 @@ module.exports.carrer_advise_agenda_edit = async (req, res) => {
         if (agendaData) {
             const addData = await careerAgenda.updateOne({ _id: req.body.agenda_id }, data);
             if (addData) {
-                res.status(200).json({ status: true, message: 'Career agenda updated successfully' });
+                res.status(200).json({ status: true, message: 'Career agenda updated successfully.' });
             }
             else {
                 res.status(400).json({ status: false, message: "Please try again" });
@@ -1408,7 +1408,7 @@ module.exports.add_time_slot = async (req, res) => {
         const data = { slot }
         const addData = await Time_slot.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Time slot added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Time slot added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -1498,7 +1498,7 @@ module.exports.time_slot_delete = async (req, res) => {
             const agendaData = await Time_slot.findOne({ _id: slot_id });
             if (agendaData) {
                 await Time_slot.deleteOne({ _id: slot_id });
-                res.status(200).json({ status: true, message: "Time slot deleted successfully" });
+                res.status(200).json({ status: true, message: "Time slot deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1540,7 +1540,7 @@ module.exports.add_institute = async (req, res) => {
         const data = { institute_name, place, institute_type, institute_url }
         const addData = await Institutes.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Institute Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Institute added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -1788,7 +1788,7 @@ module.exports.institute_delete = async (req, res) => {
                 await Institutes.deleteOne({ _id: institute_id });
                 await Desciplines.deleteMany({ institute_id: institute_id });
                 await Courses.deleteMany({ institute_id: institute_id });
-                res.status(200).json({ status: true, message: "Institute deleted successfully" });
+                res.status(200).json({ status: true, message: "Institute deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1837,7 +1837,7 @@ module.exports.add_discipline = async (req, res) => {
         const data = { institute_id, discipline_name, }
         const addData = await Desciplines.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Descipline Added successfully', data: addData });
+            res.status(200).json({ status: true, message: 'Descipline added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -1996,7 +1996,7 @@ module.exports.discipline_delete = async (req, res) => {
                     await Desciplines.deleteMany({ discipline_name: old_discipline_name });
                     await Courses.deleteMany({ discipline_id: row.discipline_id });
                 })
-                res.status(200).json({ status: true, message: "Desciplines deleted successfully" });
+                res.status(200).json({ status: true, message: "Desciplines deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2024,7 +2024,7 @@ module.exports.discipline_institute_delete = async (req, res) => {
                     await Desciplines.deleteMany({ discipline_name: discipline_name, institute_id: institute_id });
                     await Courses.deleteMany({ discipline_id: row.discipline_id, institute_id: institute_id });
                 })
-                res.status(200).json({ status: true, message: "Institute deleted successfully" });
+                res.status(200).json({ status: true, message: "Institute deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2152,7 +2152,7 @@ module.exports.add_subject = async (req, res) => {
             console.log('data', data)
             const addData = await Courses.create(data);
             if (addData) {
-                res.status(200).json({ status: true, message: 'Courses Added successfully', data: addData });
+                res.status(200).json({ status: true, message: 'Course added successfully.', data: addData });
             }
             else {
                 res.status(400).json({ status: false, message: "Please try again" });
@@ -2358,7 +2358,7 @@ module.exports.subject_delete = async (req, res) => {
             const desciplineData = await Courses.findOne({ subject_name: subject_name });
             if (desciplineData) {
                 await Courses.deleteOne({ subject_name: subject_name });
-                res.status(200).json({ status: true, message: "Course deleted successfully" });
+                res.status(200).json({ status: true, message: "Course deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2494,7 +2494,7 @@ module.exports.course_delete = async (req, res) => {
             const desciplineData = await Courses.findOne({ _id: course_id });
             if (desciplineData) {
                 await Courses.deleteOne({ _id: course_id });
-                res.status(200).json({ status: true, message: "Course deleted successfully" });
+                res.status(200).json({ status: true, message: "Course deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2574,14 +2574,14 @@ module.exports.add_notification = async (req, res) => {
                 await StudentNotifications.create({ criteria, title, description, userId: row._id });
             });
             await Promise.all(promise).then(async () => {
-                res.status(201).json({ status: true, message: "Notification send successfully" });
+                res.status(201).json({ status: true, message: "Notification send successfully." });
             }).catch((err) => {
                 console.log('err', err);
-                res.status(201).json({ status: true, message: "Notification send successfully" });
+                res.status(201).json({ status: true, message: "Notification send successfully." });
             })
         } catch (error) {
             console.log('error', error);
-            res.status(201).json({ status: true, message: "Notification send successfully" });
+            res.status(201).json({ status: true, message: "Notification send successfully." });
         }
     } catch (error) {
         console.log('add_notification Error', error);
@@ -2818,7 +2818,7 @@ module.exports.cast_category_edit = async (req, res) => {
             const categoryData = await CastCategory.findOne({ _id: catId });
             if (categoryData) {
                 await CastCategory.updateOne({ _id: catId }, { name: req.body.name });
-                res.status(200).json({ status: true, message: "Category successfully" });
+                res.status(200).json({ status: true, message: "Category successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2842,7 +2842,7 @@ module.exports.cast_category_delete = async (req, res) => {
             const categoryData = await CastCategory.findOne({ _id: catId });
             if (categoryData) {
                 await CastCategory.deleteOne({ _id: catId });
-                res.status(200).json({ status: true, message: "Category deleted successfully" });
+                res.status(200).json({ status: true, message: "Category deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2913,7 +2913,7 @@ module.exports.add_scholarship = async (req, res) => {
         data.mp_police = req.body.mp_police
         const addData = await Scholership.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Scholarship Added successfully' });
+            res.status(200).json({ status: true, message: 'Scholarship added successfully.' });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -3011,7 +3011,7 @@ module.exports.scholarship_edit = async (req, res) => {
             const scholarshipData = await Scholership.findOne({ _id: scholarId });
             if (scholarshipData) {
                 await Scholership.updateOne({ _id: scholarId }, setData);
-                res.status(200).json({ status: true, message: "Scholarship updeted successfully" });
+                res.status(200).json({ status: true, message: "Scholarship updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -3035,7 +3035,7 @@ module.exports.scholarship_delete = async (req, res) => {
             const scholarshipData = await Scholership.findOne({ _id: scholarId });
             if (scholarshipData) {
                 await Scholership.deleteOne({ _id: scholarId });
-                res.status(200).json({ status: true, message: "Scholarship deleted successfully" });
+                res.status(200).json({ status: true, message: "Scholarship deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
