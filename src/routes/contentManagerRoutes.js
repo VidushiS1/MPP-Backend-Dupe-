@@ -109,11 +109,11 @@ app.get('/notification-view', decodedToken, contentManagerController.notificatio
 app.post('/block-student', decodedToken, contentManagerController.block_student);
 
 
-app.get('/authorization-url',decodedToken, contentManagerController.authorization_url);
-app.post('/genrate-auth-url',decodedToken, contentManagerController.generate_auth_url);
+// app.get('/authorization-url',decodedToken, contentManagerController.authorization_url);
+// app.post('/genrate-auth-url',decodedToken, contentManagerController.generate_auth_url);
 
 
-app.post('/add-cast-category',decodedToken, contentManagerController.add_cast_category);
+app.post('/add-cast-category', decodedToken, contentManagerController.add_cast_category);
 app.get('/cast-category-list', decodedToken, contentManagerController.cast_category_list);
 app.put('/cast-category-edit', decodedToken, contentManagerController.cast_category_edit);
 app.delete('/cast-category-delete', decodedToken, contentManagerController.cast_category_delete);
@@ -124,5 +124,8 @@ app.get('/scholarship-list-state', decodedToken, contentManagerController.schola
 app.get('/scholarship-view', decodedToken, contentManagerController.scholarship_view);
 app.put('/scholarship-edit', decodedToken, contentManagerController.scholarship_edit);
 app.delete('/scholarship-delete', decodedToken, contentManagerController.scholarship_delete);
+
+app.get('/access-token', decodedToken, contentManagerController.get_zoom_access_token);
+app.post('/create-meeting', decodedToken, contentManagerController.create_meeting)
 
 module.exports = app; 

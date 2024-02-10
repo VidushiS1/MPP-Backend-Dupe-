@@ -5,6 +5,12 @@ const { v4: uuidv4 } = require('uuid');
 const requestId = uuidv4();
 const moment = require('moment-timezone');
 const { sendMail, sendmultiple } = require('../helper/nodeMailer');
+const axios = require('axios');
+const qs = require('qs');
+
+const zoom_api_key = process.env.ZOOM_API_KEY;
+const zoom_api_secret = process.env.ZOOM_API_SECRET;
+let redirect_url = process.env.ZOOM_REDIRECT_URL;
 
 
 const checkValidation = require('../helper/joiValidation');
@@ -36,13 +42,14 @@ const Jobseeker = require('../module/job_seeker');
 const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 
-const { google } = require('googleapis');
-const { OAuth2Client } = require('google-auth-library');
+// const { google } = require('googleapis');
+// const { OAuth2Client } = require('google-auth-library');
 
-const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'http://localhost:4000/';
-const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+// const CLIENT_ID = '817782746900-ma9vvu1fk8b643cgtslenao7i1uik3so.apps.googleusercontent.com';
+// const CLIENT_SECRET = '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';
+// const REDIRECT_URI = 'http://localhost:4000/';
+// const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
 
 
 
@@ -1895,7 +1902,7 @@ module.exports.discipline_list = async (req, res) => {
                     disciplineCounts[discipline]++;
                 }
             });
-            res.status(200).json({ status: true, message: "Desciplines list", data: disciplines });
+            res.status(200).json({ status: true, message: "Descipline list", data: disciplines });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -1970,7 +1977,7 @@ module.exports.discipline_edit = async (req, res) => {
             const desciplineData = await Desciplines.findOne({ discipline_name: old_discipline_name });
             if (desciplineData) {
                 await Desciplines.updateMany({ discipline_name: old_discipline_name }, setData)
-                res.status(200).json({ status: true, message: "Desciplines updated successfuly" });
+                res.status(200).json({ status: true, message: "Descipline updated successfuly" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1996,14 +2003,14 @@ module.exports.discipline_delete = async (req, res) => {
                     await Desciplines.deleteMany({ discipline_name: old_discipline_name });
                     await Courses.deleteMany({ discipline_id: row.discipline_id });
                 })
-                res.status(200).json({ status: true, message: "Desciplines deleted successfully." });
+                res.status(200).json({ status: true, message: "Descipline deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
             }
         }
         else {
-            res.status(400).json({ message: "Desciplines name is required." });
+            res.status(400).json({ message: "Descipline name is required." });
         }
     } catch (error) {
         console.log('discipline_delete Error', error);
@@ -2031,7 +2038,7 @@ module.exports.discipline_institute_delete = async (req, res) => {
             }
         }
         else {
-            res.status(400).json({ message: "Desciplines name and institute Id is required." });
+            res.status(400).json({ message: "Descipline name and institute Id is required." });
         }
     } catch (error) {
         console.log('discipline_institute_delete Error', error);
@@ -2667,97 +2674,97 @@ module.exports.block_student = async (req, res) => {
 
 
 
-module.exports.authorization_url = async (req, res) => {
-    try {
-        const authUrl = oAuth2Client.generateAuthUrl({
-            access_type: 'offline',
-            scope: ['https://www.googleapis.com/auth/calendar.events'],
+// module.exports.authorization_url = async (req, res) => {
+//     try {
+//         const authUrl = oAuth2Client.generateAuthUrl({
+//             access_type: 'offline',
+//             scope: ['https://www.googleapis.com/auth/calendar.events'],
 
-        });
-        if (authUrl) {
-            res.status(200).json({ status: true, message: "Authorization url.", data: authUrl });
-        }
-        else {
-            res.status(400).json({ status: false, message: err.messages, err });
-        }
-    } catch (error) {
-        console.log('authorization_url Error', error);
-        res.status(500).json(error);
-    }
-}
-
-
-
-module.exports.generate_auth_url = async (req, res) => {
-    try {
-        // Set the desired time
-        const startTime = moment.tz('2024-02-08T19:05:00', 'Asia/Kolkata');
-        const endTime = moment.tz('2024-02-08T20:05:00', 'Asia/Kolkata');
-        const code = req.body.code;
+//         });
+//         if (authUrl) {
+//             res.status(200).json({ status: true, message: "Authorization url.", data: authUrl });
+//         }
+//         else {
+//             res.status(400).json({ status: false, message: err.messages, err });
+//         }
+//     } catch (error) {
+//         console.log('authorization_url Error', error);
+//         res.status(500).json(error);
+//     }
+// }
 
 
-        const { tokens } = await oAuth2Client.getToken(code);
-        oAuth2Client.setCredentials(tokens);
 
-        // Create Google Calendar API instance
-        const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+// module.exports.generate_auth_url = async (req, res) => {
+//     try {
+//         // Set the desired time
+//         const startTime = moment.tz('2024-02-08T19:05:00', 'Asia/Kolkata');
+//         const endTime = moment.tz('2024-02-08T20:05:00', 'Asia/Kolkata');
+//         const code = req.body.code;
 
-        // Create event with Google Meet link
-        const event = await calendar.events.insert({
-            calendarId: 'primary',
-            resource: {
-                summary: 'Meeting Title',
-                description: 'Meeting Description',
-                start: { dateTime: '2024-02-08T13:35:00Z', timeZone: 'UTC' },
-                end: { dateTime: '2024-02-08T14:35:00Z', timeZone: 'UTC' },
-                conferenceData: {
-                    createRequest: {
-                        requestId: 'YOUR_UNIQUE_REQUEST_ID',
-                    },
-                },
-            },
-        });
 
-        const meetingLink = event.data.hangoutLink;
-        console.log('Meeting Link:', meetingLink);
-        console.log('event.data', event.data);
+//         const { tokens } = await oAuth2Client.getToken(code);
+//         oAuth2Client.setCredentials(tokens);
 
-        // oAuth2Client.getToken(code, (err, token) => {
-        //     if (err) return console.error('Error retrieving access token', err);
-        //     else {
-        //         console.log('token', token)
-        //         oAuth2Client.setCredentials(token);
-        //         const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
-        //         calendar.events.insert({
-        //             calendarId: 'primary',
-        //             resource: {
-        //                 summary: 'Meeting Title',
-        //                 description: 'Meeting Description',
-        //                 start: {
-        //                     dateTime: startTime,
-        //                 },
-        //                 end: {
-        //                     dateTime: endTime,
-        //                 },
-        //                 conferenceData: {
-        //                     createRequest: {
-        //                         requestId: requestId,
-        //                     },
-        //                 },
-        //             },
-        //         }, (err, res) => {
-        //             if (err) return console.error('Error creating event:', err);
+//         // Create Google Calendar API instance
+//         const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
-        //             const meetingLink = res.data;
-        //             console.log('Meeting Link:', meetingLink);
-        //         });
-        //     }
-        // });
-    } catch (error) {
-        console.log('generate_auth_url Error', error);
-        res.status(500).json(error);
-    }
-}
+//         // Create event with Google Meet link
+//         const event = await calendar.events.insert({
+//             calendarId: 'primary',
+//             resource: {
+//                 summary: 'Meeting Title',
+//                 description: 'Meeting Description',
+//                 start: { dateTime: '2024-02-08T13:35:00Z', timeZone: 'UTC' },
+//                 end: { dateTime: '2024-02-08T14:35:00Z', timeZone: 'UTC' },
+//                 conferenceData: {
+//                     createRequest: {
+//                         requestId: 'YOUR_UNIQUE_REQUEST_ID',
+//                     },
+//                 },
+//             },
+//         });
+
+//         const meetingLink = event.data.hangoutLink;
+//         console.log('Meeting Link:', meetingLink);
+//         console.log('event.data', event.data);
+
+//         // oAuth2Client.getToken(code, (err, token) => {
+//         //     if (err) return console.error('Error retrieving access token', err);
+//         //     else {
+//         //         console.log('token', token)
+//         //         oAuth2Client.setCredentials(token);
+//         //         const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+//         //         calendar.events.insert({
+//         //             calendarId: 'primary',
+//         //             resource: {
+//         //                 summary: 'Meeting Title',
+//         //                 description: 'Meeting Description',
+//         //                 start: {
+//         //                     dateTime: startTime,
+//         //                 },
+//         //                 end: {
+//         //                     dateTime: endTime,
+//         //                 },
+//         //                 conferenceData: {
+//         //                     createRequest: {
+//         //                         requestId: requestId,
+//         //                     },
+//         //                 },
+//         //             },
+//         //         }, (err, res) => {
+//         //             if (err) return console.error('Error creating event:', err);
+
+//         //             const meetingLink = res.data;
+//         //             console.log('Meeting Link:', meetingLink);
+//         //         });
+//         //     }
+//         // });
+//     } catch (error) {
+//         console.log('generate_auth_url Error', error);
+//         res.status(500).json(error);
+//     }
+// }
 
 
 
@@ -3046,6 +3053,71 @@ module.exports.scholarship_delete = async (req, res) => {
         }
     } catch (error) {
         console.log('scholarship_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.get_zoom_access_token = async (req, res) => {
+    try {
+        const code = req.query.code;
+        const requestBody = qs.stringify({
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: redirect_url,
+        });
+        const response = await axios.post('https://zoom.us/oauth/token', requestBody, {
+            headers: {
+                Authorization: `Basic ${Buffer.from(`${zoom_api_key}:${zoom_api_secret}`).toString('base64')}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        });
+        // console.log('Token', response.data);
+        res.status(200).json({ status: true, message: "Access token.", token: response.data })
+    } catch (error) {
+        console.log('get_zoom_access_token Error', error.response.data);
+        res.status(500).json(error.response.data);
+    }
+}
+
+
+
+
+module.exports.create_meeting = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().required().messages({
+                'string.empty': 'name cannot be an empty field',
+                'any.required': 'name is required field'
+            }),
+        });
+        checkValidation.joiValidation(schema, req.body);
+
+
+        // const Api_url = 'https://api.zoom.us/v2/users';
+        // axios.get(Api_url, {
+        //     headers: {
+        //         'Authorization': `Bearer ${token}`
+        //     }
+        // }).then(response => {
+        //     const userId = response.data.users[0].id;
+        //     console.log('User ID:', userId);
+        //     axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, postData, {
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`
+        //         }
+        //     }).then(response => {
+        //         console.log('Meeting created successfully', response.data);
+        //         res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
+        //     }).catch(error => {
+        //         console.error('Error creating meeting:', error.response.data);
+        //     });
+        // }).catch(error => {
+        //     console.error('Error retrieving user information:', error.response.data);
+        // });
+    } catch (error) {
+        console.log('create_meeting Error', error);
         res.status(500).json(error);
     }
 }
