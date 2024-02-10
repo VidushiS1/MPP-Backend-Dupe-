@@ -110,29 +110,29 @@ const axios = require('axios');
 // const API_KEY = 'S1aesnp3TsGHsJHpVghzYA';
 // const API_SECRET = 'HIMyf1uKQbC-zNBPLqMTXg';
 
-// const API_KEY = '5Rjur0MxSn24O87IC9cBsg';
-// const API_SECRET = 'hutw3BvN7DrRTYDVGh1nQ9y7vAa9TYfu';
+const API_KEY = 'Z7s9GaC3RD2yvUfNdAtz5g';
+const API_SECRET = 'mxIUDHRl4gWGvjJaxlFgSHXSwWCE67eo';
 
-// let url = "http://localhost:4000/"
-// const { base64Encode } = require('base64-encode-decode');
+let url = "http://localhost:4000"
+const { base64Encode } = require('base64-encode-decode');
 
 
 // app.get('/', async (req, res) => {
 //     const code = req.query.code;
 //     try {
-//         const response = await axios.post('https://zoom.us/oauth/token', null, {
+//         const response = await axios.post('https://zoom.us/oauth/token', {
 //             params: {
-//                 code: code,
 //                 grant_type: 'authorization_code',
+//                 code: code,
 //                 redirect_uri: url,
 //             },
 //             headers: {
-//                 Authorization: `Basic ${base64Encode(`${API_KEY}:${API_SECRET}`)}`,
+//                 'Authorization': `Basic ${base64Encode(`${API_KEY}:${API_SECRET}`)}`,
 //                 'Content-Type': 'application/x-www-form-urlencoded',
 //             }
 //         });
 //         console.log('Token', response.data.access_token);
-//         res.send(response.data.access_token);
+//         res.send(response.data);
 //     } catch (error) {
 //         console.log('Error fetching token:', error);
 //         // res.status(error.response || 500).send(error.response);
@@ -169,6 +169,7 @@ const axios = require('axios');
 // });
 
 
+// const token = 'eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjNiNTU0Y2E0LTU5ODQtNDM1Mi04OGJlLWE5N2RmNWNmZTU2MSJ9.eyJ2ZXIiOjksImF1aWQiOiI4ZjFlNDM0MjIyNmZlZDI2NjM2MjMxZjMzNTIxYTdiYSIsImNvZGUiOiJJdWpxZkFUaUNpU00tNmZiV3V6Unp5eW1UTFUybjhMSmciLCJpc3MiOiJ6bTpjaWQ6WjdzOUdhQzNSRDJ5dlVmTmRBdHo1ZyIsImdubyI6MCwidHlwZSI6MCwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJCdnZFbkdRZVFZeWVSb0Zmby0za1hnIiwibmJmIjoxNzA3NDg1OTY0LCJleHAiOjE3MDc0ODk1NjQsImlhdCI6MTcwNzQ4NTk2NCwiYWlkIjoiMlJFNjBENXZUZi1mWVYyU2sybEctUSJ9.1O-48AAKSFxgtmTi2p_uiAVOoiYiGlXWULVTc5HYh0p48CC3hT2MiUpTD3-7Rud1XoxtQ_FVYLs1plOurZP5Ig'
 
 // const ZOOM_API_URL = 'https://api.zoom.us/v2/users/me/meetings';
 

@@ -533,7 +533,7 @@ module.exports.govt_sector_delete = async (req, res) => {
             if (entranceStreamData) {
                 await GovJobS.deleteMany({ sector_id: sector_id });
                 await GovJobSector.deleteOne({ _id: sector_id });
-                res.status(200).json({ status: true, message: "Sector delete successfully" });
+                res.status(200).json({ status: true, message: "Sector deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -685,7 +685,7 @@ module.exports.govt_job_delete = async (req, res) => {
             const entranceStreamData = await GovJobS.findOne({ _id: jobId });
             if (entranceStreamData) {
                 await GovJobS.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Job delete successfully" });
+                res.status(200).json({ status: true, message: "Job deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -780,7 +780,7 @@ module.exports.pvt_sector_delete = async (req, res) => {
             if (entranceStreamData) {
                 await PvtJobS.deleteMany({ sector_id: sector_id });
                 await PvtJobSector.deleteOne({ _id: sector_id });
-                res.status(200).json({ status: true, message: "Sector delete successfully" });
+                res.status(200).json({ status: true, message: "Sector deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -930,7 +930,7 @@ module.exports.pvt_job_delete = async (req, res) => {
             const jobData = await PvtJobS.findOne({ _id: jobId });
             if (jobData) {
                 await PvtJobS.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Pvt delete successfully" });
+                res.status(200).json({ status: true, message: "Pvt deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1023,7 +1023,7 @@ module.exports.entrance_stream_delete = async (req, res) => {
             if (entranceStreamData) {
                 await Entrance_exams.deleteMany({ stream_id: stream_id });
                 await Entrance_stream.deleteOne({ _id: stream_id });
-                res.status(200).json({ status: true, message: "Stream delete successfully" });
+                res.status(200).json({ status: true, message: "Stream deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1171,7 +1171,7 @@ module.exports.entrance_exam_delete = async (req, res) => {
             const entranceStreamData = await Entrance_exams.findOne({ _id: jobId });
             if (entranceStreamData) {
                 await Entrance_exams.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Entrance exam delete successfully" });
+                res.status(200).json({ status: true, message: "Entrance exam deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1283,7 +1283,7 @@ module.exports.get_scholership_list = async (req, res) => {
     try {
         const govtScholershipData = await GovtScholership.find().sort({ createdAt: -1 });
         if (govtScholershipData.length) {
-            res.status(200).json({ status: true, message: "Govt Scholership list", data: govtScholershipData });
+            res.status(200).json({ status: true, message: "Govt Scholarship list", data: govtScholershipData });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -1305,7 +1305,7 @@ module.exports.get_scholarship_view = async (req, res) => {
         else {
             const govtScholershipData = await GovtScholership.find({ _id: id });
             if (govtScholershipData.length) {
-                res.status(200).json({ status: true, message: "Govt Scholership view", data: govtScholershipData });
+                res.status(200).json({ status: true, message: "Govt Scholarship view", data: govtScholershipData });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1498,7 +1498,7 @@ module.exports.time_slot_delete = async (req, res) => {
             const agendaData = await Time_slot.findOne({ _id: slot_id });
             if (agendaData) {
                 await Time_slot.deleteOne({ _id: slot_id });
-                res.status(200).json({ status: true, message: "Time slot delete successfully" });
+                res.status(200).json({ status: true, message: "Time slot deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1788,7 +1788,7 @@ module.exports.institute_delete = async (req, res) => {
                 await Institutes.deleteOne({ _id: institute_id });
                 await Desciplines.deleteMany({ institute_id: institute_id });
                 await Courses.deleteMany({ institute_id: institute_id });
-                res.status(200).json({ status: true, message: "Institute delete successfully" });
+                res.status(200).json({ status: true, message: "Institute deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -1996,7 +1996,7 @@ module.exports.discipline_delete = async (req, res) => {
                     await Desciplines.deleteMany({ discipline_name: old_discipline_name });
                     await Courses.deleteMany({ discipline_id: row.discipline_id });
                 })
-                res.status(200).json({ status: true, message: "Desciplines delete successfully" });
+                res.status(200).json({ status: true, message: "Desciplines deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2024,7 +2024,7 @@ module.exports.discipline_institute_delete = async (req, res) => {
                     await Desciplines.deleteMany({ discipline_name: discipline_name, institute_id: institute_id });
                     await Courses.deleteMany({ discipline_id: row.discipline_id, institute_id: institute_id });
                 })
-                res.status(200).json({ status: true, message: "Institute delete successfully" });
+                res.status(200).json({ status: true, message: "Institute deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2358,7 +2358,7 @@ module.exports.subject_delete = async (req, res) => {
             const desciplineData = await Courses.findOne({ subject_name: subject_name });
             if (desciplineData) {
                 await Courses.deleteOne({ subject_name: subject_name });
-                res.status(200).json({ status: true, message: "Course delete successfully" });
+                res.status(200).json({ status: true, message: "Course deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2494,7 +2494,7 @@ module.exports.course_delete = async (req, res) => {
             const desciplineData = await Courses.findOne({ _id: course_id });
             if (desciplineData) {
                 await Courses.deleteOne({ _id: course_id });
-                res.status(200).json({ status: true, message: "Course delete successfully" });
+                res.status(200).json({ status: true, message: "Course deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2842,7 +2842,7 @@ module.exports.cast_category_delete = async (req, res) => {
             const categoryData = await CastCategory.findOne({ _id: catId });
             if (categoryData) {
                 await CastCategory.deleteOne({ _id: catId });
-                res.status(200).json({ status: true, message: "Category delete successfully" });
+                res.status(200).json({ status: true, message: "Category deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -2913,7 +2913,7 @@ module.exports.add_scholarship = async (req, res) => {
         data.mp_police = req.body.mp_police
         const addData = await Scholership.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Scholership Added successfully' });
+            res.status(200).json({ status: true, message: 'Scholarship Added successfully' });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -2937,7 +2937,7 @@ module.exports.scholarship_list_national = async (req, res) => {
         }
         const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
         if (scholarshipData.length) {
-            res.status(200).json({ status: true, message: "Scholership list", data: scholarshipData });
+            res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -2961,7 +2961,7 @@ module.exports.scholarship_list_state = async (req, res) => {
         }
         const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
         if (scholarshipData.length) {
-            res.status(200).json({ status: true, message: "Scholership list", data: scholarshipData });
+            res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -2989,7 +2989,7 @@ module.exports.scholarship_view = async (req, res) => {
                     return row;
                 });
                 const newData = await Promise.all(promiss);
-                res.status(200).json({ status: true, message: "Scholership exam view", data: newData });
+                res.status(200).json({ status: true, message: "Scholarship exam view", data: newData });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -3035,7 +3035,7 @@ module.exports.scholarship_delete = async (req, res) => {
             const scholarshipData = await Scholership.findOne({ _id: scholarId });
             if (scholarshipData) {
                 await Scholership.deleteOne({ _id: scholarId });
-                res.status(200).json({ status: true, message: "Scholarship delete successfully" });
+                res.status(200).json({ status: true, message: "Scholarship deleted successfully" });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
