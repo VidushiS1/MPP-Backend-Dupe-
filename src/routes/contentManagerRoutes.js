@@ -126,6 +126,6 @@ app.put('/scholarship-edit', decodedToken, contentManagerController.scholarship_
 app.delete('/scholarship-delete', decodedToken, contentManagerController.scholarship_delete);
 
 app.get('/access-token', decodedToken, contentManagerController.get_zoom_access_token);
-// app.post('/create-meeting', decodedToken, contentManagerController.create_meeting)
+app.post('/create-meeting', decodedToken, contentManagerController.create_meeting);
 
 module.exports = app; 

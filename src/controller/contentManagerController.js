@@ -41,6 +41,8 @@ const StudentNotifications = require('../module/student_notification');
 const Jobseeker = require('../module/job_seeker');
 const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
+const Broudcast = require('../module/broad_cast');
+
 
 // const { google } = require('googleapis');
 // const { OAuth2Client } = require('google-auth-library');
@@ -668,7 +670,7 @@ module.exports.govt_job_edit = async (req, res) => {
             const jobData = await GovJobS.findOne({ _id: jobId });
             if (jobData) {
                 await GovJobS.updateOne({ _id: jobId }, setData);
-                res.status(200).json({ status: true, message: "Govt. updeted successfully." });
+                res.status(200).json({ status: true, message: "Job updated successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -841,7 +843,7 @@ module.exports.add_pvt_jobs = async (req, res) => {
         const data = { sector_id, job_title, eligibility_qualification, company, salary, location, website }
         const addData = await PvtJobS.create(data);
         if (addData) {
-            res.status(200).json({ status: true, message: 'Pvt. Job added successfully.', data: addData });
+            res.status(200).json({ status: true, message: 'Job added successfully.', data: addData });
         }
         else {
             res.status(400).json({ status: false, message: "Please try again" });
@@ -913,7 +915,7 @@ module.exports.pvt_job_edit = async (req, res) => {
             const jobData = await PvtJobS.findOne({ _id: jobId });
             if (jobData) {
                 await PvtJobS.updateOne({ _id: jobId }, setData);
-                res.status(200).json({ status: true, message: "Pvt. updeted successfully." });
+                res.status(200).json({ status: true, message: "Job updated successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -937,7 +939,7 @@ module.exports.pvt_job_delete = async (req, res) => {
             const jobData = await PvtJobS.findOne({ _id: jobId });
             if (jobData) {
                 await PvtJobS.deleteOne({ _id: jobId });
-                res.status(200).json({ status: true, message: "Pvt deleted successfully." });
+                res.status(200).json({ status: true, message: "Job deleted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -3018,7 +3020,7 @@ module.exports.scholarship_edit = async (req, res) => {
             const scholarshipData = await Scholership.findOne({ _id: scholarId });
             if (scholarshipData) {
                 await Scholership.updateOne({ _id: scholarId }, setData);
-                res.status(200).json({ status: true, message: "Scholarship updeted successfully." });
+                res.status(200).json({ status: true, message: "Scholarship updated successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
@@ -3077,83 +3079,150 @@ module.exports.get_zoom_access_token = async (req, res) => {
         res.status(200).json({ status: true, message: "Access token.", token: response.data })
     } catch (error) {
         console.log('get_zoom_access_token Error', error.response.data);
-        res.status(500).json(error.response.data);
+        res.status(400).json({ status: false, message: error.response.data.reason });
     }
 }
 
 
 
 
-// module.exports.create_meeting = async (req, res) => {
-//     try {
-//         const schema = Joi.object({
-//             topic: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             discription: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             date_time: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             meeting_id: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             security: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             vidio: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             multiple_host: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             auto_recording: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             auto_recording: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             }),
-//             auto_recording: Joi.string().required().messages({
-//                 'string.empty': 'name cannot be an empty field',
-//                 'any.required': 'name is required field'
-//             })
-//         });
-//         checkValidation.joiValidation(schema, req.body);
-
-
-//         // const Api_url = 'https://api.zoom.us/v2/users';
-//         // axios.get(Api_url, {
-//         //     headers: {
-//         //         'Authorization': `Bearer ${token}`
-//         //     }
-//         // }).then(response => {
-//         //     const userId = response.data.users[0].id;
-//         //     console.log('User ID:', userId);
-//         //     axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, postData, {
-//         //         headers: {
-//         //             'Authorization': `Bearer ${token}`
-//         //         }
-//         //     }).then(response => {
-//         //         console.log('Meeting created successfully', response.data);
-//         //         res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
-//         //     }).catch(error => {
-//         //         console.error('Error creating meeting:', error.response.data);
-//         //     });
-//         // }).catch(error => {
-//         //     console.error('Error retrieving user information:', error.response.data);
-//         // });
-//     } catch (error) {
-//         console.log('create_meeting Error', error);
-//         res.status(500).json(error);
-//     }
-// }
+module.exports.create_meeting = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            topic: Joi.string().required().messages({
+                'string.empty': 'topic cannot be an empty field',
+                'any.required': 'topic is required field'
+            }),
+            discription: Joi.string().required().messages({
+                'string.empty': 'discription cannot be an empty field',
+                'any.required': 'discription is required field'
+            }),
+            date_time: Joi.string().required().messages({
+                'string.empty': 'date_time cannot be an empty field',
+                'any.required': 'date_time is required field'
+            }),
+            duration_hours: Joi.number().required().messages({
+                'string.empty': 'duration_hours cannot be an empty field',
+                'any.required': 'duration_hours is required field'
+            }),
+            duration_min: Joi.number().required().messages({
+                'string.empty': 'duration_min cannot be an empty field',
+                'any.required': 'duration_min is required field'
+            }),
+            default_password: Joi.boolean().required().messages({
+                'string.empty': 'default_password cannot be an empty field',
+                'any.required': 'default_password is required field'
+            }),
+            waiting_room: Joi.boolean().required().messages({
+                'string.empty': 'waiting_room cannot be an empty field',
+                'any.required': 'waiting_room is required field'
+            }),
+            vidio_host: Joi.boolean().required().messages({
+                'string.empty': 'vidio_host cannot be an empty field',
+                'any.required': 'vidio_host is required field'
+            }),
+            auto_recording: Joi.string().required().messages({
+                'string.empty': 'auto_recording cannot be an empty field',
+                'any.required': 'auto_recording is required field'
+            }),
+            join_before_host: Joi.boolean().required().messages({
+                'string.empty': 'join_before_host cannot be an empty field',
+                'any.required': 'join_before_host is required field'
+            }),
+            access_token: Joi.string().required().messages({
+                'string.empty': 'join_before_host cannot be an empty field',
+                'any.required': 'join_before_host is required field'
+            }),
+        });
+        checkValidation.joiValidation(schema, req.body);
+        let default_password = req.body.default_password;
+        let password = '123456';
+        if (req.body.default_password === true) {
+            password = req.body.password;
+        }
+        let durationInMinutes = (req.body.duration_hours * 60) + req.body.duration_min;
+        let convertDate = new Date(req.body.date_time);
+        console.log('convertDate', convertDate)
+        createMeetingData = {
+            "topic": req.body.topic,
+            "agenda": req.body.discription,
+            "start_time": convertDate,
+            "timezone": "Asia/Calcutta",
+            "duration": durationInMinutes,
+            "default_password": default_password,
+            "password": password,
+            "pre_schedule": false,
+            "recurrence": {
+                "end_date_time": convertDate,
+            },
+            "settings": {
+                "allow_multiple_devices": true,
+                "alternative_hosts_email_notification": true,
+                "approval_type": 2,
+                "auto_recording": req.body.auto_recording,
+                "calendar_type": 1,
+                "close_registration": false,
+                "email_notification": true,
+                "focus_mode": true,
+                "host_video": req.body.vidio_host,
+                "jbh_time": 0,
+                "join_before_host": req.body.join_before_host,
+                "meeting_authentication": true,
+                "mute_upon_entry": true,
+                "participant_video": false,
+                "private_meeting": false,
+                "registrants_confirmation_email": true,
+                "registrants_email_notification": true,
+                "registration_type": 1,
+                "show_share_button": true,
+                "use_pmi": false,
+                "waiting_room": req.body.waiting_room,
+                "watermark": false,
+                "host_save_video_order": true,
+                "alternative_host_update_polls": true,
+                "internal_meeting": false,
+                "continuous_meeting_chat": {
+                    "enable": true,
+                    "auto_add_invited_external_users": true
+                },
+                "participant_focused_meeting": false,
+                "push_change_to_calendar": false
+            }
+        }
+        let token = req.body.access_token;
+        const Api_url = 'https://api.zoom.us/v2/users';
+        axios.get(Api_url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(response => {
+            const userId = response.data.users[0].id;
+            console.log('User ID:', userId);
+            axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, createMeetingData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(async (response) => {
+                // console.log('Meeting created successfully', response.data);
+                // const data = {
+                //     agenda: req.body.topic,
+                //     date: req.body.topic,
+                //     start_time: req.body.topic,
+                //     end_time: req.body.topic,
+                //     link: response.data.join_url,
+                // }
+                // const addData = await Broudcast.create(data);
+                res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
+            }).catch(error => {
+                console.error('Error creating meeting:', error.response.data);
+                res.status(400).json({ status: false, message: error.response.data.message });
+            });
+        }).catch(error => {
+            console.error('Error retrieving user information:', error.response.data);
+            res.status(400).json({ status: false, message: error.response.data.message });
+        });
+    } catch (error) {
+        console.log('create_meeting Error', error);
+        res.status(500).json(error);
+    }
+}
