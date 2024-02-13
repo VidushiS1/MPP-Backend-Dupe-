@@ -83,7 +83,7 @@ module.exports.login = async (req, res) => {
                         name: manager.name,
                     },
                     process.env.SECRET_KEY,
-                    { expiresIn: "30d" }
+                    { expiresIn: "365d" }
                 )
                 res.status(200).json({ status: true, message: 'login successfully.', token: token });
             }
@@ -3084,40 +3084,76 @@ module.exports.get_zoom_access_token = async (req, res) => {
 
 
 
-module.exports.create_meeting = async (req, res) => {
-    try {
-        const schema = Joi.object({
-            name: Joi.string().required().messages({
-                'string.empty': 'name cannot be an empty field',
-                'any.required': 'name is required field'
-            }),
-        });
-        checkValidation.joiValidation(schema, req.body);
+// module.exports.create_meeting = async (req, res) => {
+//     try {
+//         const schema = Joi.object({
+//             topic: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             discription: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             date_time: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             meeting_id: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             security: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             vidio: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             multiple_host: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             auto_recording: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             auto_recording: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             }),
+//             auto_recording: Joi.string().required().messages({
+//                 'string.empty': 'name cannot be an empty field',
+//                 'any.required': 'name is required field'
+//             })
+//         });
+//         checkValidation.joiValidation(schema, req.body);
 
 
-        // const Api_url = 'https://api.zoom.us/v2/users';
-        // axios.get(Api_url, {
-        //     headers: {
-        //         'Authorization': `Bearer ${token}`
-        //     }
-        // }).then(response => {
-        //     const userId = response.data.users[0].id;
-        //     console.log('User ID:', userId);
-        //     axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, postData, {
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`
-        //         }
-        //     }).then(response => {
-        //         console.log('Meeting created successfully', response.data);
-        //         res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
-        //     }).catch(error => {
-        //         console.error('Error creating meeting:', error.response.data);
-        //     });
-        // }).catch(error => {
-        //     console.error('Error retrieving user information:', error.response.data);
-        // });
-    } catch (error) {
-        console.log('create_meeting Error', error);
-        res.status(500).json(error);
-    }
-}
+//         // const Api_url = 'https://api.zoom.us/v2/users';
+//         // axios.get(Api_url, {
+//         //     headers: {
+//         //         'Authorization': `Bearer ${token}`
+//         //     }
+//         // }).then(response => {
+//         //     const userId = response.data.users[0].id;
+//         //     console.log('User ID:', userId);
+//         //     axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, postData, {
+//         //         headers: {
+//         //             'Authorization': `Bearer ${token}`
+//         //         }
+//         //     }).then(response => {
+//         //         console.log('Meeting created successfully', response.data);
+//         //         res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
+//         //     }).catch(error => {
+//         //         console.error('Error creating meeting:', error.response.data);
+//         //     });
+//         // }).catch(error => {
+//         //     console.error('Error retrieving user information:', error.response.data);
+//         // });
+//     } catch (error) {
+//         console.log('create_meeting Error', error);
+//         res.status(500).json(error);
+//     }
+// }
