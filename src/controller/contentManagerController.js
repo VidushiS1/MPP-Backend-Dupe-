@@ -2954,7 +2954,6 @@ module.exports.scholarship_list_national = async (req, res) => {
         const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 }).lean();
         if (scholarshipData.length) {
             let promise = scholarshipData.map((row) => {
-                console.log(row.scheme_closing_date);
                 const expirationDate = new Date(row.scheme_closing_date);
                 if (isExpired(expirationDate)) {
                     console.log('The date has expired.');
@@ -3028,9 +3027,18 @@ module.exports.scholarship_view = async (req, res) => {
             const scholarshipData = await Scholership.find({ _id: scholarId }).sort({ createdAt: 1 }).lean();
             if (scholarshipData.length) {
                 let promiss = scholarshipData.map(async (row) => {
-                    let category = await CastCategory.findOne({ _id: row.cast_category_id });
-                    row.cast_category = category.name;
-                    return row;
+                    const expirationDate = new Date(row.scheme_closing_date);
+                    if (isExpired(expirationDate)) {
+                        row.closing = true;
+                        let category = await CastCategory.findOne({ _id: row.cast_category_id });
+                        row.cast_category = category.name;
+                        return row;
+                    } else {
+                        row.closing = false;
+                        let category = await CastCategory.findOne({ _id: row.cast_category_id });
+                        row.cast_category = category.name;
+                        return row;
+                    }
                 });
                 const newData = await Promise.all(promiss);
                 res.status(200).json({ status: true, message: "Scholarship exam view", data: newData });
