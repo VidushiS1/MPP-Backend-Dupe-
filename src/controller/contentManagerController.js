@@ -1111,7 +1111,6 @@ module.exports.entrance_exam_list = async (req, res) => {
             filter.stream_id = streamId;
         }
         const entranceExamData = await Entrance_exams.find(filter).collation({ locale: "en", strength: 2 }).sort({ exam_name: 1 });
-        console.log('entranceExamData', entranceExamData);
         if (entranceExamData.length) {
             res.status(200).json({ status: true, message: "Entrance exam list", data: entranceExamData });
         }
