@@ -1564,7 +1564,7 @@ module.exports.add_institute = async (req, res) => {
 
 module.exports.institute_list = async (req, res) => {
     try {
-        const instituteList = await Institutes.find().sort({ institute_name: 1 }).sort({ createdAt: -1 }).lean();
+        const instituteList = await Institutes.find().sort({ institute_name: 1 }).lean();
 
         if (instituteList.length) {
             const promiss = instituteList.map(async (row) => {
