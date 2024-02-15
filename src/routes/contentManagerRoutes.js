@@ -128,4 +128,10 @@ app.delete('/scholarship-delete', decodedToken, contentManagerController.scholar
 app.get('/access-token', decodedToken, contentManagerController.get_zoom_access_token);
 app.post('/create-meeting', decodedToken, contentManagerController.create_meeting);
 
+
+app.post('/add-eligibility', decodedToken, contentManagerController.add_eligibility);
+app.get('/eligibility-list', decodedToken, contentManagerController.eligibility_list);
+app.put('/eligibility-edit', decodedToken, contentManagerController.eligibility_edit);
+app.delete('/eligibility-delete', decodedToken, contentManagerController.eligibility_delete);
+
 module.exports = app; 

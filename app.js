@@ -97,6 +97,7 @@ app.use('/api', mainRoute);
 //         console.error('Error:', error);
 //     }
 // })();
+console.log(new Date())
 
 const port = process.env.Port || 4000
 app.listen(port, (req, res) => {

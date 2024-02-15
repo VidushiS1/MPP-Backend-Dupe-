@@ -42,7 +42,7 @@ const Jobseeker = require('../module/job_seeker');
 const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 const Broudcast = require('../module/broad_cast');
-
+const Eligibility = require('../module/eligibility');
 
 // const { google } = require('googleapis');
 // const { OAuth2Client } = require('google-auth-library');
@@ -208,7 +208,7 @@ module.exports.reset_password = async (req, res) => {
 
 module.exports.user_list = async (req, res) => {
     try {
-        const userList = await User.find({}, { password: 0 }).sort({ createdAt: 1 });
+        const userList = await User.find({}, { password: 0 }).sort({ name: 1 });
         if (userList) {
             res.status(200).json({ status: true, message: "User list", data: userList });
         }
@@ -495,7 +495,7 @@ module.exports.add_gov_sector = async (req, res) => {
 
 module.exports.gov_sector_list = async (req, res) => {
     try {
-        const entranceStreamData = await GovJobSector.find().sort({ createdAt: -1 });
+        const entranceStreamData = await GovJobSector.find().sort({ job_sector: 1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Sector list", data: entranceStreamData });
         }
@@ -616,7 +616,7 @@ module.exports.gov_jobs_list = async (req, res) => {
         if (sector_id.length) {
             filter.sector_id = { $in: sector_id };
         }
-        const jobData = await GovJobS.find(filter).sort({ createdAt: -1 });
+        const jobData = await GovJobS.find(filter).sort({ job_title: 1 });
         if (jobData.length) {
             console.log(jobData.length)
             res.status(200).json({ status: true, message: "Govt jobs list", data: jobData });
@@ -740,7 +740,7 @@ module.exports.add_pvt_sector = async (req, res) => {
 
 module.exports.pvt_sector_list = async (req, res) => {
     try {
-        const entranceStreamData = await PvtJobSector.find().sort({ createdAt: -1 });
+        const entranceStreamData = await PvtJobSector.find().sort({ job_sector: 1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Sector list", data: entranceStreamData });
         }
@@ -863,7 +863,7 @@ module.exports.pvt_jobs_list = async (req, res) => {
         if (sector_id.length) {
             filter.sector_id = { $in: sector_id };
         }
-        const entranceExamData = await PvtJobS.find(filter).sort({ createdAt: -1 });
+        const entranceExamData = await PvtJobS.find(filter).sort({ job_title: 1 });
         if (entranceExamData.length) {
             console.log(entranceExamData.length)
             res.status(200).json({ status: true, message: "Pvt Jobs list", data: entranceExamData });
@@ -984,7 +984,7 @@ module.exports.add_stream = async (req, res) => {
 
 module.exports.entrance_stream_list = async (req, res) => {
     try {
-        const entranceStreamData = await Entrance_stream.find().sort({ createdAt: -1 });
+        const entranceStreamData = await Entrance_stream.find().sort({ steam_name: 1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Stream list", data: entranceStreamData });
         }
@@ -1103,7 +1103,7 @@ module.exports.entrance_exam_list = async (req, res) => {
         if (streamId) {
             filter.stream_id = streamId;
         }
-        const entranceExamData = await Entrance_exams.find(filter).sort({ createdAt: -1 });
+        const entranceExamData = await Entrance_exams.find(filter).sort({ exam_name: 1 });
         if (entranceExamData.length) {
             console.log('entranceExamData', entranceExamData.length);
             res.status(200).json({ status: true, message: "Entrance exam list", data: entranceExamData });
@@ -1888,7 +1888,7 @@ module.exports.discipline_list = async (req, res) => {
         //         }
         //     }
         // ]);
-        const desciplineList = await Desciplines.find().sort({ createdAt: -1 });
+        const desciplineList = await Desciplines.find().sort({ discipline_name: 1 });
         if (desciplineList.length) {
             let disciplines = [];
             let disciplineSet = new Set();
@@ -2232,7 +2232,7 @@ module.exports.subject_list = async (req, res) => {
         //     res.status(404).json({ status: false, message: "Data not found." });
         // }
 
-        const couresData = await Courses.find().sort({ createdAt: -1 });
+        const couresData = await Courses.find().sort({ subject_name: 1 });
         if (couresData.length) {
             let subjects = [];
             let subjectSet = new Set();
@@ -2423,7 +2423,7 @@ module.exports.discipline_list_instituteId = async (req, res) => {
 
 module.exports.course_list = async (req, res) => {
     try {
-        const couresData = await Courses.find().sort({ createdAt: -1 });
+        const couresData = await Courses.find().sort({ course_name: 1 });
         if (couresData.length) {
             let courses = [];
             let courseSet = new Set();
@@ -2805,7 +2805,7 @@ module.exports.add_cast_category = async (req, res) => {
 
 module.exports.cast_category_list = async (req, res) => {
     try {
-        const categoryData = await CastCategory.find().sort({ createdAt: -1 });
+        const categoryData = await CastCategory.find().sort({ name: 1 });
         if (categoryData.length) {
             res.status(200).json({ status: true, message: "Category list", data: categoryData });
         }
@@ -3146,15 +3146,16 @@ module.exports.create_meeting = async (req, res) => {
         createMeetingData = {
             "topic": req.body.topic,
             "agenda": req.body.discription,
-            "start_time": convertDate,
+            "start_time": req.body.date_time,
             "timezone": "Asia/Calcutta",
             "duration": durationInMinutes,
             "default_password": default_password,
             "password": password,
             "pre_schedule": false,
-            "recurrence": {
-                "end_date_time": convertDate,
-            },
+            "type": 2,
+            // "recurrence": {
+            //     "end_date_time": convertDate,
+            // },
             "settings": {
                 "allow_multiple_devices": true,
                 "alternative_hosts_email_notification": true,
@@ -3187,7 +3188,7 @@ module.exports.create_meeting = async (req, res) => {
                 },
                 "participant_focused_meeting": false,
                 "push_change_to_calendar": false
-            }
+            },
         }
         let token = req.body.access_token;
         const Api_url = 'https://api.zoom.us/v2/users';
@@ -3223,6 +3224,104 @@ module.exports.create_meeting = async (req, res) => {
         });
     } catch (error) {
         console.log('create_meeting Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.add_eligibility = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().required().messages({
+                'string.empty': 'name cannot be an empty field',
+                'any.required': 'name is required field'
+            }),
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const { name } = req.body;
+        const data = { name }
+        const getData = await Eligibility.find({ name: name });
+        if (getData.length) {
+            res.status(400).json({ status: false, message: "Educational eligibility already exist." });
+        }
+        else {
+            const addData = await Eligibility.create(data);
+            if (addData) {
+                res.status(200).json({ status: true, message: 'Educational eligibility added successfully.' });
+            }
+            else {
+                res.status(400).json({ status: false, message: "Please try again" });
+            }
+        }
+    } catch (error) {
+        console.log('add_eligibility Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.eligibility_list = async (req, res) => {
+    try {
+        const eligibilityData = await Eligibility.find().sort({ name: 1 });
+        if (eligibilityData.length) {
+            res.status(200).json({ status: true, message: "Eligibility list", data: eligibilityData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('eligibility_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.eligibility_edit = async (req, res) => {
+    try {
+        const eligibilityId = req.body.eligibilityId;
+        if (eligibilityId) {
+            const eligibilityData = await Eligibility.findOne({ _id: eligibilityId });
+            if (eligibilityData) {
+                await Eligibility.updateOne({ _id: eligibilityId }, { name: req.body.name });
+                res.status(200).json({ status: true, message: "Eligibility successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Eligibility Id is required." });
+        }
+    } catch (error) {
+        console.log('eligibility_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.eligibility_delete = async (req, res) => {
+    try {
+        const eligibilityId = req.query.eligibilityId;
+        if (eligibilityId) {
+            const eligibilityData = await Eligibility.findOne({ _id: eligibilityId });
+            if (eligibilityData) {
+                await Eligibility.deleteOne({ _id: eligibilityId });
+                res.status(200).json({ status: true, message: "Eligibility deleted successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Eligibility Id is required." });
+        }
+    } catch (error) {
+        console.log('eligibility_delete Error', error);
         res.status(500).json(error);
     }
 }
