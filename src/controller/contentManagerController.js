@@ -54,8 +54,8 @@ const Eligibility = require('../module/eligibility');
 
 
 function isExpired(expirationDate) {
-    const currentDate = new Date();
-    // expirationDate.setHours(0, 0, 0, 0);
+    let currentDate = new Date();
+    expirationDate.setHours(9, 59, 59, 999);
     currentDate.setHours(0, 0, 0, 0);
     const expirationTime = expirationDate.getTime();
     const currentTime = currentDate.getTime();
