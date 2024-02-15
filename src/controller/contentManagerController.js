@@ -208,7 +208,7 @@ module.exports.reset_password = async (req, res) => {
 
 module.exports.user_list = async (req, res) => {
     try {
-        const userList = await User.find({}, { password: 0 }).sort({ name: 1 });
+        const userList = await User.find({}, { password: 0 }).collation({ locale: "en", strength: 2 }).sort({ name: 1 });
         if (userList) {
             res.status(200).json({ status: true, message: "User list", data: userList });
         }
@@ -984,7 +984,7 @@ module.exports.add_stream = async (req, res) => {
 
 module.exports.entrance_stream_list = async (req, res) => {
     try {
-        const entranceStreamData = await Entrance_stream.find().sort({ steam_name: 1 });
+        const entranceStreamData = await Entrance_stream.find().collation({ locale: "en", strength: 2 }).sort({ steam_name: 1 });
         if (entranceStreamData.length) {
             res.status(200).json({ status: true, message: "Stream list", data: entranceStreamData });
         }
@@ -1103,9 +1103,9 @@ module.exports.entrance_exam_list = async (req, res) => {
         if (streamId) {
             filter.stream_id = streamId;
         }
-        const entranceExamData = await Entrance_exams.find(filter).sort({ exam_name: 1 });
+        const entranceExamData = await Entrance_exams.find(filter).collation({ locale: "en", strength: 2 }).sort({ exam_name: 1 });
+        console.log('entranceExamData', entranceExamData);
         if (entranceExamData.length) {
-            console.log('entranceExamData', entranceExamData.length);
             res.status(200).json({ status: true, message: "Entrance exam list", data: entranceExamData });
         }
         else {
@@ -2607,7 +2607,7 @@ module.exports.notification_list = async (req, res) => {
         fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
         console.log('fifteenDaysAgo', fifteenDaysAgo);
         // const result = await Notifications.deleteMany({ createdAt: { $lt: fifteenDaysAgo } });
-        const notificationData = await Notifications.find();
+        const notificationData = await Notifications.find().sort({ createdAt: -1 });
         if (notificationData.length) {
             res.status(200).json({ status: true, message: "Notification list", data: notificationData });
         }
@@ -2944,7 +2944,7 @@ module.exports.scholarship_list_national = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
-        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
+        const scholarshipData = await Scholership.find(filter).sort({ scheme_name: 1 });
         if (scholarshipData.length) {
             res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
         }
@@ -2968,7 +2968,7 @@ module.exports.scholarship_list_state = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
-        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 });
+        const scholarshipData = await Scholership.find(filter).sort({ scheme_name: 1 });
         if (scholarshipData.length) {
             res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
         }
