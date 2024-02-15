@@ -53,7 +53,14 @@ const Eligibility = require('../module/eligibility');
 // const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 
-
+function isExpired(expirationDate) {
+    const currentDate = new Date();
+    // expirationDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+    const expirationTime = expirationDate.getTime();
+    const currentTime = currentDate.getTime();
+    return expirationTime <= currentTime;
+}
 
 
 module.exports.login = async (req, res) => {
@@ -371,7 +378,7 @@ module.exports.career_advise_list = async (req, res) => {
             },
             {
                 $sort: {
-                    createdAt: -1
+                    schedule_date: 1
                 }
             }
         ]);
@@ -2944,9 +2951,23 @@ module.exports.scholarship_list_national = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
-        const scholarshipData = await Scholership.find(filter).sort({ scheme_name: 1 });
+        const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 }).lean();
         if (scholarshipData.length) {
-            res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
+            let promise = scholarshipData.map((row) => {
+                console.log(row.scheme_closing_date);
+                const expirationDate = new Date(row.scheme_closing_date);
+                if (isExpired(expirationDate)) {
+                    console.log('The date has expired.');
+                    row.closing = true;
+                    return row;
+                } else {
+                    console.log('The date has not expired yet.');
+                    row.closing = false;
+                    return row;
+                }
+            });
+            const newArr = await Promise.all(promise);
+            res.status(200).json({ status: true, message: "Scholarship list", data: newArr });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
@@ -2968,9 +2989,23 @@ module.exports.scholarship_list_state = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
-        const scholarshipData = await Scholership.find(filter).sort({ scheme_name: 1 });
+        const scholarshipData = await Scholership.find(filter).sort({ scheme_closing_date: 1 }).lean();
         if (scholarshipData.length) {
-            res.status(200).json({ status: true, message: "Scholarship list", data: scholarshipData });
+            let promise = scholarshipData.map((row) => {
+                console.log(row.scheme_closing_date);
+                const expirationDate = new Date(row.scheme_closing_date);
+                if (isExpired(expirationDate)) {
+                    console.log('The date has expired.');
+                    row.closing = true;
+                    return row;
+                } else {
+                    console.log('The date has not expired yet.');
+                    row.closing = false;
+                    return row;
+                }
+            });
+            const newArr = await Promise.all(promise);
+            res.status(200).json({ status: true, message: "Scholarship list", data: newArr });
         }
         else {
             res.status(404).json({ status: false, message: "Data not found." });
