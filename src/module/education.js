@@ -5,6 +5,34 @@ const educationSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    below_8th_class_name: {
+        type: String,
+        default: null,
+    },
+    below_8th_school_name: {
+        type: String,
+        default: null,
+    },
+    below_8th_education_medium: {
+        type: String,
+        default: null,
+    },
+    below_8th_passing_year: {
+        type: String,
+        default: null,
+    },
+    below_8th_education_mode: {
+        type: String,
+        default: null,
+    },
+    below_8th_parcentage: {
+        type: String,
+        default: null,
+    },
+    achivement8th: {
+        type: String,
+        default: null,
+    },
     class_name: {
         type: String,
         default: null,

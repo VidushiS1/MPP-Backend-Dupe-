@@ -475,6 +475,62 @@ module.exports.education_qualification = async (req, res) => {
 }
 
 
+
+module.exports.below_8th_qualification = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            student_id: Joi.string().required().messages({
+                'string.empty': 'Student_id cannot be an empty field',
+                'any.required': 'Student_id is required field'
+            }),
+            below_8th_class_name: Joi.string().required().messages({
+                'string.empty': 'Class_name cannot be an empty field',
+                'any.required': 'Class_name is required field'
+            }),
+            below_8th_school_name: Joi.string().required().messages({
+                'string.empty': 'School_name cannot be an empty field',
+                'any.required': 'School_name is required field'
+            }),
+            below_8th_education_medium: Joi.string().required().messages({
+                'string.empty': 'Education_medium cannot be an empty field',
+                'any.required': 'Education_medium is required field'
+            }),
+            below_8th_passing_year: Joi.string().required().messages({
+                'string.empty': 'Passing_year cannot be an empty field',
+                'any.required': 'Passing_year is required field'
+            }),
+            below_8th_parcentage: Joi.string().required().messages({
+                'string.empty': 'Parcentage cannot be an empty field',
+                'any.required': 'Parcentage is required field'
+            }),
+            below_8th_education_mode: Joi.string().required().messages({
+                'string.empty': 'Education_mode cannot be an empty field',
+                'any.required': 'Education_mode is required field'
+            })
+        });
+        const { student_id, below_8th_class_name, below_8th_school_name, below_8th_education_medium, below_8th_passing_year, below_8th_education_mode, below_8th_parcentage } = req.body;
+        const below8th = { student_id, below_8th_class_name, below_8th_school_name, below_8th_education_medium, below_8th_passing_year, below_8th_education_mode, below_8th_parcentage }
+        checkValidation.joiValidation(schema, below8th);
+        if (req.files && req.files.achivement) {
+            let image = req.files.achivement;
+            below8th.achivement8th = await imageurl.processImage(image, 'achivementImg', req);
+        }
+        const addEducation = await Education.create(below8th);
+        if (addEducation) {
+            await Students.updateOne({ _id: student_id }, { criteria: 'below_8th' });
+            res.status(200).json({ status: true, message: "Education details has been added successfully." });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('below_8th_qualification Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 module.exports.below_10th_qualification = async (req, res) => {
     try {
         const schema = Joi.object({
@@ -2198,19 +2254,19 @@ module.exports.notification_list = async (req, res) => {
 
 module.exports.notification_delete = async (req, res) => {
     try {
-        const notificationId = req.query.notificationId;
+        const notificationId = req.body.notificationId;
         if (!notificationId) {
             res.status(400).json({ message: "Notification Id is required." });
         }
         else {
-            const notificationData = await StudentNotifications.findOne({ _id: notificationId });
-            if (notificationData) {
-                await StudentNotifications.deleteOne({ _id: notificationId });
-                res.status(200).json({ status: true, message: "Notification delete successfully." });
-            }
-            else {
-                res.status(404).json({ status: false, message: "Data not found." });
-            }
+            // const notificationData = await StudentNotifications.findOne({ _id: notificationId });
+            // if (notificationData) {
+            await StudentNotifications.deleteOne({ _id: { $in: notificationId } });
+            res.status(200).json({ status: true, message: "Notification delete successfully." });
+            // }
+            // else {
+            //     res.status(404).json({ status: false, message: "Data not found." });
+            // }
         }
     } catch (error) {
         console.log('notification_delete Error', error);

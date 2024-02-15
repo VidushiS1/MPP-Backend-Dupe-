@@ -7,6 +7,7 @@ app.post('/sign_up', userController.sign_up);
 app.post('/login', userController.login);
 app.post('/student-registration', jwtToken.decodedToken, userController.student_registration);
 app.post('/education-qualification', jwtToken.decodedToken, userController.education_qualification);
+app.post('/below-8th-qualification', jwtToken.decodedToken, userController.below_8th_qualification);
 app.post('/below-10th-qualification', jwtToken.decodedToken, userController.below_10th_qualification);
 app.post('/class-10th-qualification', jwtToken.decodedToken, userController.class_10th_qualification);
 app.post('/class-12th-qualification', jwtToken.decodedToken, userController.class_12th_qualification);
@@ -70,7 +71,7 @@ app.get('/broadcast-list', jwtToken.decodedToken, userController.broadcast_list)
 app.get('/career-advise-agenda-list', jwtToken.decodedToken, userController.carrer_advise_agenda_list);
 
 app.get('/notification-list', jwtToken.decodedToken, userController.notification_list);
-app.get('/notification-delete', jwtToken.decodedToken, userController.notification_delete);
+app.post('/notification-delete', jwtToken.decodedToken, userController.notification_delete);
 
 
 app.get('/cast-category-list', jwtToken.decodedToken, userController.cast_category_list);

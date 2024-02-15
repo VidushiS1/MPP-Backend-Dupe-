@@ -295,6 +295,7 @@ module.exports.user_view = async (req, res) => {
                 studentData.email = userList.email;
                 studentData.employee_id = userList.employee_id;
                 studentData.is_block = userList.is_block;
+                studentData.profile = userList.profile;
                 let qualification = '';
                 if (studentData.criteria == "job_seeker") {
                     qualification = await Jobseeker.findOne({ student_id: studentData._id });
