@@ -2252,6 +2252,31 @@ module.exports.notification_list = async (req, res) => {
 
 
 
+module.exports.notification_view = async (req, res) => {
+    try {
+        const view_status = req.body.view_status;
+        const notificationId = req.body.notificationId
+        if (!view_status || !notificationId) {
+            res.status(400).json({ message: "NotificationId and view status is require" });
+        }
+        else {
+            const updateNotificationData = await StudentNotifications.updateMany({ _id: notificationId, userId: req.userId }, { view_status: view_status });
+            if (updateNotificationData) {
+                res.status(200).json({ status: true, message: "Notification view successfully" });
+            }
+            else {
+                res.status(400).json({ status: false, message: "Please try again" });
+            }
+        }
+    } catch (error) {
+        console.log('notification_view error', error);
+        res.status(400).json(error);
+    }
+}
+
+
+
+
 module.exports.notification_delete = async (req, res) => {
     try {
         const notificationId = req.body.notificationId;
@@ -2362,7 +2387,7 @@ module.exports.education_view = async (req, res) => {
             let educationData = await Education.findOne({ student_id: studentId }).lean();
             if (educationData) {
                 educationData.criteria = studentData.criteria;
-                res.status(200).json({ status: true, message: "education data exam list", data: educationData });
+                res.status(200).json({ status: true, message: "Education data exam list", data: educationData });
             } else {
                 res.status(404).json({ status: false, message: "Education data not found for the student." });
             }
@@ -2371,6 +2396,54 @@ module.exports.education_view = async (req, res) => {
         }
     } catch (error) {
         console.log('education_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.education_update = async (req, res) => {
+    try {
+        const educationData = req.body;
+        let checkData = await Education.findOne({ _id: req.body.educationId });
+        if (checkData) {
+            if (req.files && req.files.achivement8th) {
+                let image = req.files.achivement8th;
+                educationData.achivement8th = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement) {
+                let image = req.files.achivement;
+                educationData.achivement = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement_10th) {
+                let image = req.files.achivement_10th;
+                educationData.achivement_10th = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement_12th) {
+                let image = req.files.achivement_12th;
+                educationData.achivement_12th = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement_ug_dp) {
+                let image = req.files.achivement_ug_dp;
+                educationData.achivement_ug_dp = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement_ug) {
+                let image = req.files.achivement_ug;
+                educationData.achivement_ug = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            if (req.files && req.files.achivement_pg) {
+                let image = req.files.achivement_pg;
+                educationData.achivement_pg = await imageurl.processImage(image, 'achivementImg', req);
+            }
+            console.log(Object.keys(educationData).length);
+            await Education.updateOne({ _id: req.body.educationId }, educationData);
+            res.status(200).json({ status: true, message: "Education update successfully", data: checkData });
+        } else {
+            res.status(404).json({ status: false, message: "Education data not found for the student." });
+        }
+    } catch (error) {
+        console.log('education_update Error', error);
         res.status(500).json(error);
     }
 }

@@ -13,6 +13,10 @@ const studentNotificationSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    view_status: {
+        type: Boolean,
+        default: false,
+    },
     userId: {
         type: String,
         require: true,

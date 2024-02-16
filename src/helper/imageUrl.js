@@ -12,7 +12,7 @@ module.exports.processImage = async (image, destinationFolder, req, folder) => {
         const imageurl = `public/${destinationFolder}/${newImage}`;
         await image.mv(imageurl);
         const url = `${req.protocol}://${req.get('host')}/${destinationFolder}/${newImage}`;
-        console.log('url', url)
+        // console.log('url', url)
         return url;
     } catch (error) {
         console.log('error', error);

@@ -71,6 +71,7 @@ app.get('/broadcast-list', jwtToken.decodedToken, userController.broadcast_list)
 app.get('/career-advise-agenda-list', jwtToken.decodedToken, userController.carrer_advise_agenda_list);
 
 app.get('/notification-list', jwtToken.decodedToken, userController.notification_list);
+app.put('/notification-view', jwtToken.decodedToken, userController.notification_view);
 app.post('/notification-delete', jwtToken.decodedToken, userController.notification_delete);
 
 
@@ -78,6 +79,10 @@ app.get('/cast-category-list', jwtToken.decodedToken, userController.cast_catego
 app.get('/scholarship-list', jwtToken.decodedToken, userController.scholarship_list);
 app.get('/scholarship-view', jwtToken.decodedToken, userController.scholarship_view);
 
-app.get('/education-view',jwtToken.decodedToken, userController.education_view);
+app.get('/education-view', jwtToken.decodedToken, userController.education_view);
+app.patch('/education-update', jwtToken.decodedToken, userController.education_update);
+
+
+
 
 module.exports = app; 
