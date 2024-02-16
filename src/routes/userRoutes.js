@@ -78,5 +78,6 @@ app.get('/cast-category-list', jwtToken.decodedToken, userController.cast_catego
 app.get('/scholarship-list', jwtToken.decodedToken, userController.scholarship_list);
 app.get('/scholarship-view', jwtToken.decodedToken, userController.scholarship_view);
 
+app.get('/education-view',jwtToken.decodedToken, userController.education_view);
 
 module.exports = app; 

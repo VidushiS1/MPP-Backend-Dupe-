@@ -2350,3 +2350,27 @@ module.exports.scholarship_view = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+
+
+
+module.exports.education_view = async (req, res) => {
+    try {
+        const studentId = req.query.studentId;
+        const studentData = await Students.findOne({ _id: studentId });
+        if (studentData) {
+            let educationData = await Education.findOne({ student_id: studentId }).lean();
+            if (educationData) {
+                educationData.criteria = studentData.criteria;
+                res.status(200).json({ status: true, message: "education data exam list", data: educationData });
+            } else {
+                res.status(404).json({ status: false, message: "Education data not found for the student." });
+            }
+        } else {
+            res.status(404).json({ status: false, message: "Student data not found." });
+        }
+    } catch (error) {
+        console.log('education_view Error', error);
+        res.status(500).json(error);
+    }
+}
