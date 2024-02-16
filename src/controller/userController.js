@@ -2261,7 +2261,7 @@ module.exports.notification_delete = async (req, res) => {
         else {
             // const notificationData = await StudentNotifications.findOne({ _id: notificationId });
             // if (notificationData) {
-            await StudentNotifications.deleteOne({ _id: { $in: notificationId } });
+            await StudentNotifications.deleteMany({ _id: { $in: notificationId } });
             res.status(200).json({ status: true, message: "Notification delete successfully." });
             // }
             // else {
