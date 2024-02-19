@@ -133,6 +133,7 @@ app.get('/access-token', decodedToken, contentManagerController.get_zoom_access_
 app.post('/create-meeting', decodedToken, contentManagerController.create_meeting);
 app.get('/meeting-list', decodedToken, contentManagerController.meeting_list);
 
+
 app.post('/add-eligibility', decodedToken, contentManagerController.add_eligibility);
 app.get('/eligibility-list', decodedToken, contentManagerController.eligibility_list);
 app.put('/eligibility-edit', decodedToken, contentManagerController.eligibility_edit);
