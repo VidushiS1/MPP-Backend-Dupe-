@@ -3280,7 +3280,9 @@ module.exports.create_meeting = async (req, res) => {
                 'any.required': 'access_token is required field'
             }),
         });
-        checkValidation.joiValidation(schema, req.body);
+        const { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, access_token } = req.body;
+        const data = { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, access_token };
+        checkValidation.joiValidation(schema, data);
         let default_password = req.body.default_password;
         let password = '123456';
         if (req.body.default_password === true) {
