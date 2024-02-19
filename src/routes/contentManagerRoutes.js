@@ -10,6 +10,10 @@ app.post('/forget-password', contentManagerController.forget_password);
 app.post('/verify-otp', contentManagerController.verify_otp);
 app.post('/reset-password', contentManagerController.reset_password);
 
+app.get("/get-profile", decodedToken, contentManagerController.get_profile);
+app.post('/check-password', decodedToken, contentManagerController.check_password);
+app.post('/update-profile', decodedToken, contentManagerController.update_profile);
+
 app.get('/user-list', decodedToken, contentManagerController.user_list);
 app.get('/user-view', decodedToken, contentManagerController.user_view);
 

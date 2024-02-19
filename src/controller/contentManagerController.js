@@ -2,7 +2,6 @@ const Joi = require('joi');
 const sha1 = require("sha1");
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const requestId = uuidv4();
 const moment = require('moment-timezone');
 const { sendMail, sendmultiple } = require('../helper/nodeMailer');
 const axios = require('axios');
@@ -43,6 +42,8 @@ const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 const Broudcast = require('../module/broad_cast');
 const Eligibility = require('../module/eligibility');
+const imageurl = require('../helper/imageUrl');
+
 
 // const { google } = require('googleapis');
 // const { OAuth2Client } = require('google-auth-library');
@@ -211,6 +212,108 @@ module.exports.reset_password = async (req, res) => {
         res.status(400).json(error);
     }
 }
+
+
+
+module.exports.get_profile = async (req, res) => {
+    try {
+        const managerId = req.managerId;
+        if (managerId) {
+            const managerData = await ContentManager.findOne({ _id: managerId }, { password: 0, otp: 0, fcm_token: 0 });
+            if (managerData) {
+                res.status(200).json({ status: true, message: "Manager Profile", data: managerData, });
+            } else {
+                res.status(404).json({ status: false, message: "Manager Profile Not Found" });
+            }
+        } else {
+            res.status(400).json({ message: "Manager Id is required" });
+        }
+    } catch (error) {
+        console.log("get_profile error", error);
+        res.status(400).json(error);
+    }
+};
+
+
+
+module.exports.check_password = async (req, res) => {
+    try {
+        const managerId = req.managerId;
+        const password = sha1(req.body.password);
+        if (password) {
+            const managerData = await ContentManager.findOne({ _id: managerId });
+            if (managerData) {
+                if (managerData.password === password) {
+                    res.status(200).json({ status: true, message: "Password matched." });
+                }
+                else {
+                    res.status(400).json({ status: false, message: "Password does not match." });
+                }
+            }
+            else {
+                res.status(404).json({ status: false, message: "Manager Profile Not Found" });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Password is required" });
+        }
+    } catch (error) {
+        console.log('check_password error', error);
+        res.status(400).json(error);
+    }
+}
+
+
+
+module.exports.update_profile = async (req, res) => {
+    try {
+        const managerId = req.managerId;
+        const setData = {}
+        if (req.body.email) {
+            setData.email = req.body.email
+        }
+        if (req.body.name) {
+            setData.name = req.body.name
+        }
+        if (req.body.surname) {
+            setData.surname = req.body.surname
+        }
+        if (req.body.mobile_no) {
+            setData.mobile_no = req.body.mobile_no
+        }
+        if (req.body.password) {
+            setData.password = sha1(req.body.password);
+        }
+        if (managerId) {
+            if (req.files) {
+                const folder = 'profile';
+                setData.profile = await imageurl.processImage(req.files.profile, 'profile', req, folder);
+                // setData.proImg = await s3Image.uploadImageOnS3(req.files.proImg);
+            }
+            console.log('setData', setData)
+            const managerData = await ContentManager.findOne({ _id: managerId }, { password: 0 });
+            if (managerData) {
+                const updateProfile = await ContentManager.updateOne({ _id: managerId }, setData);
+                if (updateProfile) {
+                    res.status(200).json({ status: true, message: "Manager profile update successfully" });
+                }
+                else {
+                    res.status(400).json({ status: false, message: "Please try again" });
+                }
+            }
+            else {
+                res.status(404).json({ status: false, message: "Manager Profile Not Found" });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Manager token is required" });
+        }
+    } catch (error) {
+        console.log('update_profile error', error);
+        res.status(400).json(error);
+    }
+}
+
 
 
 module.exports.user_list = async (req, res) => {
@@ -3121,8 +3224,8 @@ module.exports.get_zoom_access_token = async (req, res) => {
         // console.log('Token', response.data);
         res.status(200).json({ status: true, message: "Access token.", token: response.data })
     } catch (error) {
-        console.log('get_zoom_access_token Error', error.response.data);
-        res.status(400).json({ status: false, message: error.response.data.reason });
+        console.log('get_zoom_access_token Error', error);
+        res.status(400).json({ status: false, message: error });
     }
 }
 
@@ -3184,8 +3287,6 @@ module.exports.create_meeting = async (req, res) => {
             password = req.body.password;
         }
         let durationInMinutes = (req.body.duration_hours * 60) + req.body.duration_min;
-        let convertDate = new Date(req.body.date_time);
-        console.log('convertDate', convertDate)
         createMeetingData = {
             "topic": req.body.topic,
             "type": 2,
@@ -3259,22 +3360,30 @@ module.exports.create_meeting = async (req, res) => {
                 const hours = dateObject.getHours();
                 const minutes = dateObject.getMinutes();
                 const seconds = dateObject.getSeconds();
-                console.log('Time:', hours + ':' + minutes);
-
                 const newdate = monthName + ' ' + date;
-                const newtime = hours + ':' + minutes;
+                const newtime = hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+                let newHours = hours + req.body.duration_hours;
+                let newMinutes = minutes + req.body.duration_min;
+                if (newMinutes >= 60) {
+                    newHours += 1;
+                    newMinutes -= 60;
+                }
+                if (newHours >= 24) {
+                    newHours -= 24;
+                }
+                const newEndTime = newHours + ':' + (newMinutes < 10 ? '0' : '') + newMinutes;
                 const data = {
                     agenda: req.body.topic,
                     date: newdate,
                     start_time: newtime,
-                    end_time: newtime,
+                    end_time: newEndTime,
                     link: response.data.join_url,
                 }
                 const addData = await Broudcast.create(data);
                 res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
             }).catch(error => {
-                console.error('Error creating meeting:', error.response.data);
-                res.status(400).json({ status: false, message: error.response.data.message });
+                console.error('Error creating meeting:', error);
+                res.status(400).json({ status: false, message: error });
             });
         }).catch(error => {
             console.error('Error retrieving user information:', error.response.data);
