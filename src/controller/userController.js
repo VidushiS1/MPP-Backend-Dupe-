@@ -179,11 +179,18 @@ module.exports.login = async (req, res) => {
                         process.env.SECRET_KEY,
                         { expiresIn: "365d" }
                     )
-                    await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token });
+                    await User.updateOne({ mobile_no: req.body.mobile_no }, { fcm_token: req.body.fcm_token, login_attempts: 0 });
                     res.status(200).json({ status: true, message: 'User login successfully.', student_registration, student_id, name, education_qualification, hobys, token: token });
                 }
                 else {
-                    res.status(400).json({ message: 'Password does not match.' });
+                    // const login_attempts = existUser.login_attempts;
+                    // if (login_attempts >= 3) {
+                    //     await User.updateOne({ mobile_no: req.body.mobile_no }, { is_captcha: true }, { upsert: false, multi: true });
+                    //     res.status(403).json({ status: false, message: 'Please Enter Captcha' });
+                    // } else {
+                    //     await User.updateOne({ mobile_no: req.body.mobile_no }, { login_attempts: login_attempts + 1 }, { upsert: false, multi: true });
+                    res.status(400).json({ status: false, message: 'Password Does Not Match' });
+                    // }
                 }
             }
         }
@@ -196,6 +203,25 @@ module.exports.login = async (req, res) => {
     }
 }
 
+
+module.exports.verify_captcha = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const is_captcha = req.query.is_verify;
+        console.log('is_captcha', is_captcha)
+        if (is_captcha === 'true') {
+            const studentData = await User.updateOne({ _id: userId }, { login_attempts: 0, is_captcha: false });
+            res.status(200).json({ status: true, message: "Captcha verified." })
+        }
+        else {
+            res.status(400).json({ status: false, message: "First verify captcha." })
+        }
+
+    } catch (error) {
+        console.log('verify_captcha Error', error);
+        res.status(500).json(error);
+    }
+}
 
 
 module.exports.student_registration = async (req, res) => {

@@ -3276,8 +3276,8 @@ module.exports.create_meeting = async (req, res) => {
                 'any.required': 'join_before_host is required field'
             }),
             access_token: Joi.string().required().messages({
-                'string.empty': 'join_before_host cannot be an empty field',
-                'any.required': 'join_before_host is required field'
+                'string.empty': 'access_token cannot be an empty field',
+                'any.required': 'access_token is required field'
             }),
         });
         checkValidation.joiValidation(schema, req.body);

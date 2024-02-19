@@ -5,6 +5,7 @@ const jwtToken = require('../helper/decodedToken');
 
 app.post('/sign_up', userController.sign_up);
 app.post('/login', userController.login);
+app.get('/verify-captcha', jwtToken.decodedToken, userController.verify_captcha);
 app.post('/student-registration', jwtToken.decodedToken, userController.student_registration);
 app.post('/education-qualification', jwtToken.decodedToken, userController.education_qualification);
 app.post('/below-8th-qualification', jwtToken.decodedToken, userController.below_8th_qualification);

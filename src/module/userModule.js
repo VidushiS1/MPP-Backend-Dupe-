@@ -54,6 +54,14 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    is_captcha: {
+        type: Boolean,
+        default: false
+    },
+    login_attempts: {
+        type: Number,
+        default: null
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('users', UserSchema);
