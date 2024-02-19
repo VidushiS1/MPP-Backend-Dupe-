@@ -3188,49 +3188,49 @@ module.exports.create_meeting = async (req, res) => {
         console.log('convertDate', convertDate)
         createMeetingData = {
             "topic": req.body.topic,
-            "agenda": req.body.discription,
+            "type": 2,
             "start_time": req.body.date_time,
-            "timezone": "Asia/Calcutta",
             "duration": durationInMinutes,
+            "agenda": req.body.discription,
             "default_password": default_password,
             "password": password,
-            "pre_schedule": false,
-            "type": 2,
-            // "recurrence": {
-            //     "end_date_time": convertDate,
-            // },
             "settings": {
-                "allow_multiple_devices": true,
-                "alternative_hosts_email_notification": true,
-                "approval_type": 2,
-                "auto_recording": req.body.auto_recording,
-                "calendar_type": 1,
-                "close_registration": false,
-                "email_notification": true,
-                "focus_mode": true,
                 "host_video": req.body.vidio_host,
-                "jbh_time": 0,
+                "participant_video": true,
                 "join_before_host": req.body.join_before_host,
-                "meeting_authentication": true,
                 "mute_upon_entry": true,
-                "participant_video": false,
-                "private_meeting": false,
-                "registrants_confirmation_email": true,
-                "registrants_email_notification": true,
-                "registration_type": 1,
-                "show_share_button": true,
-                "use_pmi": false,
+                "watermark": true,
+                "auto_recording": req.body.auto_recording,
                 "waiting_room": req.body.waiting_room,
-                "watermark": false,
-                "host_save_video_order": true,
-                "alternative_host_update_polls": true,
-                "internal_meeting": false,
-                "continuous_meeting_chat": {
-                    "enable": true,
-                    "auto_add_invited_external_users": true
-                },
-                "participant_focused_meeting": false,
-                "push_change_to_calendar": false
+                "private_meeting": false,
+                //     "allow_multiple_devices": true,
+                //     "alternative_hosts_email_notification": true,
+                //     "approval_type": 2,
+                //     "calendar_type": 1,
+                //     "close_registration": false,
+                //     "email_notification": true,
+                //     "focus_mode": true,
+                //     "jbh_time": 0,
+                //     "meeting_authentication": true,
+                //     "registrants_confirmation_email": true,
+                //     "registrants_email_notification": true,
+                //     "registration_type": 1,
+                //     "show_share_button": true,
+                //     "use_pmi": false,
+                //     "host_save_video_order": true,
+                //     "alternative_host_update_polls": true,
+                //     "internal_meeting": false,
+                //     "continuous_meeting_chat": {
+                //         "enable": true,
+                //         "auto_add_invited_external_users": true
+                //     },
+                //     "participant_focused_meeting": false,
+                //     "push_change_to_calendar": false,
+                // "pre_schedule": false,
+                // "timezone": "Asia/Calcutta",
+                // "recurrence": {
+                //     "end_date_time": convertDate,
+                // },
             },
         }
         let token = req.body.access_token;
@@ -3248,14 +3248,29 @@ module.exports.create_meeting = async (req, res) => {
                 }
             }).then(async (response) => {
                 // console.log('Meeting created successfully', response.data);
-                // const data = {
-                //     agenda: req.body.topic,
-                //     date: req.body.topic,
-                //     start_time: req.body.topic,
-                //     end_time: req.body.topic,
-                //     link: response.data.join_url,
-                // }
-                // const addData = await Broudcast.create(data);
+                const timestamp = response.data.start_time;
+                const dateObject = new Date(timestamp);
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthName = months[dateObject.getMonth()];
+                const date = dateObject.getDate();
+                const day = dateObject.getDay();
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const dayName = days[day];
+                const hours = dateObject.getHours();
+                const minutes = dateObject.getMinutes();
+                const seconds = dateObject.getSeconds();
+                console.log('Time:', hours + ':' + minutes);
+
+                const newdate = monthName + ' ' + date;
+                const newtime = hours + ':' + minutes;
+                const data = {
+                    agenda: req.body.topic,
+                    date: newdate,
+                    start_time: newtime,
+                    end_time: newtime,
+                    link: response.data.join_url,
+                }
+                const addData = await Broudcast.create(data);
                 res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
             }).catch(error => {
                 console.error('Error creating meeting:', error.response.data);
