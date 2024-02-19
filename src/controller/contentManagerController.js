@@ -3398,6 +3398,22 @@ module.exports.create_meeting = async (req, res) => {
 }
 
 
+module.exports.meeting_list = async (req, res) => {
+    try {
+        const meetingList = await Broudcast.find().sort({ start_time: 1 });
+        if (meetingList.length) {
+            res.status(200).json({ status: true, message: "Meeting list", data: meetingList });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('meeting_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
 
 module.exports.add_eligibility = async (req, res) => {
     try {
