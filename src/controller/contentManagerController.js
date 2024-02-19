@@ -3225,7 +3225,7 @@ module.exports.get_zoom_access_token = async (req, res) => {
         res.status(200).json({ status: true, message: "Access token.", token: response.data })
     } catch (error) {
         console.log('get_zoom_access_token Error', error);
-        res.status(400).json({ status: false, message: error });
+        res.status(400).json({ status: false, message: error.response.data.message });
     }
 }
 
