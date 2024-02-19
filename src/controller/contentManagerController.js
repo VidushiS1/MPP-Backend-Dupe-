@@ -3283,9 +3283,9 @@ module.exports.create_meeting = async (req, res) => {
         const { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, access_token } = req.body;
         const data = { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, access_token };
         checkValidation.joiValidation(schema, data);
-        let default_password = req.body.default_password;
+        let default_password1 = req.body.default_password;
         let password = '123456';
-        if (req.body.default_password === true) {
+        if (req.body.default_password1 === true) {
             password = req.body.password;
         }
         let durationInMinutes = (req.body.duration_hours * 60) + req.body.duration_min;
@@ -3295,7 +3295,7 @@ module.exports.create_meeting = async (req, res) => {
             "start_time": req.body.date_time,
             "duration": durationInMinutes,
             "agenda": req.body.discription,
-            "default_password": default_password,
+            "default_password": default_password1,
             "password": password,
             "settings": {
                 "host_video": req.body.vidio_host,
