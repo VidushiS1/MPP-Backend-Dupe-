@@ -132,6 +132,7 @@ app.delete('/scholarship-delete', decodedToken, contentManagerController.scholar
 app.get('/access-token', decodedToken, contentManagerController.get_zoom_access_token);
 app.post('/create-meeting', decodedToken, contentManagerController.create_meeting);
 app.get('/meeting-list', decodedToken, contentManagerController.meeting_list);
+app.get('/meeting-view', decodedToken, contentManagerController.meeting_view);
 
 
 app.post('/add-eligibility', decodedToken, contentManagerController.add_eligibility);

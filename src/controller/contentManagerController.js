@@ -3415,6 +3415,29 @@ module.exports.meeting_list = async (req, res) => {
 
 
 
+module.exports.meeting_view = async (req, res) => {
+    try {
+        const meetingId = req.query.meetingId;
+        if (!meetingId) {
+            res.status(400).json({ message: "Meeting Id is required." });
+        }
+        else {
+            const meetingView = await Broudcast.findOne({ _id: meetingId });
+            if (meetingView) {
+                res.status(200).json({ status: true, message: "Meeting view", data: meetingView });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('meeting_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 module.exports.add_eligibility = async (req, res) => {
     try {
         const schema = Joi.object({
