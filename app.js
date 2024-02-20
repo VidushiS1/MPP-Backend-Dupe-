@@ -5,7 +5,6 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -26,7 +25,40 @@ const mainRoute = require('./src/index');
 app.use('/api', mainRoute);
 
 
+const Sentry = require('@sentry/node');
+const { ProfilingIntegration } = require('@sentry/profiling-node');
 
+
+Sentry.init({
+    dsn: process.env.DNS,
+    integrations: [
+        new ProfilingIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+});
+
+
+const transaction = Sentry.startTransaction({
+    op: "Mpp Disha",
+    name: "Backend Error.",
+});
+
+// setTimeout(() => {
+//     try {
+//         throw new Error('Disha Backend error');
+//     } catch (e) {
+//         Sentry.captureException(e);
+//     } finally {
+//         transaction.finish();
+//     }
+// }, 99);
+
+
+app.use((err, req, res, next) => {
+    Sentry.captureException(err); // Capture the error with Sentry
+    res.status(500).send('Something went wrong'); // Send a generic error response
+});
 
 // const translate = require('google-translate-api');
 // const translate = require('translate-google');
