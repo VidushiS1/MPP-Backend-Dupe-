@@ -3231,7 +3231,6 @@ module.exports.get_zoom_access_token = async (req, res) => {
 
 
 
-
 module.exports.create_meeting = async (req, res) => {
     try {
         const schema = Joi.object({
@@ -3259,14 +3258,14 @@ module.exports.create_meeting = async (req, res) => {
                 'string.empty': 'default_password cannot be an empty field',
                 'any.required': 'default_password is required field'
             }),
-            waiting_room: Joi.boolean().required().messages({
-                'string.empty': 'waiting_room cannot be an empty field',
-                'any.required': 'waiting_room is required field'
-            }),
-            vidio_host: Joi.boolean().required().messages({
-                'string.empty': 'vidio_host cannot be an empty field',
-                'any.required': 'vidio_host is required field'
-            }),
+            // waiting_room: Joi.boolean().required().messages({
+            //     'string.empty': 'waiting_room cannot be an empty field',
+            //     'any.required': 'waiting_room is required field'
+            // }),
+            // vidio_host: Joi.boolean().required().messages({
+            //     'string.empty': 'vidio_host cannot be an empty field',
+            //     'any.required': 'vidio_host is required field'
+            // }),
             auto_recording: Joi.string().required().messages({
                 'string.empty': 'auto_recording cannot be an empty field',
                 'any.required': 'auto_recording is required field'
@@ -3280,14 +3279,14 @@ module.exports.create_meeting = async (req, res) => {
                 'any.required': 'access_token is required field'
             }),
         });
-        const { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, join_before_host, access_token } = req.body;
-        const data = { topic, discription, date_time, duration_hours, duration_min, default_password, waiting_room, vidio_host, auto_recording, join_before_host, access_token };
+        const { topic, discription, date_time, duration_hours, duration_min, default_password, auto_recording, join_before_host, access_token } = req.body;
+        const data = { topic, discription, date_time, duration_hours, duration_min, default_password, auto_recording, join_before_host, access_token };
         checkValidation.joiValidation(schema, data);
-        let default_password1 = req.body.default_password;
-        let password = '123456';
-        if (req.body.default_password1 === true) {
-            password = req.body.password;
-        }
+        // let default_password1 = req.body.default_password;
+        let password = req.body.password;
+        // if (req.body.default_password1 === true) {
+        //     password = req.body.password;
+        // }
         let durationInMinutes = (req.body.duration_hours * 60) + req.body.duration_min;
         createMeetingData = {
             "topic": req.body.topic,
@@ -3295,16 +3294,16 @@ module.exports.create_meeting = async (req, res) => {
             "start_time": req.body.date_time,
             "duration": durationInMinutes,
             "agenda": req.body.discription,
-            "default_password": default_password1,
+            "default_password": req.body.default_password,
             "password": password,
             "settings": {
-                "host_video": req.body.vidio_host,
+                // "host_video": req.body.vidio_host,
                 "participant_video": true,
                 "join_before_host": req.body.join_before_host,
                 "mute_upon_entry": true,
                 "watermark": true,
                 "auto_recording": req.body.auto_recording,
-                "waiting_room": req.body.waiting_room,
+                // "waiting_room": req.body.waiting_room,
                 "private_meeting": false,
                 //     "allow_multiple_devices": true,
                 //     "alternative_hosts_email_notification": true,
@@ -3358,22 +3357,35 @@ module.exports.create_meeting = async (req, res) => {
                 const date = dateObject.getDate();
                 const day = dateObject.getDay();
                 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const dayName = days[day];
-                const hours = dateObject.getHours();
-                const minutes = dateObject.getMinutes();
-                const seconds = dateObject.getSeconds();
+                let hours = dateObject.getHours();
+                let minutes = dateObject.getMinutes();
                 const newdate = monthName + ' ' + date;
-                const newtime = hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+                const meridiem = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const newtime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + meridiem;
                 let newHours = hours + req.body.duration_hours;
                 let newMinutes = minutes + req.body.duration_min;
                 if (newMinutes >= 60) {
                     newHours += 1;
                     newMinutes -= 60;
                 }
-                if (newHours >= 24) {
+                if (newHours < 0) {
+                    newHours += 24;
+                } else if (newHours >= 24) {
                     newHours -= 24;
                 }
-                const newEndTime = newHours + ':' + (newMinutes < 10 ? '0' : '') + newMinutes;
+                console.log('newHours', newHours)
+                let newMeridiem = newHours >= 12 ? 'PM' : 'AM';
+                if (newHours == 0) {
+                    newMeridiem = meridiem
+                } else {
+                    newMeridiem = newHours >= 12 ? 'PM' : 'AM';
+                    newHours = newHours % 12;
+                    newHours = newHours ? newHours : 12;
+                }
+                const newEndTime = newHours.toString().padStart(2, '0') + ':' + newMinutes.toString().padStart(2, '0') + ' ' + newMeridiem;
+
                 const data = {
                     agenda: req.body.topic,
                     date: newdate,
@@ -3381,7 +3393,7 @@ module.exports.create_meeting = async (req, res) => {
                     end_time: newEndTime,
                     link: response.data.join_url,
                 }
-                const addData = await Broudcast.create(data);
+                await Broudcast.create(data);
                 res.status(200).json({ status: true, message: "Meeting created successfully", data: response.data });
             }).catch(error => {
                 console.error('Error creating meeting:', error);
@@ -3396,6 +3408,7 @@ module.exports.create_meeting = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
 
 
 module.exports.meeting_list = async (req, res) => {
