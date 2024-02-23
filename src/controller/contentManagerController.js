@@ -3288,6 +3288,7 @@ module.exports.create_meeting = async (req, res) => {
         //     password = req.body.password;
         // }
         let durationInMinutes = (parseInt(req.body.duration_hours) * 60) + parseInt(req.body.duration_min);
+        console.log('date_time', date_time);
         createMeetingData = {
             "topic": req.body.topic,
             "type": 2,
@@ -3343,7 +3344,6 @@ module.exports.create_meeting = async (req, res) => {
             }
         }).then(response => {
             const userId = response.data.users[0].id;
-            console.log('User ID:', userId);
             axios.post(`https://api.zoom.us/v2/users/${userId}/meetings`, createMeetingData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -3351,7 +3351,9 @@ module.exports.create_meeting = async (req, res) => {
             }).then(async (response) => {
                 // console.log('Meeting created successfully', response.data);
                 const timestamp = response.data.start_time;
+                console.log('timestamp', timestamp);
                 const dateObject = new Date(timestamp);
+                console.log('dateObject', dateObject);
                 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 const monthName = months[dateObject.getMonth()];
                 const date = dateObject.getDate();
