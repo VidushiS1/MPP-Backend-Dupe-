@@ -3350,7 +3350,8 @@ module.exports.create_meeting = async (req, res) => {
                 }
             }).then(async (response) => {
                 // console.log('Meeting created successfully', response.data);
-                const timestamp = response.data.start_time;
+                // const timestamp = response.data.start_time;
+                const timestamp = date_time
                 console.log('timestamp', timestamp);
                 const dateObject = new Date(timestamp);
                 console.log('dateObject', dateObject);
