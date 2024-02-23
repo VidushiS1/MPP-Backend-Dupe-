@@ -3254,14 +3254,14 @@ module.exports.create_meeting = async (req, res) => {
                 'string.empty': 'duration_min cannot be an empty field',
                 'any.required': 'duration_min is required field'
             }),
-            default_password: Joi.boolean().required().messages({
-                'string.empty': 'default_password cannot be an empty field',
-                'any.required': 'default_password is required field'
-            }),
-            // waiting_room: Joi.boolean().required().messages({
-            //     'string.empty': 'waiting_room cannot be an empty field',
-            //     'any.required': 'waiting_room is required field'
+            // default_password: Joi.boolean().required().messages({
+            //     'string.empty': 'default_password cannot be an empty field',
+            //     'any.required': 'default_password is required field'
             // }),
+            waiting_room: Joi.boolean().required().messages({
+                'string.empty': 'waiting_room cannot be an empty field',
+                'any.required': 'waiting_room is required field'
+            }),
             // vidio_host: Joi.boolean().required().messages({
             //     'string.empty': 'vidio_host cannot be an empty field',
             //     'any.required': 'vidio_host is required field'
@@ -3279,11 +3279,11 @@ module.exports.create_meeting = async (req, res) => {
                 'any.required': 'access_token is required field'
             }),
         });
-        const { topic, discription, date_time, duration_hours, duration_min, default_password, auto_recording, join_before_host, access_token } = req.body;
-        const data = { topic, discription, date_time, duration_hours, duration_min, default_password, auto_recording, join_before_host, access_token };
+        const { topic, discription, date_time, duration_hours, duration_min, waiting_room, auto_recording, join_before_host, access_token } = req.body;
+        const data = { topic, discription, date_time, duration_hours, duration_min, waiting_room, auto_recording, join_before_host, access_token };
         checkValidation.joiValidation(schema, data);
         // let default_password1 = req.body.default_password;
-        let password = req.body.password;
+        // let password = req.body.password;
         // if (req.body.default_password1 === true) {
         //     password = req.body.password;
         // }
@@ -3295,8 +3295,8 @@ module.exports.create_meeting = async (req, res) => {
             "start_time": req.body.date_time,
             "duration": parseInt(durationInMinutes),
             "agenda": req.body.discription,
-            "default_password": req.body.default_password,
-            "password": password,
+            // "default_password": req.body.default_password,
+            // "password": password,
             "settings": {
                 // "host_video": req.body.vidio_host,
                 "participant_video": true,
@@ -3304,7 +3304,7 @@ module.exports.create_meeting = async (req, res) => {
                 "mute_upon_entry": true,
                 "watermark": true,
                 "auto_recording": req.body.auto_recording,
-                // "waiting_room": req.body.waiting_room,
+                "waiting_room": req.body.waiting_room,
                 "private_meeting": false,
                 //     "allow_multiple_devices": true,
                 //     "alternative_hosts_email_notification": true,
