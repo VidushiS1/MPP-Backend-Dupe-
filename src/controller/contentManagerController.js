@@ -3359,11 +3359,6 @@ module.exports.create_meeting = async (req, res) => {
                 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 let hours = dateObject.getHours();
                 let minutes = dateObject.getMinutes();
-                const newdate = monthName + ' ' + date;
-                const meridiem = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12;
-                const newtime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + meridiem;
                 let newHours = hours + req.body.duration_hours;
                 let newMinutes = minutes + req.body.duration_min;
                 if (newMinutes >= 60) {
@@ -3375,10 +3370,15 @@ module.exports.create_meeting = async (req, res) => {
                 } else if (newHours >= 24) {
                     newHours -= 24;
                 }
-                console.log('newHours', newHours)
+                const newdate = monthName + ' ' + date;
+                const meridiem = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const newtime = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ' ' + meridiem;
+
                 let newMeridiem = newHours >= 12 ? 'PM' : 'AM';
                 if (newHours == 0) {
-                    newMeridiem = meridiem
+                    newHours = meridiem
                 } else {
                     newMeridiem = newHours >= 12 ? 'PM' : 'AM';
                     newHours = newHours % 12;
