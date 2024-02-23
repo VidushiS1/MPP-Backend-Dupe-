@@ -3287,12 +3287,12 @@ module.exports.create_meeting = async (req, res) => {
         // if (req.body.default_password1 === true) {
         //     password = req.body.password;
         // }
-        let durationInMinutes = (req.body.duration_hours * 60) + req.body.duration_min;
+        let durationInMinutes = (parseInt(req.body.duration_hours) * 60) + parseInt(req.body.duration_min);
         createMeetingData = {
             "topic": req.body.topic,
             "type": 2,
             "start_time": req.body.date_time,
-            "duration": durationInMinutes,
+            "duration": parseInt(durationInMinutes),
             "agenda": req.body.discription,
             "default_password": req.body.default_password,
             "password": password,
@@ -3359,8 +3359,8 @@ module.exports.create_meeting = async (req, res) => {
                 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 let hours = dateObject.getHours();
                 let minutes = dateObject.getMinutes();
-                let newHours = hours + req.body.duration_hours;
-                let newMinutes = minutes + req.body.duration_min;
+                let newHours = hours + parseInt(req.body.duration_hours);
+                let newMinutes = minutes + parseInt(req.body.duration_min);
                 if (newMinutes >= 60) {
                     newHours += 1;
                     newMinutes -= 60;
