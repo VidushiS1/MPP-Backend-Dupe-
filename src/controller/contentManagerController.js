@@ -707,7 +707,7 @@ module.exports.add_gov_jobs = async (req, res) => {
         const data = { job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website };
         checkValidation.joiValidation(schema, data);
         let addData = {}
-        if (req.body.agency_id || req.body.sector_id) {
+        if (req.body.agency_id && req.body.sector_id) {
             data.agency_id = req.body.agency_id;
             data.sector_id = req.body.sector_id;
             addData = await GovJobS.create(data);
