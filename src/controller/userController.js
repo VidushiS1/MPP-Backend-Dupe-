@@ -1852,11 +1852,17 @@ module.exports.get_gov_job_view = async (req, res) => {
             const entranceExamData = await GovJobS.find({ _id: jobId }).sort({ sector_id: -1 }).lean();
             if (entranceExamData.length) {
                 let promiss = entranceExamData.map(async (row) => {
-                    // let sector = await GovJobSector.findOne({ _id: row.sector_id });
+                    let sector = await GovJobSector.findOne({ _id: row.sector_id });
                     let agency = await GovJobAgancy.findOne({ _id: row.agency_id });
-                    // row.job_sector = sector.job_sector;
-                    row.job_agency = agency.job_agency;
-                    return row;
+                    if (sector) {
+                        row.job_sector = sector.job_sector;
+                        return row;
+                    }
+                    if (agency) {
+                        row.job_agency = agency.job_agency;
+                        return row;
+                    }
+
                 });
                 const newData = await Promise.all(promiss);
                 res.status(200).json({ status: true, message: "Govt. Jobs view", data: newData });
