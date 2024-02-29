@@ -415,7 +415,7 @@ module.exports.user_view = async (req, res) => {
                 res.status(200).json({ status: true, message: "User view", data: newArr });
             }
             else {
-                res.status(404).json({ status: false, message: "User is not available." });
+                res.status(404).json({ status: false, message: "User profile is not completed." });
             }
         }
         else {
