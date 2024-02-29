@@ -5,6 +5,10 @@ const govJobSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    agency_id: {
+        type: String,
+        require: true,
+    },
     job_title: {
         type: String,
         require: true,

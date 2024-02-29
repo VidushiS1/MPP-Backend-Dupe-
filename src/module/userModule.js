@@ -13,6 +13,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    city: {
+        type: String,
+        require: true,
+    },
     mobile_no: {
         type: String,
         require: true,

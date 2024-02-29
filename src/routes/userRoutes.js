@@ -43,7 +43,9 @@ app.get('/get-entrance-exam-view', jwtToken.decodedToken, userController.get_ent
 
 
 app.get('/get-gov-sector', jwtToken.decodedToken, userController.get_gov_sector);
+app.get('/govt-agency-list', jwtToken.decodedToken, userController.govt_agency_list);
 app.post('/get-gov-jobs', jwtToken.decodedToken, userController.get_gov_jobs);
+app.post('/get-gov-jobs-agency', jwtToken.decodedToken, userController.get_gov_jobs_agency);
 app.get('/get-gov-job-view', jwtToken.decodedToken, userController.get_gov_job_view);
 
 

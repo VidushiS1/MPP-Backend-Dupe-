@@ -43,6 +43,7 @@ const Scholership = require('../module/scholarship');
 const Broudcast = require('../module/broad_cast');
 const Eligibility = require('../module/eligibility');
 const imageurl = require('../helper/imageUrl');
+const GovJobAgancy = require('../module/gov_job_agancy');
 
 
 // const { google } = require('googleapis');
@@ -673,10 +674,10 @@ module.exports.govt_sector_delete = async (req, res) => {
 module.exports.add_gov_jobs = async (req, res) => {
     try {
         const schema = Joi.object({
-            sector_id: Joi.string().required().messages({
-                'string.empty': 'sector_id cannot be an empty field',
-                'any.required': 'sector_id is required field'
-            }),
+            // sector_id: Joi.string().required().messages({
+            //     'string.empty': 'sector_id cannot be an empty field',
+            //     'any.required': 'sector_id is required field'
+            // }),
             job_title: Joi.string().required().messages({
                 'string.empty': 'job_title cannot be an empty field',
                 'any.required': 'job_title is required field'
@@ -702,10 +703,26 @@ module.exports.add_gov_jobs = async (req, res) => {
                 'any.required': 'website is required field'
             }),
         });
-        checkValidation.joiValidation(schema, req.body);
-        const { sector_id, job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website } = req.body;
-        const data = { sector_id, job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website }
-        const addData = await GovJobS.create(data);
+        const { job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website } = req.body;
+        const data = { job_title, eligibility_education, exam_for_selection, salary, exam_cunducting_agency, website };
+        checkValidation.joiValidation(schema, data);
+        let addData = {}
+        if (req.body.agency_id || req.body.sector_id) {
+            data.agency_id = req.body.agency_id;
+            data.sector_id = req.body.sector_id;
+            addData = await GovJobS.create(data);
+        }
+        else if (req.body.agency_id) {
+            data.agency_id = req.body.agency_id;
+            addData = await GovJobS.create(data);
+        }
+        else if (req.body.sector_id) {
+            data.sector_id = req.body.sector_id;
+            addData = await GovJobS.create(data);
+        }
+        else {
+            res.status(400).json({ message: "Select a agency or sector" });
+        }
         if (addData) {
             res.status(200).json({ status: true, message: 'Govt. Job added successfully.', data: addData });
         }
@@ -724,8 +741,12 @@ module.exports.gov_jobs_list = async (req, res) => {
     try {
         let filter = {}
         const sector_id = req.body.sector_id;
-        if (sector_id.length) {
+        const agency_id = req.body.agency_id;
+        if (sector_id) {
             filter.sector_id = { $in: sector_id };
+        }
+        if (agency_id) {
+            filter.agency_id = { $in: agency_id };
         }
         const jobData = await GovJobS.find(filter).sort({ job_title: 1 });
         if (jobData.length) {
@@ -820,6 +841,98 @@ module.exports.govt_job_delete = async (req, res) => {
     }
 }
 
+
+
+module.exports.add_gov_agency = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            job_agency: Joi.string().required().messages({
+                'string.empty': 'job_agency cannot be an empty field',
+                'any.required': 'job_agency is required field'
+            }),
+        });
+        checkValidation.joiValidation(schema, req.body);
+        const { job_agency } = req.body;
+        const data = { job_agency }
+        const addData = await GovJobAgancy.create(data);
+        if (addData) {
+            res.status(200).json({ status: true, message: 'Agency added successfully.', data: addData });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('add_gov_aganacy Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.govt_agency_list = async (req, res) => {
+    try {
+        const entranceAgencyData = await GovJobAgancy.find().sort({ job_agancy: 1 });
+        if (entranceAgencyData.length) {
+            res.status(200).json({ status: true, message: "Agency list", data: entranceAgencyData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('gov_agency_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.govt_agency_edit = async (req, res) => {
+    try {
+        const agency_id = req.body.agency_id;
+        if (agency_id) {
+            const entranceAgencyData = await GovJobAgancy.findOne({ _id: agency_id });
+            if (entranceAgencyData) {
+                await GovJobAgancy.updateOne({ _id: agency_id }, { job_agency: req.body.job_agency });
+                res.status(200).json({ status: true, message: "Agency updeted successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Agency Id is required." });
+        }
+    } catch (error) {
+        console.log('govt_agency_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.govt_agency_delete = async (req, res) => {
+    try {
+        const agency_id = req.query.agency_id;
+        if (agency_id) {
+            const entranceStreamData = await GovJobAgancy.findOne({ _id: agency_id });
+            if (entranceStreamData) {
+                await GovJobS.deleteMany({ agency_id: agency_id });
+                await GovJobAgancy.deleteOne({ _id: agency_id });
+                res.status(200).json({ status: true, message: "Agency deleted successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Agency Id is required." });
+        }
+    } catch (error) {
+        console.log('govt_agency_delete Error', error);
+        res.status(500).json(error);
+    }
+}
 
 
 
@@ -2680,7 +2793,11 @@ module.exports.add_notification = async (req, res) => {
         checkValidation.joiValidation(schema, req.body);
         const { criteria, title, description } = req.body;
         const data = { criteria, title, description }
-        const studentData = await Students.find({ criteria: criteria });
+        let filter = {};
+        if (criteria != 'All') {
+            filter.criteria = criteria
+        }
+        const studentData = await Students.find(filter);
         let userIds = [];
         studentData.forEach((student) => {
             userIds.push(student.userId);

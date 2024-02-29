@@ -31,6 +31,13 @@ app.get('/gov-job-view', decodedToken, contentManagerController.gov_job_view);
 app.put('/govt-job-edit', decodedToken, contentManagerController.govt_job_edit);
 app.delete('/govt-job-delete', decodedToken, contentManagerController.govt_job_delete);
 
+
+app.post('/add-gov-agency', decodedToken, contentManagerController.add_gov_agency);
+app.get('/govt-agency-list', decodedToken, contentManagerController.govt_agency_list);
+app.put('/govt-agency-edit', decodedToken, contentManagerController.govt_agency_edit);
+app.delete('/govt-agency-delete', decodedToken, contentManagerController.govt_agency_delete);
+
+
 app.post('/add-pvt-sector', decodedToken, contentManagerController.add_pvt_sector);
 app.get('/pvt-sector-list', decodedToken, contentManagerController.pvt_sector_list);
 app.put('/pvt-sector-edit', decodedToken, contentManagerController.pvt_sector_edit);
@@ -95,7 +102,7 @@ app.get('/subject-list', decodedToken, contentManagerController.subject_list);
 app.get('/subject-view', decodedToken, contentManagerController.subject_view);
 app.put('/subject-edit', decodedToken, contentManagerController.subject_edit)
 app.delete('/subject-delete', decodedToken, contentManagerController.subject_delete);
-app.get('/discipline-list-instituteId', decodedToken, contentManagerController.discipline_list_instituteId)
+app.get('/discipline-list-instituteId', decodedToken, contentManagerController.discipline_list_instituteId);
 
 app.get('/course-list', decodedToken, contentManagerController.course_list);
 app.put('/course-edit', decodedToken, contentManagerController.course_edit);

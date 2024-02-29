@@ -35,6 +35,7 @@ const StudentNotifications = require('../module/student_notification');
 const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 const Cities = require('../module/cities');
+const GovJobAgancy = require('../module/gov_job_agancy');
 
 
 
@@ -58,6 +59,10 @@ module.exports.sign_up = async (req, res) => {
                 'string.empty': 'Mobile number cannot be an empty field',
                 'any.required': 'Mobile number is required field'
             }),
+            city: Joi.string().required().messages({
+                'string.empty': 'City cannot be an empty field',
+                'any.required': 'City is required field'
+            }),
             password: Joi.string().required().messages({
                 'string.empty': 'Password cannot be an empty field',
                 'any.required': 'Password is required field'
@@ -75,8 +80,8 @@ module.exports.sign_up = async (req, res) => {
             })
         });
         checkValidation.joiValidation(schema, req.body);
-        const { name, email, employee_id, mobile_no, language } = req.body;
-        const userData = { name, email, employee_id, mobile_no, language };
+        const { name, email, employee_id, mobile_no, city, language } = req.body;
+        const userData = { name, email, employee_id, city, mobile_no, language };
         userData.password = sha1(req.body.password);
         userData.fcm_token = req.body.fcm_token
 
@@ -1772,6 +1777,23 @@ module.exports.get_gov_sector = async (req, res) => {
 
 
 
+module.exports.govt_agency_list = async (req, res) => {
+    try {
+        const entranceAgencyData = await GovJobAgancy.find().sort({ job_agancy: 1 });
+        if (entranceAgencyData.length) {
+            res.status(200).json({ status: true, message: "Agency list", data: entranceAgencyData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('gov_agency_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 module.exports.get_gov_jobs = async (req, res) => {
     try {
         const sector_id = req.body.sector_id;
@@ -1796,6 +1818,30 @@ module.exports.get_gov_jobs = async (req, res) => {
 
 
 
+module.exports.get_gov_jobs_agency = async (req, res) => {
+    try {
+        const agency_id = req.body.agency_id;
+        if (!agency_id) {
+            res.status(400).json({ message: "Sector Id is required." });
+        }
+        else {
+            const entranceExamData = await GovJobS.find({ agency_id: { $in: agency_id } }).sort({ agency_id: 1 });
+            if (entranceExamData.length) {
+                console.log(entranceExamData.length)
+                res.status(200).json({ status: true, message: "Govt jobs list", data: entranceExamData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('get_gov_jobs_agency Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 module.exports.get_gov_job_view = async (req, res) => {
     try {
         const jobId = req.query.jobId;
@@ -1806,8 +1852,10 @@ module.exports.get_gov_job_view = async (req, res) => {
             const entranceExamData = await GovJobS.find({ _id: jobId }).sort({ sector_id: -1 }).lean();
             if (entranceExamData.length) {
                 let promiss = entranceExamData.map(async (row) => {
-                    let sector = await GovJobSector.findOne({ _id: row.sector_id });
-                    row.job_sector = sector.job_sector;
+                    // let sector = await GovJobSector.findOne({ _id: row.sector_id });
+                    let agency = await GovJobAgancy.findOne({ _id: row.agency_id });
+                    // row.job_sector = sector.job_sector;
+                    row.job_agency = agency.job_agency;
                     return row;
                 });
                 const newData = await Promise.all(promiss);
