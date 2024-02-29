@@ -1854,6 +1854,11 @@ module.exports.get_gov_job_view = async (req, res) => {
                 let promiss = entranceExamData.map(async (row) => {
                     let sector = await GovJobSector.findOne({ _id: row.sector_id });
                     let agency = await GovJobAgancy.findOne({ _id: row.agency_id });
+                    if (sector || agency) {
+                        row.job_sector = sector.job_sector;
+                        row.job_agency = agency.job_agency;
+                        return row;
+                    }
                     if (sector) {
                         row.job_sector = sector.job_sector;
                         return row;
