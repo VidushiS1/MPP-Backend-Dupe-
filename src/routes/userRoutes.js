@@ -84,6 +84,7 @@ app.get('/education-view', jwtToken.decodedToken, userController.education_view)
 app.patch('/education-update', jwtToken.decodedToken, userController.education_update);
 
 
+app.get('/cities-list', userController.cities_list);
 
 
 module.exports = app; 

@@ -34,6 +34,8 @@ const careerAgenda = require('../module/carreer_agenda');
 const StudentNotifications = require('../module/student_notification');
 const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
+const Cities = require('../module/cities');
+
 
 
 module.exports.sign_up = async (req, res) => {
@@ -2470,6 +2472,22 @@ module.exports.education_update = async (req, res) => {
         }
     } catch (error) {
         console.log('education_update Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+module.exports.cities_list = async (req, res) => {
+    try {
+        const citiesData = await Cities.find().sort({ city: 1 });
+        if (citiesData.length) {
+            res.status(200).json({ status: true, message: "Cities list", data: citiesData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('cities_list Error', error);
         res.status(500).json(error);
     }
 }
