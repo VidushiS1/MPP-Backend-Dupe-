@@ -130,6 +130,7 @@ app.post('/block-student', decodedToken, contentManagerController.block_student)
 
 app.post('/add-cast-category', decodedToken, contentManagerController.add_cast_category);
 app.get('/cast-category-list', decodedToken, contentManagerController.cast_category_list);
+app.get('/cast-category-view', decodedToken, contentManagerController.cast_category_view);
 app.put('/cast-category-edit', decodedToken, contentManagerController.cast_category_edit);
 app.delete('/cast-category-delete', decodedToken, contentManagerController.cast_category_delete);
 
@@ -148,6 +149,7 @@ app.get('/meeting-view', decodedToken, contentManagerController.meeting_view);
 
 app.post('/add-eligibility', decodedToken, contentManagerController.add_eligibility);
 app.get('/eligibility-list', decodedToken, contentManagerController.eligibility_list);
+app.get('/eligibility-view', decodedToken, contentManagerController.eligibility_view);
 app.put('/eligibility-edit', decodedToken, contentManagerController.eligibility_edit);
 app.delete('/eligibility-delete', decodedToken, contentManagerController.eligibility_delete);
 

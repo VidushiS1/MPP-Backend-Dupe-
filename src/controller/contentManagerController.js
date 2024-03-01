@@ -3140,6 +3140,29 @@ module.exports.cast_category_list = async (req, res) => {
 
 
 
+module.exports.cast_category_view = async (req, res) => {
+    try {
+        const catId = req.query.catId;
+        if (!catId) {
+            res.status(400).json({ message: "Category Id is required." });
+        }
+        else {
+            const categoryData = await CastCategory.find({ _id: catId });
+            if (categoryData) {
+                res.status(200).json({ status: true, message: "Category view", data: categoryData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('cast_category_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 module.exports.cast_category_edit = async (req, res) => {
     try {
         const catId = req.body.catId;
@@ -3708,6 +3731,29 @@ module.exports.eligibility_list = async (req, res) => {
         }
     } catch (error) {
         console.log('eligibility_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.eligibility_view = async (req, res) => {
+    try {
+        const eligibilityId = req.query.eligibilityId;
+        if (!eligibilityId) {
+            res.status(400).json({ message: "Eligibility Id is required." });
+        }
+        else {
+            const eligibilityData = await Eligibility.find({ _id: eligibilityId });
+            if (eligibilityData) {
+                res.status(200).json({ status: true, message: "Eligibility view", data: eligibilityData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('eligibility_view Error', error);
         res.status(500).json(error);
     }
 }
