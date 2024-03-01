@@ -623,6 +623,30 @@ module.exports.gov_sector_list = async (req, res) => {
 
 
 
+module.exports.gov_sector_view = async (req, res) => {
+    try {
+        const sector_id = req.query.sector_id;
+        if (!sector_id) {
+            res.status(400).json({ message: "Sector Id is required." });
+        }
+        else {
+            const sectorData = await GovJobSector.find({ _id: sector_id });
+            if (sectorData) {
+                res.status(200).json({ status: true, message: "Sector view", data: sectorData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('gov_sector_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
 module.exports.govt_sector_edit = async (req, res) => {
     try {
         const sector_id = req.body.sector_id;
@@ -887,6 +911,29 @@ module.exports.govt_agency_list = async (req, res) => {
 
 
 
+module.exports.gov_agency_view = async (req, res) => {
+    try {
+        const agency_id = req.query.agency_id;
+        if (!agency_id) {
+            res.status(400).json({ message: "Agency Id is required." });
+        }
+        else {
+            const AgencyData = await GovJobAgancy.find({ _id: agency_id });
+            if (AgencyData) {
+                res.status(200).json({ status: true, message: "Agency view", data: AgencyData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('gov_Agency_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
 
 module.exports.govt_agency_edit = async (req, res) => {
     try {
@@ -978,6 +1025,27 @@ module.exports.pvt_sector_list = async (req, res) => {
     }
 }
 
+
+module.exports.pvt_sector_view = async (req, res) => {
+    try {
+        const sector_id = req.query.sector_id;
+        if (!sector_id) {
+            res.status(400).json({ message: "Sector Id is required." });
+        }
+        else {
+            const SectorData = await PvtJobSector.find({ _id: sector_id });
+            if (SectorData) {
+                res.status(200).json({ status: true, message: "Sector view", data: SectorData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('pvt_sector_view Error', error);
+        res.status(500).json(error);
+    }
+}
 
 
 
@@ -1224,6 +1292,30 @@ module.exports.entrance_stream_list = async (req, res) => {
 
 
 
+module.exports.entrance_stream_view = async (req, res) => {
+    try {
+        const streamId = req.query.streamId;
+        if (!streamId) {
+            res.status(400).json({ message: "Stream Id is required." });
+        }
+        else {
+            const SectorData = await Entrance_stream.find({ _id: streamId });
+            if (SectorData) {
+                res.status(200).json({ status: true, message: "Stream view", data: SectorData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('entrance_stream_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
 module.exports.entrance_stream_edit = async (req, res) => {
     try {
         const stream_id = req.body.streamId;
@@ -1231,14 +1323,14 @@ module.exports.entrance_stream_edit = async (req, res) => {
             const entranceStreamData = await Entrance_stream.findOne({ _id: stream_id });
             if (entranceStreamData) {
                 await Entrance_stream.updateOne({ _id: stream_id }, { steam_name: req.body.stream_name });
-                res.status(200).json({ status: true, message: "Sector updeted successfully." });
+                res.status(200).json({ status: true, message: "Stream updeted successfully." });
             }
             else {
                 res.status(404).json({ status: false, message: "Data not found." });
             }
         }
         else {
-            res.status(400).json({ message: "Sector Id is required." });
+            res.status(400).json({ message: "Stream Id is required." });
         }
     } catch (error) {
         console.log('entrance_stream_edit Error', error);

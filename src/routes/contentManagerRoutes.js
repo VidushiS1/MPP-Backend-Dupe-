@@ -22,6 +22,7 @@ app.get('/schedule-career-view', decodedToken, contentManagerController.career_a
 
 app.post('/add-gov-sector', decodedToken, contentManagerController.add_gov_sector);
 app.get('/gov-sector-list', decodedToken, contentManagerController.gov_sector_list);
+app.get('/gov-sector-view', decodedToken, contentManagerController.gov_sector_view);
 app.put('/govt-sector-edit', decodedToken, contentManagerController.govt_sector_edit);
 app.delete('/govt-sector-delete', decodedToken, contentManagerController.govt_sector_delete);
 
@@ -34,12 +35,14 @@ app.delete('/govt-job-delete', decodedToken, contentManagerController.govt_job_d
 
 app.post('/add-gov-agency', decodedToken, contentManagerController.add_gov_agency);
 app.get('/govt-agency-list', decodedToken, contentManagerController.govt_agency_list);
+app.get('/gov-agency-view', decodedToken, contentManagerController.gov_agency_view);
 app.put('/govt-agency-edit', decodedToken, contentManagerController.govt_agency_edit);
 app.delete('/govt-agency-delete', decodedToken, contentManagerController.govt_agency_delete);
 
 
 app.post('/add-pvt-sector', decodedToken, contentManagerController.add_pvt_sector);
 app.get('/pvt-sector-list', decodedToken, contentManagerController.pvt_sector_list);
+app.get('/pvt-sector-view', decodedToken, contentManagerController.pvt_sector_view);
 app.put('/pvt-sector-edit', decodedToken, contentManagerController.pvt_sector_edit);
 app.delete('/pvt-sector-delete', decodedToken, contentManagerController.pvt_sector_delete);
 
@@ -51,6 +54,7 @@ app.delete('/pvt-job-delete', decodedToken, contentManagerController.pvt_job_del
 
 app.post('/add-stream', decodedToken, contentManagerController.add_stream);
 app.get('/entrance-streams-list', decodedToken, contentManagerController.entrance_stream_list);
+app.get('/entrance-streams-view', decodedToken, contentManagerController.entrance_stream_view);
 app.put('/entrance-streams-edit', decodedToken, contentManagerController.entrance_stream_edit);
 app.delete('/entrance-streams-delete', decodedToken, contentManagerController.entrance_stream_delete);
 
