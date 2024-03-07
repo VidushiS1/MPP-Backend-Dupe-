@@ -36,7 +36,7 @@ const CastCategory = require('../module/cast_category');
 const Scholership = require('../module/scholarship');
 const Cities = require('../module/cities');
 const GovJobAgancy = require('../module/gov_job_agancy');
-
+const Sessions = require('../module/session');
 
 
 module.exports.sign_up = async (req, res) => {
@@ -2547,6 +2547,46 @@ module.exports.cities_list = async (req, res) => {
         }
     } catch (error) {
         console.log('cities_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_list = async (req, res) => {
+    try {
+        const listData = await Sessions.find().sort({ scheme_closing_date: 1 });
+        if (listData) {
+            res.status(200).json({ status: true, message: "Sessions list", data: listData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('session_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_view = async (req, res) => {
+    try {
+        const sessionId = req.query.sessionId;
+        if (!sessionId) {
+            res.status(400).json({ message: "Broudcast Id is required." });
+        }
+        else {
+            const viewData = await Sessions.find({ _id: sessionId }).sort({ createdAt: 1 });
+            if (viewData) {
+                res.status(200).json({ status: true, message: "Sessions view", data: viewData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('session_view Error', error);
         res.status(500).json(error);
     }
 }
