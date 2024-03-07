@@ -44,6 +44,7 @@ const Broudcast = require('../module/broad_cast');
 const Eligibility = require('../module/eligibility');
 const imageurl = require('../helper/imageUrl');
 const GovJobAgancy = require('../module/gov_job_agancy');
+const Sessions = require('../module/session');
 
 
 // const { google } = require('googleapis');
@@ -2866,7 +2867,7 @@ module.exports.course_level = async (req, res) => {
 module.exports.add_notification = async (req, res) => {
     try {
         const schema = Joi.object({
-            criteria: Joi.string().required().messages({
+            criteria: Joi.array().required().messages({
                 'string.empty': 'criteria cannot be an empty field',
                 'any.required': 'criteria is required field'
             }),
@@ -2886,11 +2887,12 @@ module.exports.add_notification = async (req, res) => {
         checkValidation.joiValidation(schema, req.body);
         const { criteria, title, description } = req.body;
         const data = { criteria, title, description }
-        let filter = {};
-        if (criteria != 'All') {
-            filter.criteria = criteria
-        }
-        const studentData = await Students.find(filter);
+        // let filter = {};
+        // if (criteria != 'All') {
+        //     filter.criteria = criteria: { $in: criteria } 
+        // }
+        const studentData = await Students.find({ criteria: { $in: criteria } });
+        console.log('studentData', studentData);
         let userIds = [];
         studentData.forEach((student) => {
             userIds.push(student.userId);
@@ -3287,8 +3289,12 @@ module.exports.scholarship_list_national = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
+        const mp_police = req.query.mp_police;
+        if (mp_police) {
+            filter.mp_police = mp_police;
+        }
         const scholarshipData = await Scholership.find(filter).sort({ createdAt: -1 }).lean();
-        if (scholarshipData.length) {
+        if (scholarshipData) {
             let promise = scholarshipData.map((row) => {
                 const expirationDate = new Date(row.scheme_closing_date);
                 if (isExpired(expirationDate)) {
@@ -3324,8 +3330,12 @@ module.exports.scholarship_list_state = async (req, res) => {
         if (catId) {
             filter.cast_category_id = catId;
         }
+        const mp_police = req.query.mp_police;
+        if (mp_police) {
+            filter.mp_police = mp_police;
+        }
         const scholarshipData = await Scholership.find(filter).sort({ scheme_closing_date: 1 }).lean();
-        if (scholarshipData.length) {
+        if (scholarshipData) {
             let promise = scholarshipData.map((row) => {
                 console.log(row.scheme_closing_date);
                 const expirationDate = new Date(row.scheme_closing_date);
@@ -3802,6 +3812,257 @@ module.exports.eligibility_delete = async (req, res) => {
         }
     } catch (error) {
         console.log('eligibility_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+
+module.exports.add_broadcast = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            agenda: Joi.string().required().messages({
+                'string.empty': 'agenda cannot be an empty field',
+                'any.required': 'agenda is required field'
+            }),
+            date: Joi.string().required().messages({
+                'string.empty': 'date cannot be an empty field',
+                'any.required': 'date is required field'
+            }),
+            start_time: Joi.string().required().messages({
+                'string.empty': 'start_time cannot be an empty field',
+                'any.required': 'start_time is required field'
+            }),
+            end_time: Joi.string().required().messages({
+                'string.empty': 'end_time cannot be an empty field',
+                'any.required': 'end_time is required field'
+            }),
+            link: Joi.string().required().messages({
+                'string.empty': 'link cannot be an empty field',
+                'any.required': 'link is required field'
+            })
+        });
+        const { agenda, date, start_time, end_time, link } = req.body;
+        const data = { agenda, date, start_time, end_time, link }
+        checkValidation.joiValidation(schema, data);
+        const addData = await Broudcast.create(data);
+        if (addData) {
+            res.status(200).json({ status: true, message: 'Broadcast added successfully.' });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('add_broadcast Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.broadcast_list = async (req, res) => {
+    try {
+        const listData = await Broudcast.find().sort({ scheme_closing_date: 1 });
+        if (listData) {
+            res.status(200).json({ status: true, message: "Broudcast list", data: listData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('broadcast_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.broadcast_view = async (req, res) => {
+    try {
+        const broadcastId = req.query.broadcastId;
+        if (!broadcastId) {
+            res.status(400).json({ message: "Broudcast Id is required." });
+        }
+        else {
+            const viewData = await Broudcast.find({ _id: broadcastId }).sort({ createdAt: 1 });
+            if (viewData) {
+                res.status(200).json({ status: true, message: "Broudcast view", data: viewData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('broadcast_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.broadcast_edit = async (req, res) => {
+    try {
+        const broadcastId = req.body.broadcastId;
+        const setData = req.body;
+        if (broadcastId) {
+            const viewData = await Broudcast.findOne({ _id: broadcastId });
+            if (viewData) {
+                await Broudcast.updateOne({ _id: broadcastId }, setData);
+                res.status(200).json({ status: true, message: "Broudcast updated successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Broudcast Id is required." });
+        }
+    } catch (error) {
+        console.log('broadcast_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.broadcast_delete = async (req, res) => {
+    try {
+        const broadcastId = req.query.broadcastId;
+        if (broadcastId) {
+            const viewData = await Broudcast.findOne({ _id: broadcastId });
+            if (viewData) {
+                await Broudcast.deleteOne({ _id: broadcastId });
+                res.status(200).json({ status: true, message: "Broudcast deleted successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Broudcast Id is required." });
+        }
+    } catch (error) {
+        console.log('broadcast_delete Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.add_session = async (req, res) => {
+    try {
+        const schema = Joi.object({
+            agenda: Joi.string().required().messages({
+                'string.empty': 'agenda cannot be an empty field',
+                'any.required': 'agenda is required field'
+            }),
+            link: Joi.string().required().messages({
+                'string.empty': 'link cannot be an empty field',
+                'any.required': 'link is required field'
+            })
+        });
+        const { agenda, link } = req.body;
+        const data = { agenda, link }
+        checkValidation.joiValidation(schema, data);
+        const addData = await Sessions.create(data);
+        if (addData) {
+            res.status(200).json({ status: true, message: 'Sessions added successfully.' });
+        }
+        else {
+            res.status(400).json({ status: false, message: "Please try again" });
+        }
+    } catch (error) {
+        console.log('add_session Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_list = async (req, res) => {
+    try {
+        const listData = await Sessions.find().sort({ scheme_closing_date: 1 });
+        if (listData) {
+            res.status(200).json({ status: true, message: "Sessions list", data: listData });
+        }
+        else {
+            res.status(404).json({ status: false, message: "Data not found." });
+        }
+    } catch (error) {
+        console.log('session_list Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_view = async (req, res) => {
+    try {
+        const sessionId = req.query.sessionId;
+        if (!sessionId) {
+            res.status(400).json({ message: "Broudcast Id is required." });
+        }
+        else {
+            const viewData = await Sessions.find({ _id: sessionId }).sort({ createdAt: 1 });
+            if (viewData) {
+                res.status(200).json({ status: true, message: "Sessions view", data: viewData });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+    } catch (error) {
+        console.log('session_view Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_edit = async (req, res) => {
+    try {
+        const sessionId = req.body.sessionId;
+        const setData = req.body;
+        if (sessionId) {
+            const viewData = await Sessions.findOne({ _id: sessionId });
+            if (viewData) {
+                await Sessions.updateOne({ _id: sessionId }, setData);
+                res.status(200).json({ status: true, message: "Sessions updated successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Sessions Id is required." });
+        }
+    } catch (error) {
+        console.log('session_edit Error', error);
+        res.status(500).json(error);
+    }
+}
+
+
+
+module.exports.session_delete = async (req, res) => {
+    try {
+        const sessionId = req.query.sessionId;
+        if (sessionId) {
+            const viewData = await Sessions.findOne({ _id: sessionId });
+            if (viewData) {
+                await Sessions.deleteOne({ _id: sessionId });
+                res.status(200).json({ status: true, message: "Sessions deleted successfully." });
+            }
+            else {
+                res.status(404).json({ status: false, message: "Data not found." });
+            }
+        }
+        else {
+            res.status(400).json({ message: "Sessions Id is required." });
+        }
+    } catch (error) {
+        console.log('session_delete Error', error);
         res.status(500).json(error);
     }
 }

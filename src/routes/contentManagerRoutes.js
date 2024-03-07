@@ -153,4 +153,18 @@ app.get('/eligibility-view', decodedToken, contentManagerController.eligibility_
 app.put('/eligibility-edit', decodedToken, contentManagerController.eligibility_edit);
 app.delete('/eligibility-delete', decodedToken, contentManagerController.eligibility_delete);
 
+
+app.post('/add-broadcast', decodedToken, contentManagerController.add_broadcast);
+app.get('/broadcast-list', decodedToken, contentManagerController.broadcast_list);
+app.get('/broadcast-view', decodedToken, contentManagerController.broadcast_view);
+app.put('/broadcast-edit', decodedToken, contentManagerController.broadcast_edit);
+app.delete('/broadcast-delete', decodedToken, contentManagerController.broadcast_delete);
+
+
+app.post('/add-session', decodedToken, contentManagerController.add_session);
+app.get('/session-list', decodedToken, contentManagerController.session_list);
+app.get('/session-view', decodedToken, contentManagerController.session_view);
+app.put('/session-edit', decodedToken, contentManagerController.session_edit);
+app.delete('/session-delete', decodedToken, contentManagerController.session_delete);
+
 module.exports = app; 

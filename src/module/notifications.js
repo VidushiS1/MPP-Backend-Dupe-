@@ -2,7 +2,7 @@ const mongoose = require('../helper/dbconnection');
 
 const notificationSchema = new mongoose.Schema({
     criteria: {
-        type: String,
+        type: Array,
         require: true,
     },
     title: {
